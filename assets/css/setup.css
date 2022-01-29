@@ -1,0 +1,39 @@
+#setupContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "welcomeText welcomeText video"
+    "instructions instructions instructions";
+  max-width: 1200px;
+  margin: auto;
+  margin-top: 10vh;
+}
+
+#videoFrameContainer {
+  grid-area: video;
+}
+
+#videoFrame {
+  position: relative;
+  border: 2px solid black;
+}
+
+#welcomeText {
+  grid-area: welcomeText;
+  text-align: center;
+  padding-left: 96px;
+  padding-right: 48px;
+}
+
+#setupInstructions {
+  grid-area: instructions;
+  margin: 40px 0;
+  font-size: 1.5rem;
+  line-height: 2;
+}
+
+#instructionsContainer {
+  margin-top:20vh;
+  margin-left: 20vw;
+}
+
