@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     entry: {
       main: './src/index.js',
-      'calibration-study': './src/calibration_study/index.js'
+      'study': './src/calibration_study/index.js'
     },
     output: {
         filename: '[name].js',

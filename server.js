@@ -16,8 +16,6 @@ app.use(express.json());
 
 app.use(express.static('./public/'));
 
-app.get('
-
 app.post('/create-study-protocol',
   body('name', 'invalid name').trim().isLength({min:1}).isAlpha().escape(),
   body('age').isNumeric().isLength({min:1, max:2}),
