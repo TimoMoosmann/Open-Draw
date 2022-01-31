@@ -50,9 +50,9 @@ const showParticipantDataPageTillProtocolIsCreated = ({
       action: (evt) => {
         evt.preventDefault(),
         createProtocol({
-        onSuccess: protocolFileName => {
+        onSuccess: serverProtocolData => {
           page.remove();
-          resolve(protocolFileName);
+          resolve(serverProtocolData);
         },
         participantDataForm: page.querySelector('form'),
         serverAddress
@@ -67,7 +67,7 @@ const main = async() => {
   const webgazerLocal = webgazer;
   //await showPageUntilSubmit(getGreetingPage());
   const participantDataPage = getParticipantDataPage();
-  const protocolFileName = await showParticipantDataPageTillProtocolIsCreated({
+  const serverProtocolData = await showParticipantDataPageTillProtocolIsCreated({
     page: participantDataPage,
     serverAddress
   });
@@ -127,8 +127,8 @@ const main = async() => {
       drawGazeTarget: getDrawGazeTargetCallback(calibrationContainer),
       numTasks,
       numValidationTargets,
-      protocolFileName,
       serverAddress,
+      serverProtocolData,
       targetsNums: [...targetsNums],
       webgazer: webgazerLocal
     });
@@ -145,7 +145,7 @@ const tasksForTypeConduction = async ({
   drawGazeTarget,
   numTasks,
   numValidationTargets,
-  protocolFileName,
+  serverProtocolData,
   serverAddress,
   targetsNums,
   webgazer
@@ -179,7 +179,7 @@ const tasksForTypeConduction = async ({
     appendResultsToProtocol({
       calibrationType,
       numCalibrationTargets,
-      protocolFileName,
+      serverProtocolData,
       serverAddress,
       validationData
     });
@@ -202,9 +202,9 @@ const createProtocol = ({
     if (createProtocolReq.readyState === 4) {
       switch (createProtocolReq.status) {
         case (200):
-          const protocolFileName = JSON.parse(createProtocolReq.responseText).
-            protocolFileName;
-          onSuccess(protocolFileName);
+          const serverProtocolData = JSON.parse(createProtocolReq.responseText);
+          console.log(serverProtocolData);
+          onSuccess(serverProtocolData);
           break;
         case (400):
           invalidInputEl.hidden = false;
@@ -224,7 +224,7 @@ const createProtocol = ({
 const appendResultsToProtocol = ({
   calibrationType,
   numCalibrationTargets,
-  protocolFileName,
+  serverProtocolData,
   serverAddress,
   validationData
 }) => {
@@ -234,19 +234,11 @@ const appendResultsToProtocol = ({
   resultsReq.send(JSON.stringify({
     calibrationType,
     numCalibrationTargets,
-    protocolFileName,
-    validationDataDetailedInformation: validationData.map(gazeAtTargetData => {
+    serverProtocolData,
+    validationDataExtended: validationData.map(gazeAtTargetData => {
       return createDetailedInformationGazeAtTargetData(gazeAtTargetData);
     })
   }));
-  console.log(JSON.stringify({
-    calibrationType,
-    numCalibrationTargets,
-    validationDataDetailedInformation: validationData.map(gazeAtTargetData => {
-      return createDetailedInformationGazeAtTargetData(gazeAtTargetData);
-    })
-  }));
-
 };
 
 const encodeFormAsURI = form => {

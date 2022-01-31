@@ -50,11 +50,11 @@ const gazeTargetLength = ({
   sigmaFactor = 2
 }) => Math.round(2 * (accuracy + sigmaFactor * precision));
 
-const relativePos = ({pos, viewPortPos}) => {
+const relativePos = ({pos, viewportPos}) => {
   const roundThreeDigitsAfterComma = num => round({num, digitsAfterComma: 3});
   return createPos({
-    x: roundThreeDigitsAfterComma(pos.x / viewPortPos.x),
-    y: roundThreeDigitsAfterComma(pos.y / viewPortPos.y)
+    x: roundThreeDigitsAfterComma(pos.x / viewportPos.x),
+    y: roundThreeDigitsAfterComma(pos.y / viewportPos.y)
   });
 };
 
@@ -64,11 +64,11 @@ const createGazeAtTargetData = ({
 }) => ({
   targetPos,
   gazeEstimations,
-  viewPort: createPos({x: vw(), y: vh()})
+  viewport: createPos({x: vw(), y: vh()})
 });
 
 const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
-  const viewPortPos = gazeAtTargetData.viewPort;
+  const viewportPos = gazeAtTargetData.viewport;
   const targetPos = gazeAtTargetData.targetPos;
   const gazeEstimations = gazeAtTargetData.gazeEstimations;
   const accuracy = gazeAtTargetAccuracy({targetPos, gazeEstimations});
@@ -78,17 +78,17 @@ const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
   return {
     targetPos: gazeAtTargetData.targetPos,
     gazeEstimations: gazeAtTargetData.gazeEstimations,
-    targetPosRelative: relativePos({pos: targetPos, viewPortPos}),
+    targetPosRelative: relativePos({pos: targetPos, viewportPos}),
     accuracy,
-    accuracyRelative: relativePos({pos: accuracy, viewPortPos}),
+    accuracyRelative: relativePos({pos: accuracy, viewportPos}),
     precision,
-    precisionRelative: relativePos({pos: precision, viewPortPos}),
+    precisionRelative: relativePos({pos: precision, viewportPos}),
     recommendedTargetSize,
     recommendedTargetSizeRelative: relativePos({
       pos: recommendedTargetSize,
-      viewPortPos
+      viewportPos
     }),
-    viewPort: viewPortPos
+    viewport: viewportPos
   }
 };
 

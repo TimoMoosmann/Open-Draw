@@ -18,7 +18,8 @@
     "express": "^4.17.1",
     "express-validator": "^6.13.0",
     "morgan": "^1.10.0",
-    "object-inspect": "^1.11.0"
+    "object-inspect": "^1.11.0",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "babel-jest": "^27.4.4",
