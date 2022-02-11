@@ -30,6 +30,19 @@ const nineTargetsCalibrationFiveTargetsValidation = async (webgazer) => {
   console.log(validationData.toString());
 }
 
+const fiveDotCalibration = () => {
+  const calibrationPattern = getPatternCoordsInPct({
+    type: 'calibration', numTargets: 5
+  });
+  const gazeTargetsContainer = getGazeTargetsContainer(document.body);
+
+  await gazeCalibration({
+    webgazer,
+    gazeTargetsCoords: calibrationPattern,
+    drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
+  });
+};
+
 const getDrawGazeTargetCallback = (targetsContainer) => {
   return (pos) => {
     return getGazeTarget({
@@ -40,5 +53,8 @@ const getDrawGazeTargetCallback = (targetsContainer) => {
   };
 };
 
-export {getDrawGazeTargetCallback, nineTargetsCalibrationFiveTargetsValidation};
+export {
+  getDrawGazeTargetCallback, fiveDotCalibration,
+  nineTargetsCalibrationFiveTargetsValidation
+};
 

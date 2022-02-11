@@ -1,18 +1,32 @@
 import {vh, vw} from './util/browser.js';
 import {meanOffset, round, standardDeviation} from './util/math.js';
 import {stripIndent} from 'common-tags';
+import {Item} from '../other_modules/linked-list.js';
 
 const createPos = ({
   x = 0,
   y = 0
 } = {}) => ({
   x,
-  y,
-
-  toString() {
-    return `(${this.x}|${this.y})`;
-  }
+  y
 });
+
+const posEqual = (pos1, pos2) => pos1.x === pos2.x && pos1.y === pos2.y;
+
+const posLowerThanOrEqual = (pos1, pos2) => {
+  return pos1.x <= pos2.x && pos1.y <= pos2.y;
+};
+
+const posSubtract = (pos1, pos2) => createPos({
+  x: pos1.x - pos2.x, y: pos1.y - pos2.y
+});
+
+const createTimedPosItem = ({timestamp, pos}) => {
+  const it = new Item()
+  it.timestamp = timestamp;
+  it.pos = pos;
+  return it;
+}
 
 const gazeAtTargetAccuracy = ({
   targetPos,
@@ -93,6 +107,7 @@ const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
 };
 
 export {createPos, createGazeAtTargetData,
-  createDetailedInformationGazeAtTargetData
+  createDetailedInformationGazeAtTargetData, createTimedPosItem,
+  posLowerThanOrEqual, posSubtract
 };
 

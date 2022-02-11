@@ -1,4 +1,4 @@
-import {mean, round, standardDeviation} from '../../src/helper/math.js';
+import {mean, round, standardDeviation} from '../../src/util/math.js';
 
 test('mean of 4, 2, 1, 3 to equal 2.5', () => {
   expect(mean([4, 2, 1, 3])).toBe(2.5);
@@ -17,15 +17,15 @@ test('mean of an input which is not an array should throw an error', () => {
 });
 
 test('expect mean of an array of numbers to be correct', () => {
-  expect(round(mean(
-    [9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4]), 3))
-    .toBe(7)
+  expect(mean(
+    [9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4]
+  )).toBe(7)
 });
 
 test('expect standard deviation of an array of numbers to be correct', () => {
   expect(round(standardDeviation(
-    [9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4]), 3))
-    .toBe(2.983)
+    [9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4]), 3
+  )).toBe(2.983)
 });
 
 test('standard deviation of a single value is 0', () => {

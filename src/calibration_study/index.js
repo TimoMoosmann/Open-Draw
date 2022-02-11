@@ -3,7 +3,7 @@ import {getClickCalibrationInstructionsPage,
   getGazeCalibrationIntroductionPage, getGreetingPage, getParticipantDataPage,
   getThankYouPage, getValidationInstructionsPage
 } from './view.js';
-import {createDetailedInformationGazeAtTargetData} from '../data_types.js';
+import {createDetailedInformationGazeAtTargetData, createGazeAtTargetData, createPos} from '../data_types.js';
 import {getDrawGazeTargetCallback} from '../calibration/main.js';
 import {getPatternCoordsInPct} from '../calibration/patterns.js';
 import {getGazeTargetsContainer} from '../calibration/view.js';
@@ -65,12 +65,12 @@ const showParticipantDataPageTillProtocolIsCreated = ({
 const main = async() => {
   const serverAddress = setup();
   const webgazerLocal = webgazer;
-  //await showPageUntilSubmit(getGreetingPage());
+  await showPageUntilSubmit(getGreetingPage());
   const participantDataPage = getParticipantDataPage();
-  const serverProtocolData = await showParticipantDataPageTillProtocolIsCreated({
-    page: participantDataPage,
-    serverAddress
-  });
+  const serverProtocolData =
+    await showParticipantDataPageTillProtocolIsCreated({
+      page: participantDataPage,
+      serverAddress});
   await setupWebgazer({
     webgazer: webgazerLocal,
     bigTitle: false,
@@ -80,10 +80,8 @@ const main = async() => {
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal);
 
   let currentTaskNum = 1;
-  //const targetsNums = [5, 9, 13];
-  const targetsNums = [5, 9];
-  //const calibrationTypes = ['clickCalibration', 'gazeCalibration'];
-  const calibrationTypes = ['gazeCalibration'];
+  const targetsNums = [5, 9, 13];
+  const calibrationTypes = ['clickCalibration', 'gazeCalibration'];
   const numTasks = targetsNums.length * calibrationTypes.length;
   const calibrationContainer = getGazeTargetsContainer(document.body);
   const numValidationTargets = 4;
@@ -118,6 +116,7 @@ const main = async() => {
       default:
         throw new Error(`No Calibration type: ${calibrationType} available.`);
     }
+
     await showPageUntilSubmit(calibrationTypeIntroduction);
     currentTaskNum = await tasksForTypeConduction({
       calibrationProcedure,
@@ -203,7 +202,6 @@ const createProtocol = ({
       switch (createProtocolReq.status) {
         case (200):
           const serverProtocolData = JSON.parse(createProtocolReq.responseText);
-          console.log(serverProtocolData);
           onSuccess(serverProtocolData);
           break;
         case (400):

@@ -20,9 +20,9 @@ app.use(express.static('./public/'));
 app.post('/create-study-protocol',
   body('name', 'invalid name').trim().isLength({min:1}).isAlpha().escape(),
   body('age').isNumeric().isLength({min:1, max:2}),
-  body('eyeColor', 'invalid eye color').trim().isLength({min:1}).isAlpha()
-    .escape(),
-  async (req, res) => {
+  body('eyeColor', 'invalid eye color').trim().isLength({min:1})
+    .isAlpha(['de-DE']).escape(),
+  async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({errors: errors.array() });
@@ -42,54 +42,63 @@ app.post('/create-study-protocol',
     try {
       await fs.appendFile(`${protocolsFolder}/${protocolFileName}`
         , protocolHeader);
+      const db = await openStudyDB();
+      const participantStudyDataID = await dbInsert({
+        colNames: ['prename', 'age', 'eye_color'],
+        db,
+        tableName: "participantStudyDatas",
+        values: [req.body.name, req.body.age, req.body.eyeColor]
+      });
+      await closeDB(db);
+      return res.status(200).json({participantStudyDataID, protocolFileName});
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).json(
-        {errors: ["Could not write protocol header to file: " + err.message] });   
+      return next(err);
     }
-
-    const db = openStudyDBReadWrite();
-    const participantStudyDataID = dbInsert({
-      colNames: ['prename', 'age', 'eye_color'],
-      db,
-      tableName: "participantStudyDatas",
-      values: [req.body.name, req.body.age, req.body.eyeColor]
-    });
-    closeDB(db);
-    return res.status(200).json({participantStudyDataID, protocolFileName});
   }
 );
 
-app.post('/append-validation-data-to-protocol', async (req, res) => {
+app.post('/append-validation-data-to-protocol', async (req, res, next) => {
 
-  const calibrationType = req.body.clibrationType;
+  const calibrationType = req.body.calibrationType;
   const numCalibrationTargets = req.body.numCalibrationTargets;
   const participantStudyDataID =
-    req.body.serverPrtocolData.participantStudyDataID;
-  const protocolFileName = req.body.serverPrtocolData.protocolFileName;
+    req.body.serverProtocolData.participantStudyDataID;
+  const protocolFileName = req.body.serverProtocolData.protocolFileName;
   const validationData = req.body.validationDataExtended;
 
-  await appendProtocolWithValidationEntry({
+  const validationProtocol = createProtocolStringForValidationEntry({
     calibrationType,
     numCalibrationTargets,
-    protocolFileName,
     validationData
   });
-
-  saveValidationDataInDB({
-    calibrationType,
-    numCalibrationTargets,
-    participantStudyDataID,
-    validationData
-  });
-
+  try {
+    await fs.appendFile(
+      `${protocolsFolder}/${protocolFileName}`,
+      validationProtocol
+    );
+    await saveValidationDataInDB({
+      calibrationType,
+      numCalibrationTargets,
+      participantStudyDataID,
+      validationData
+    });
+  } catch (err) {
+    return next(err);
+  }
   return res.status(200);
 });
 
-const appendProtocolWithValidationEntry = async ({
+function errorHandler(err, req, res, next) {
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500);
+  res.render('error', { error: err });
+}
+
+const createProtocolStringForValidationEntry = ({
   calibrationType,
   numCalibrationTargets,
-  protocolFileName,
   validationData
 }) => {
   let validationProtocol = '\n' + oneLine`
@@ -100,48 +109,41 @@ const appendProtocolWithValidationEntry = async ({
     '\n=================================================\n\n';
 
   validationData.forEach(gazeAtTargetData => {
-    let gazeAtTargetDataProtocol = "";
-    gazeAtTargetProtocol += createValidationValuesString = ({
+    let gazeAtTargetProtocol = "";
+    gazeAtTargetProtocol += createValidationValuesString ({
       name: 'Target Position',
       absoluteVal: gazeAtTargetData.targetPos,
       relativeVal: gazeAtTargetData.targetPosRelative
     });
-    gazeAtTargetProtocol += createValidationValuesString = ({
+    gazeAtTargetProtocol += createValidationValuesString ({
       name: 'Target Accuracy',
       absoluteVal: gazeAtTargetData.accuracy,
       relativeVal: gazeAtTargetData.accuracyRelative
     });
-    gazeAtTargetProtocol += createValidationValuesString = ({
+    gazeAtTargetProtocol += createValidationValuesString ({
       name: 'Gaze Precision',
       absoluteVal: gazeAtTargetData.precision,
       relativeVal: gazeAtTargetData.precisionRelative
     });
-    gazeAtTargetProtocol += createValidationValuesString = ({
+    gazeAtTargetProtocol += createValidationValuesString ({
       name: 'Recommended Target Size',
       absoluteVal: gazeAtTargetData.recommendedTargetSize,
       relativeVal: gazeAtTargetData.recommendedTargetSizeRelative
     });
-    gazeAtTargetProtocol += `Viewport: ${posStr(gazeAtTargetData.viewPort)}`
+    gazeAtTargetProtocol += `Viewport: ${posStr(gazeAtTargetData.viewport)}`
       + '\n';
     gazeAtTargetProtocol += 'Gaze Estimations: ';
     gazeAtTargetData.gazeEstimations.forEach((est, idx) => {
       gazeAtTargetProtocol += posStr(est);
-      if (idx === data.gazeEstimations.length - 1) {
-        protocolValidationEntry += ', ';
+      if (idx === gazeAtTargetData.gazeEstimations.length - 1) {
+        gazeAtTargetProtocol += ', ';
       }
     });
     gazeAtTargetProtocol +=
       '\n-------------------------------------------------\n\n'
     validationProtocol += gazeAtTargetProtocol
   });
-  try {
-    await fs.appendFile(`${protocolsFolder}/${protocolFileName}`,
-      protocolValidationEntry
-    );
-  } catch (err) {
-    return res.status(500).json(
-      {errors: ["Could not write validation data to file: " + err.message] });   
-  }
+  return validationProtocol;
 };
 
 const createValidationValuesString = ({
@@ -156,16 +158,18 @@ const createValidationValuesString = ({
 
 const posStr = pos => `(${pos.x}|${pos.y})`;
 
-const saveValidationDataInDB = ({
+const saveValidationDataInDB = async ({
   calibrationType,
   numCalibrationTargets,
-  participantStudyDataID
+  participantStudyDataID,
+  validationData
 }) => {
-  const db = openStudyDBReadWrite();
-  const dbInsert = ({colNames, tableName, values}) => dbInsert({
-    colNames, db, tableName, values
-  });
-  const validationDataID = dbInsert({
+  const db = await openStudyDB();
+  const studyDBInsert =
+    async ({colNames, tableName, values}) => await dbInsert({
+      colNames, db, tableName, values
+    });
+  const validationDataID = await studyDBInsert({
     colNames: [
       'calibration_type',
       'num_calibration_targets',
@@ -179,27 +183,28 @@ const saveValidationDataInDB = ({
     ]
   });
 
-  validationData.forEach(gazeAtTargetData => {
-    const gazeAtTargetDataID = dbInsert({
+  for (let i=0; i<validationData.length; i++) {
+    const gazeAtTargetData = validationData[i];
+    const gazeAtTargetDataID = await studyDBInsert({
       colNames: ['num_gaze_estimations', 'validation_data_id'],
       tableName: 'gazeAtTargetDatas',
       values: [gazeAtTargetData.gazeEstimations.length, validationDataID]
     });
-    const dbInsertPos = getDBInsertPos({db, gazeAtTargetDataID});
-    const targetPosID = dbInsertPos(gazeAtTargetData.targetPos);
-    const targetPosRelativeID = dbInsertPos(gazeAtTargetData.targetPosRelative);
-    const accuracyID = dbInsertPos(gazeAtTargetData.accuracy);
-    const accuracyRelativeID = dbInsertPos(gazeAtTargetData.accuracyRelative);
-    const precisionID = dbInsertPos(gazeAtTargetData.precision);
-    const precisionRelativeID = dbInsertPos(gazeAtTargetData.precisionRelative);
-    const recommendedTargetSizeID = dbInsertPos(
+    const studyDBInsertPos = getDBInsertPos({db, gazeAtTargetDataID});
+    const targetPosID = await studyDBInsertPos(gazeAtTargetData.targetPos);
+    const targetPosRelativeID = await studyDBInsertPos(gazeAtTargetData.targetPosRelative);
+    const accuracyID = await studyDBInsertPos(gazeAtTargetData.accuracy);
+    const accuracyRelativeID = await studyDBInsertPos(gazeAtTargetData.accuracyRelative);
+    const precisionID = await studyDBInsertPos(gazeAtTargetData.precision);
+    const precisionRelativeID = await studyDBInsertPos(gazeAtTargetData.precisionRelative);
+    const recommendedTargetSizeID = await studyDBInsertPos(
       gazeAtTargetData.recommendedTargetSize
     );
-    const recommendedTargetSizeRelativeID = dbInsertPos(
+    const recommendedTargetSizeRelativeID = await studyDBInsertPos(
       gazeAtTargetData.recommendedTargetSizeRelative
     );
-    const viewportID = dbInsertPos(gazeAtTargetData.viewport);
-    dbInsert({
+    const viewportID = await studyDBInsertPos(gazeAtTargetData.viewport);
+    await dbUpdate({
       colNames: [
         'target_pos_id', 'target_pos_relative_id',
         'accuracy_id', 'accuracy_relative_id',
@@ -207,6 +212,9 @@ const saveValidationDataInDB = ({
         'recommended_target_size_id', 'recommended_target_size_relative_id',
         'viewport_id'
       ],
+      db,
+      idColName: 'gaze_at_target_data_id',
+      rowID: gazeAtTargetDataID,
       tableName: 'gazeAtTargetDatas',
       values: [
         targetPosID, targetPosRelativeID,
@@ -216,43 +224,78 @@ const saveValidationDataInDB = ({
         viewportID
       ]
     });
+  };
+};
+
+const openStudyDB = () => new Promise((resolve, reject) => {
+  new sqlite3.Database(
+    './db/study_data.db',
+    function(err) {
+      if (err) {
+        reject(err);
+      }
+      resolve(this);
+    }
+  )
+});
+
+const dbRunOnStudyTable = ({db, stmt, values}) => new Promise(
+  (resolve, reject) => {
+    db.run(
+      stmt,
+      values,
+      function (err) {
+        if (err) {
+          reject(err);
+        }
+        resolve(this.lastID);
+      }
+    );
+  }
+);
+
+const insertStmt = ({colNames, tableName}) => stripIndent`
+  INSERT INTO ${tableName} (${colNames})
+  VALUES (${"?,".repeat(colNames.length -1)}?)
+`;
+
+const updateStmt = ({colNames, idColName, rowID, tableName}) => stripIndent`
+  UPDATE ${tableName}
+  SET ${colNames.map(colName => `${colName} = ?`)}
+  WHERE ${idColName} = ${rowID};
+`;
+
+const dbInsert = async ({colNames, db, tableName, values}) => {
+  return await dbRunOnStudyTable({
+    db,
+    stmt: insertStmt({colNames, tableName}),
+    values,
   });
 };
 
-const openStudyDB = mode => new sqlite3.Database(
-  './db/study_data.db',
-  mode,
-  err => {if (err) console.error(err.message)}
-);
-
-const openStudyDBReadWrite = () => openStudyDB(sqlite3.OPEN_READWRITE);
-
-const dbInsert = ({colNames, db, tableName, values}) => db.serialize(function() {
-  if (!(colNames.length && colNames.length > 1)) {
-    throw new Error(stripIndent`
-      Parameter colNames needs to be an array of strings with at least
-      one Element.
-    `);
-  }
-  db.run(stripIndent`
-    INSERT INTO ${tableName} (${colNames})
-    VALUES (${"?,".repeat(colNames.length -1)}?)`,
+const dbUpdate = async ({
+  colNames, db, idColName, rowID, tableName, values
+}) => {
+  return await dbRunOnStudyTable({
+    db,
+    stmt: updateStmt({colNames, idColName, rowID, tableName}),
     values,
-    function (err) {
-      if (err) console.error(err.message);
-      return this.lastID;
-    }
-  );
-});
+  });
+};
 
-getDBInsertPos = ({db, gazeAtTargetDataID}) => pos => dbInsert({
+getDBInsertPos = ({db, gazeAtTargetDataID}) => async pos => dbInsert({
   colNames: ['x', 'y', 'gaze_at_target_data_id'],
   db,
   tableName: 'positions',
   values: [pos.x, pos.y, gazeAtTargetDataID]
 });
 
-const closeDB = db => db.close(err => {if (err) console.error(err.message)});
+const closeDB = db => new Promise((resolve, reject) => {
+  db.close(err => {
+    if (err) reject(err);
+    resolve();
+  });
+});
 
 module.exports = app;
 

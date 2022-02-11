@@ -1,4 +1,4 @@
-const round = ({num, digitsAfterComma}) => {
+const round = (num, digitsAfterComma) => {
   const shiftFactor = 10 ** digitsAfterComma;
   const roundedNum = Math.round(num * shiftFactor) / shiftFactor;
   return Number(roundedNum.toFixed(digitsAfterComma));
