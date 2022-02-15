@@ -30,7 +30,7 @@ const nineTargetsCalibrationFiveTargetsValidation = async (webgazer) => {
   console.log(validationData.toString());
 }
 
-const fiveDotCalibration = () => {
+const fiveDotCalibration = async () => {
   const calibrationPattern = getPatternCoordsInPct({
     type: 'calibration', numTargets: 5
   });

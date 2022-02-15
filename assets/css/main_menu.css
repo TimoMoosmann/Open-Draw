@@ -1,0 +1,26 @@
+#mainMenuContainer {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 50vh 50vh;
+  grid-template-areas: 
+    "drawBtn moveBtn"
+    "editBtn colorBtn";
+}
+
+#drawBtn {
+  grid-area: drawBtn;
+}
+
+#moveBtn {
+  grid-area: moveBtn;
+}
+
+#editBtn {
+  grid-area: editBtn;
+}
+
+#colorBtn {
+  grid-area: colorBtn;
+}

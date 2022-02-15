@@ -1,21 +1,22 @@
-import {createPos, createTimedPosItem, posLowerThanOrEqual, posSubtract} from '../data_types.js'; 
+import {createFixation, createPos, createTimedPosItem, posLowerThanOrEqual, posSubtract} from '../data_types.js'; 
 import {mean} from '../util/math.js';
 
 import {List, Item} from '../../other_modules/linked-list.js';
 
 const runWebgazerDwellDetection = ({
   dispersionThreshold,
-  durationThreshold
+  durationThreshold,
+  onFixation
 }) => {
   const timedGazePositions = new List();
   webgazer.setGazeListener((gazePos, timestamp) => {
     const timedGazePosItem = createTimedPosItem({timestamp, pos: gazePos});
     timedGazePositions.append(timedGazePosItem);
-    let fixationCenter;
-    if (fixationCenter = idtOneIteration({
+    let fixation;
+    if (fixation = idtOneIteration({
       dispersionThreshold, durationThreshold, timedGazePositions
     })) {
-      console.log(`Fixation at ${fixationCenter}`);
+      onFixation(fixation);
     }
   });
 };
@@ -27,14 +28,21 @@ const idtOneIteration = ({
     getMaxWindowToFitInDispersionThreshold({
       dispersionThreshold, timedGazePositions
     });
-    console.log(timedGazePositions);
     const windowFirstEl = timedGazePositions.head;
     const windowLastEl = (timedGazePositions.size === 1) ?
       timedGazePositions.head : timedGazePositions.tail;
+    let fixationDuration;
     if (
-      (windowLastEl.timestamp - windowFirstEl.timestamp) >= durationThreshold
+      (fixationDuration = windowLastEl.timestamp - windowFirstEl.timestamp)
+      >= durationThreshold
     ) {
-      return getCenterPoint(timedGazePositions.toArray().map(it => it.pos));
+      const fixationCenter = getCenterPoint(
+        timedGazePositions.toArray().map(it => it.pos)
+      );
+      return createFixation({
+        center: fixationCenter,
+        duration: fixationDuration
+      });
     }
   }
   return false;

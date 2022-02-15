@@ -28,6 +28,15 @@ const createTimedPosItem = ({timestamp, pos}) => {
   return it;
 }
 
+const createEllipse = ({center, radius}) => ({center, radius});
+
+const isInCircle = ({ellipse, pos}) => ((
+  (Math.pow(pos.x - ellipse.center.x, 2) / Math.pow(ellipse.radius.x, 2)) +
+  (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radius.y, 2))
+) <= 1);
+
+const createFixation = ({center, duration}) => ({center, duration});
+
 const gazeAtTargetAccuracy = ({
   targetPos,
   gazeEstimations
@@ -106,7 +115,7 @@ const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
   }
 };
 
-export {createPos, createGazeAtTargetData,
+export {createPos, createFixation, createGazeAtTargetData,
   createDetailedInformationGazeAtTargetData, createTimedPosItem,
   posLowerThanOrEqual, posSubtract
 };

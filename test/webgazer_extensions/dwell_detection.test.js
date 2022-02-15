@@ -1,5 +1,5 @@
 import {idtOneIteration} from '../../src/webgazer_extensions/dwell_detection.js';
-import {createPos, createTimedPosItem, posEqual} from '../../src/data_types.js';
+import {createFixation, createPos, createTimedPosItem, posEqual} from '../../src/data_types.js';
 import {arraysEqual} from '../../src/util/main.js';
 
 import {List} from '../../other_modules/linked-list.js';
@@ -68,7 +68,10 @@ describe('A sequence of potential gaze Estimations from Webgazer', () => {
     const timedGazePositions = new List(gazePoint1, gazePoint2, gazePoint3);
     expect(idtOneIteration({
       dispersionThreshold, durationThreshold, timedGazePositions
-    })).toEqual(createPos({x: 75, y: 50}));
+    })).toEqual(createFixation({
+      center: createPos({x: 75, y: 50}),
+      duration: 200
+    }));
     expect(timedGazePositions.toArray().map(it => it.pos)).toEqual(
       [gazePos1, gazePos2, gazePos3]
     );
@@ -87,7 +90,10 @@ describe('A sequence of potential gaze Estimations from Webgazer', () => {
     );
     expect(idtOneIteration({
       dispersionThreshold, durationThreshold, timedGazePositions
-    })).toEqual(createPos({x: 117, y: 92}));
+    })).toEqual(createFixation({
+      center: createPos({x: 117, y: 92}),
+      duration: 200
+    }));
     expect(timedGazePositions.toArray().map(it => it.pos)).toEqual(
       [gazePos2, gazePos3, gazePos4]
     );

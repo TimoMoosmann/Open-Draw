@@ -33,13 +33,21 @@ function getWholeWindowContainer(id, extraClasses=[], attributes=[]) {
     attributes);
 }
 
-const getWindowCoordinates = (element) => {
+const getElementsCenter = element => {
   const boundingRect = element.getBoundingClientRect();
   return createPos({
     x: Math.round(boundingRect.x + (boundingRect.width / 2)),
     y: Math.round(boundingRect.y + (boundingRect.height / 2))
   });
-}
+};
+
+const getElementsSize = element => {
+  const boundingRect = element.getBoundingClientRect();
+  return createPos({
+    x: boundingRect.width,
+    y: boundingRect.height
+  });
+};
 
 function encodeFormAsURI(form) {
   const encodedDataPairs = [];
@@ -50,5 +58,7 @@ function encodeFormAsURI(form) {
   return encodedDataPairs.join('&').replace(/%20/g, '+');
 }
 
-export {createElementFromHTML, getWindowCoordinates, vh, vw};
+export {
+  createElementFromHTML, getElementsCenter, getElementsSize, vh, vw
+};
 

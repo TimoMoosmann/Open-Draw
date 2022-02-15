@@ -1,9 +1,8 @@
 {
   "name": "open_draw",
   "version": "1.0.0",
-  "exports": "./server/index.js",
+  "main": "./server.js",
   "description": "Draw with your eyes",
-  "node": "^12.20.0 || ^14.13.1 || >=16.0.0",
   "private": true,
   "scripts": {
     "test": "jest ./test/",
