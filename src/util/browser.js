@@ -1,4 +1,4 @@
-import '../../assets/css/style.css';
+import {createPos} from '../data_types.js';
 
 const vw = () => {
   return Math.max(document.documentElement.clientWidth
@@ -33,7 +33,7 @@ function getWholeWindowContainer(id, extraClasses=[], attributes=[]) {
     attributes);
 }
 
-const getElementsCenter = element => {
+const getElementCenter = element => {
   const boundingRect = element.getBoundingClientRect();
   return createPos({
     x: Math.round(boundingRect.x + (boundingRect.width / 2)),
@@ -41,12 +41,27 @@ const getElementsCenter = element => {
   });
 };
 
-const getElementsSize = element => {
+const getElementSize = element => {
   const boundingRect = element.getBoundingClientRect();
   return createPos({
     x: boundingRect.width,
     y: boundingRect.height
   });
+};
+
+// For debug purposes
+const drawDotOnScreen = pos => {
+  const xScreenPct = Math.round((pos.x / vw()) * 100);
+  const yScreenPct = Math.round((pos.y / vh()) * 100);
+  document.body.appendChild(createElementFromHTML(`
+    <div style="
+      left:${xScreenPct}vw;top:${yScreenPct}vh;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background-color: green;
+      transform: translate(-50%, -50%)">
+    </div>
+  `));
 };
 
 function encodeFormAsURI(form) {
@@ -59,6 +74,7 @@ function encodeFormAsURI(form) {
 }
 
 export {
-  createElementFromHTML, getElementsCenter, getElementsSize, vh, vw
+  createElementFromHTML, drawDotOnScreen, getElementCenter, getElementSize,
+  vh, vw
 };
 

@@ -17,7 +17,6 @@ const setupWebgazer = ({
     const page = getSetupInstructionsPage({
       bigTitle,
       language,
-      mouseModeOn,
       title,
       videoSize
     });
@@ -25,6 +24,7 @@ const setupWebgazer = ({
     webgazer.clearData();
     initWebgazer({
       webgazer,
+      mouseModeOn,
       onFaceDetectionStatusChanged: faceDetected => {
         document.body.onclick = faceDetected ? () => {
           document.body.appendChild(

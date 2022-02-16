@@ -7,7 +7,7 @@ import '../../assets/css/calibration.css';
 import '../../assets/css/style.css';
 
 const getGazeTarget = ({
-  targetsContainer = document.createElement('div'),
+  targetsContainer,
   targetPos = createPos({x: 50, y: 50}),
   radius=15
 } = {}) => {
@@ -18,7 +18,9 @@ const getGazeTarget = ({
                    top:${targetPos.y}%;"
             class="gazeTarget"
     >
-      <div class="innerGazeTarget">
+      <div class="gazeTargetCrossHor"></div>
+      <div class="gazeTargetCrossVert"></div>
+      <div class="gazeTargetInnerDot"></div>
     </button>
   `, targetsContainer);
 };
@@ -28,7 +30,7 @@ const getGazeTargetsContainer = ({
   id = 'calibrationContainer'
 } = {}) => {
   return createElementFromHTML(html`
-    <div id=${id} class=${'gazeTargetsContainer'}>
+    <div id="${id}" class="gazeTargetsContainer">
     </div>
   `, root);
 };

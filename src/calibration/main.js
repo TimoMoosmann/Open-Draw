@@ -11,7 +11,7 @@ const nineTargetsCalibrationFiveTargetsValidation = async (webgazer) => {
   const validationPattern = getPatternCoordsInPct({
     type: 'validation', numTargets: 4
   });
-  const gazeTargetsContainer = getGazeTargetsContainer(document.body);
+  const gazeTargetsContainer = getGazeTargetsContainer();
 
   await gazeCalibration({
     webgazer,
@@ -25,22 +25,34 @@ const nineTargetsCalibrationFiveTargetsValidation = async (webgazer) => {
     drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
   });
   gazeTargetsContainer.remove();
-  console.log(`Viewport Width: ${vw()}, Viewport Height: ${vh()}`);
-  console.log('\n');
-  console.log(validationData.toString());
 }
 
-const fiveDotCalibration = async () => {
+const runGazeCalibration = async ({numTargets, webgazer}) => {
   const calibrationPattern = getPatternCoordsInPct({
-    type: 'calibration', numTargets: 5
+    type: 'calibration', numTargets
   });
-  const gazeTargetsContainer = getGazeTargetsContainer(document.body);
+  const gazeTargetsContainer = getGazeTargetsContainer();
 
   await gazeCalibration({
     webgazer,
     gazeTargetsCoords: calibrationPattern,
     drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
   });
+  gazeTargetsContainer.remove();
+};
+
+const runClickCalibration = async ({numTargets, webgazer}) => {
+  const calibrationPattern = getPatternCoordsInPct({
+    type: 'calibration', numTargets
+  });
+  const gazeTargetsContainer = getGazeTargetsContainer();
+
+  await clickCalibration({
+    webgazer,
+    gazeTargetsCoords: calibrationPattern,
+    drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
+  });
+  gazeTargetsContainer.remove();
 };
 
 const getDrawGazeTargetCallback = (targetsContainer) => {
@@ -48,13 +60,13 @@ const getDrawGazeTargetCallback = (targetsContainer) => {
     return getGazeTarget({
       targetsContainer: targetsContainer,
       targetPos: pos,
-      radius: 10
+      radius: 20
     });
   };
 };
 
 export {
-  getDrawGazeTargetCallback, fiveDotCalibration,
+  getDrawGazeTargetCallback, runGazeCalibration, runClickCalibration,
   nineTargetsCalibrationFiveTargetsValidation
 };
 

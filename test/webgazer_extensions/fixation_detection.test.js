@@ -1,4 +1,4 @@
-import {idtOneIteration} from '../../src/webgazer_extensions/dwell_detection.js';
+import {idtOneIteration} from '../../src/webgazer_extensions/fixation_detection.js';
 import {createFixation, createPos, createTimedPosItem, posEqual} from '../../src/data_types.js';
 import {arraysEqual} from '../../src/util/main.js';
 

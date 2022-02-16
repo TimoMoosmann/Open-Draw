@@ -3,13 +3,15 @@ import {mean} from '../util/math.js';
 
 import {List, Item} from '../../other_modules/linked-list.js';
 
-const runWebgazerDwellDetection = ({
+const runWebgazerFixationDetection = ({
   dispersionThreshold,
   durationThreshold,
-  onFixation
+  onFixation,
+  webgazer
 }) => {
   const timedGazePositions = new List();
   webgazer.setGazeListener((gazePos, timestamp) => {
+    if (!gazePos) return false;
     const timedGazePosItem = createTimedPosItem({timestamp, pos: gazePos});
     timedGazePositions.append(timedGazePosItem);
     let fixation;
@@ -96,5 +98,5 @@ const getCenterPoint = posArr => createPos({
   y: Math.round(mean(posArr.map(pos => pos.y))),
 });
 
-export {idtOneIteration};
+export {idtOneIteration, runWebgazerFixationDetection};
 

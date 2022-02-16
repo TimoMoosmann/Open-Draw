@@ -1,28 +1,41 @@
 import {getMainMenuPage} from './view.js';
-import {createEllipse, isInEllipse} from '../data_types.js';
-import {getElementCenter, getElementSize} from '../util/browser.js';
+import {createEllipse, inEllipse} from '../data_types.js';
+import {drawDotOnScreen, getElementCenter, getElementSize} from '../util/browser.js';
+import {runWebgazerFixationDetection} from '../webgazer_extensions/fixation_detection.js';
 
-const main = ({
+const runMainProgram = ({
   dwellDurationThreshold,
   fixationDispersionThreshold,
   fixationDurationThreshold,
+  webgazer
 }) => {
   const drawnLines = [];
+  const runFixationDetectionFixedThresholds = onFixation => {
+    return runWebgazerFixationDetection({
+      dispersionThreshold: fixationDispersionThreshold,
+      durationThreshold: fixationDurationThreshold,
+      onFixation,
+      webgazer
+    });
+  };
+  const actionOnDwellFixedThreshold = ({btnList, fixation}) => actionOnDwell({
+    btnList, fixation, dwellDurationThreshold
+  });
   invokeMainMenuPage({
+    actionOnDwellFixedThreshold,
     drawnLines,
-    dwellDurationThreshold,
-    fixationDispersionThreshold,
-    fixationDurationThreshold
+    runFixationDetectionFixedThresholds
+  });
 };
 
 const invokeMainMenuPage = ({
-  dispersionThreshold,
+  actionOnDwellFixedThreshold,
   drawnLines,
-  durationThreshold,
-  dwellTime
+  runFixationDetectionFixedThresholds
 }) => {
-  const mainMenutPage = getMainMenuPage();
-  const dwellBtnList = mainMenuPage.querySelectorAll('button').map(
+  const mainMenuPage = getMainMenuPage();
+  document.body.append(mainMenuPage);
+  const dwellBtnList = Array.from(mainMenuPage.querySelectorAll('button')).map(
     btn => {
       const btnAction = getDwellBtnAction(btn.id);
       btn.addEventListener('click', btnAction);
@@ -33,27 +46,20 @@ const invokeMainMenuPage = ({
       return createDwellBtn({action: btnAction, ellipse: btnEllipse});
     }
   );
-  runWebgazerDwellDetection({
-    dispersionThreshold,
-    durationThreshold,
-    onFixation: fixation => actionOnDwell({
-      btnList: dwellBtnList,
-      dwellTime,
-      fixation
-    });
-  });
-  document.body.append(mainMenuPage);
+  runFixationDetectionFixedThresholds(fixation => actionOnDwellFixedThreshold({
+    btnList: dwellBtnList, fixation
+  }));
 }
 
-
-  // Wait until a button is clicked / gazed At
-  // activate the Buttons corresponding page and give drawnLines to it
-}
-
-const actionOnDwell = ({btnList, fixation, dwellTime}) => {
-  if (fixation.duration >= dwellTime) {
-    for (let btn of btn_list) {
-      if (inEllipse(btn.ellipse, fixation.center)) {
+const actionOnDwell = ({btnList, fixation, dwellDurationThreshold}) => {
+  console.log(
+  `Fixation at x: ${fixation.center.x}, y: ${fixation.center.y}`
+  );
+  if (fixation.duration >= dwellDurationThreshold) {
+    for (let btn of btnList) {
+      if (inEllipse({ellipse: btn.ellipse, pos: fixation.center})) {
+        drawDotOnScreen(fixation.center);
+        console.log(`Fixation took ${fixation.duration}ms`);
         btn.action();
         break;
       }
@@ -64,7 +70,7 @@ const actionOnDwell = ({btnList, fixation, dwellTime}) => {
 const createDwellBtn = ({action, ellipse}) => ({action, ellipse});
 
 const getDwellBtnAction = dwellBtnId => {
-  switch (dwellBtnName) {
+  switch (dwellBtnId) {
     case 'drawBtn':
       return () => alert('Draw Button');
       break;
@@ -74,8 +80,13 @@ const getDwellBtnAction = dwellBtnId => {
     case 'editBtn':
       return () => alert('Edit Button');
       break;
+    case 'colorBtn':
+      return () => alert('Color Button');
+      break;
     default:
-      throw new Error('A button with id: ' + dwellBtnId + ' is not available.');
+      throw new Error('No Action defined for button with ID: ' + dwellBtnId);
   }
 }
+
+export {runMainProgram};
 

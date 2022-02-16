@@ -30,7 +30,7 @@ const createTimedPosItem = ({timestamp, pos}) => {
 
 const createEllipse = ({center, radius}) => ({center, radius});
 
-const isInCircle = ({ellipse, pos}) => ((
+const inEllipse = ({ellipse, pos}) => ((
   (Math.pow(pos.x - ellipse.center.x, 2) / Math.pow(ellipse.radius.x, 2)) +
   (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radius.y, 2))
 ) <= 1);
@@ -115,8 +115,9 @@ const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
   }
 };
 
-export {createPos, createFixation, createGazeAtTargetData,
-  createDetailedInformationGazeAtTargetData, createTimedPosItem,
+export {
+  createDetailedInformationGazeAtTargetData, createEllipse, createFixation,
+  createGazeAtTargetData, createPos, createTimedPosItem, inEllipse,
   posLowerThanOrEqual, posSubtract
 };
 
