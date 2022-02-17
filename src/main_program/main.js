@@ -1,12 +1,13 @@
 import {getMainMenuPage} from './view.js';
 import {createEllipse, inEllipse} from '../data_types.js';
-import {drawDotOnScreen, getElementCenter, getElementSize} from '../util/browser.js';
+import {drawDotOnScreen, getElementCenter, getElementRadii} from '../util/browser.js';
 import {runWebgazerFixationDetection} from '../webgazer_extensions/fixation_detection.js';
 
 const runMainProgram = ({
   dwellDurationThreshold,
   fixationDispersionThreshold,
   fixationDurationThreshold,
+  maxFixationDuration,
   webgazer
 }) => {
   const drawnLines = [];
@@ -14,6 +15,7 @@ const runMainProgram = ({
     return runWebgazerFixationDetection({
       dispersionThreshold: fixationDispersionThreshold,
       durationThreshold: fixationDurationThreshold,
+      maxFixationDuration,
       onFixation,
       webgazer
     });
@@ -41,7 +43,7 @@ const invokeMainMenuPage = ({
       btn.addEventListener('click', btnAction);
       const btnEllipse = createEllipse({
         center: getElementCenter(btn),
-        radius: getElementSize(btn)
+        radius: getElementRadii(btn)
       });
       return createDwellBtn({action: btnAction, ellipse: btnEllipse});
     }
@@ -52,14 +54,9 @@ const invokeMainMenuPage = ({
 }
 
 const actionOnDwell = ({btnList, fixation, dwellDurationThreshold}) => {
-  console.log(
-  `Fixation at x: ${fixation.center.x}, y: ${fixation.center.y}`
-  );
   if (fixation.duration >= dwellDurationThreshold) {
     for (let btn of btnList) {
       if (inEllipse({ellipse: btn.ellipse, pos: fixation.center})) {
-        drawDotOnScreen(fixation.center);
-        console.log(`Fixation took ${fixation.duration}ms`);
         btn.action();
         break;
       }

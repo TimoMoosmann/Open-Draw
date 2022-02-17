@@ -33,7 +33,6 @@ const initWebgazer = ({
         onDetectionStatusChanged: onFaceDetectionStatusChanged
       });
       if (startFaceDetector) webgazer.faceDetector.start();
-      console.log(mouseModeOn);
       if (!mouseModeOn) webgazer.removeMouseEventListeners();
       if (clearData) webgazer.clearData();
     }

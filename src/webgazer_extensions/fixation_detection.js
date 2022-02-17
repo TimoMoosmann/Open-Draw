@@ -6,6 +6,7 @@ import {List, Item} from '../../other_modules/linked-list.js';
 const runWebgazerFixationDetection = ({
   dispersionThreshold,
   durationThreshold,
+  maxFixationDuration,
   onFixation,
   webgazer
 }) => {
@@ -16,7 +17,10 @@ const runWebgazerFixationDetection = ({
     timedGazePositions.append(timedGazePosItem);
     let fixation;
     if (fixation = idtOneIteration({
-      dispersionThreshold, durationThreshold, timedGazePositions
+      dispersionThreshold,
+      durationThreshold,
+      maxFixationDuration,
+      timedGazePositions
     })) {
       onFixation(fixation);
     }
@@ -24,10 +28,18 @@ const runWebgazerFixationDetection = ({
 };
 
 const idtOneIteration = ({
-  dispersionThreshold, durationThreshold, timedGazePositions
+  dispersionThreshold,
+  durationThreshold,
+  maxFixationDuration,
+  timedGazePositions
 }) => {
+  if (maxFixationDuration) {
+    fitTimedPositionsInMaxFixationDuration({
+      maxFixationDuration, timedGazePositions
+    });
+  }
   if (timedGazePositions.size >= 2) {
-    getMaxWindowToFitInDispersionThreshold({
+    fitTimedPositionsInDispersionThreshold({
       dispersionThreshold, timedGazePositions
     });
     const windowFirstEl = timedGazePositions.head;
@@ -50,7 +62,24 @@ const idtOneIteration = ({
   return false;
 };
 
-const getMaxWindowToFitInDispersionThreshold = ({
+const fitTimedPositionsInMaxFixationDuration = ({
+    maxFixationDuration, timedGazePositions
+}) => {
+  let currentTimedPos = (timedGazePositions.size > 1) ?
+    timedGazePositions.tail.prev : null;
+  while (currentTimedPos) {
+    if (
+      (timedGazePositions.tail.timestamp - currentTimedPos.timestamp)
+      > maxFixationDuration
+    ) {
+      removeFromElToHead(currentTimedPos);
+      break;
+    }
+    currentTimedPos = currentTimedPos.prev;
+  }
+};
+
+const fitTimedPositionsInDispersionThreshold = ({
   dispersionThreshold, timedGazePositions
 }) => {
   let maxPos = createPos(timedGazePositions.tail.pos);

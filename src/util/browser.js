@@ -41,27 +41,29 @@ const getElementCenter = element => {
   });
 };
 
-const getElementSize = element => {
-  const boundingRect = element.getBoundingClientRect();
+const getElementRadii = el => {
+  const boundingRect = el.getBoundingClientRect();
   return createPos({
-    x: boundingRect.width,
-    y: boundingRect.height
+    x: Math.round(boundingRect.width / 2),
+    y: Math.round(boundingRect.height / 2)
   });
 };
 
+import {oneLineTrim} from 'common-tags';
 // For debug purposes
 const drawDotOnScreen = pos => {
-  const xScreenPct = Math.round((pos.x / vw()) * 100);
-  const yScreenPct = Math.round((pos.y / vh()) * 100);
-  document.body.appendChild(createElementFromHTML(`
-    <div style="
-      left:${xScreenPct}vw;top:${yScreenPct}vh;
+  const dot = createElementFromHTML(oneLineTrim`
+    <div id="dot" style="
+      position:absolute;
+      left:${pos.x}px;top:${pos.y}px;
       width: 10px; height: 10px;
+      margin: 0; padding:0;
       border-radius: 50%;
       background-color: green;
       transform: translate(-50%, -50%)">
     </div>
-  `));
+  `);
+  document.body.appendChild(dot);
 };
 
 function encodeFormAsURI(form) {
@@ -74,7 +76,7 @@ function encodeFormAsURI(form) {
 }
 
 export {
-  createElementFromHTML, drawDotOnScreen, getElementCenter, getElementSize,
+  createElementFromHTML, drawDotOnScreen, getElementCenter, getElementRadii,
   vh, vw
 };
 

@@ -19,6 +19,7 @@ const main = async () => {
     dwellDurationThreshold: 1500,
     fixationDispersionThreshold: createPos({x: 100, y: 100}),
     fixationDurationThreshold: 200,
+    maxFixationDuration: 2000,
     webgazer: webgazerLocal
   });
 };
