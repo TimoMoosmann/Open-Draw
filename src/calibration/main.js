@@ -1,72 +1,80 @@
 import {getPatternCoordsInPct} from './patterns.js';
 import {getGazeTarget, getGazeTargetsContainer} from './view.js';
-import {vh, vw} from '../util/browser.js';
 import {clickCalibration, gazeCalibration, validation} from '../webgazer_extensions/calibration.js';
 
-const nineTargetsCalibrationFiveTargetsValidation = async (webgazer) => {
-
-  const calibrationPattern = getPatternCoordsInPct({
-    type: 'calibration', numTargets: 5
-  });
-  const validationPattern = getPatternCoordsInPct({
-    type: 'validation', numTargets: 4
-  });
-  const gazeTargetsContainer = getGazeTargetsContainer();
-
-  await gazeCalibration({
-    webgazer,
-    gazeTargetsCoords: calibrationPattern,
-    drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
-  });
-
-  const validationData = await validation({
-    webgazer,
-    gazeTargetsCoords: validationPattern,
-    drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
-  });
-  gazeTargetsContainer.remove();
-}
-
 const runGazeCalibration = async ({numTargets, webgazer}) => {
-  const calibrationPattern = getPatternCoordsInPct({
-    type: 'calibration', numTargets
+  await runCalibration({
+    calibrationType: 'gaze',
+    numTargets,
+    webgazer
   });
-  const gazeTargetsContainer = getGazeTargetsContainer();
-
-  await gazeCalibration({
-    webgazer,
-    gazeTargetsCoords: calibrationPattern,
-    drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
-  });
-  gazeTargetsContainer.remove();
 };
 
 const runClickCalibration = async ({numTargets, webgazer}) => {
-  const calibrationPattern = getPatternCoordsInPct({
-    type: 'calibration', numTargets
+  await runCalibration({
+    calibrationType: 'click',
+    numTargets,
+    webgazer
   });
-  const gazeTargetsContainer = getGazeTargetsContainer();
-
-  await clickCalibration({
-    webgazer,
-    gazeTargetsCoords: calibrationPattern,
-    drawGazeTarget: getDrawGazeTargetCallback(gazeTargetsContainer)
-  });
-  gazeTargetsContainer.remove();
 };
 
-const getDrawGazeTargetCallback = (targetsContainer) => {
-  return (pos) => {
-    return getGazeTarget({
-      targetsContainer: targetsContainer,
-      targetPos: pos,
-      radius: 20
-    });
-  };
+const runCalibration = async ({calibrationType, numTargets, webgazer}) => {
+  const gazeTargetsCoords = getPatternCoordsInPct({
+    type: 'calibration', numTargets
+  });
+  let calibrationProcedure;
+  switch (calibrationType) {
+    case 'click':
+      calibrationProcedure = clickCalibration;
+      break;
+    case 'gaze':
+      calibrationProcedure = gazeCalibration;
+      break;
+    default:
+      throw new Error("calibrationType needs to be either 'click', or 'gaze'");
+  }
+  runCalibrationProcedure({
+    calibrationProcedure,
+    gazeTargetsCoords,
+    webgazer
+  });
+};
+
+const runValidation = async ({numTargets, webgazer}) => {
+  const gazeTargetsCoords = getPatternCoordsInPct({
+    type: 'validation', numTargets
+  });
+  return await runCalibrationProcedure({
+    calibrationProcedure: validation,
+    gazeTargetsCoords,
+    webgazer
+  });
+};
+
+const runCalibrationProcedure = async ({
+  calibrationProcedure, gazeTargetsCoords, webgazer
+}) => {
+  const gazeTargetsContainer = getGazeTargetsContainer();
+  const drawGazeTarget = getDrawGazeTargetCallback(gazeTargetsContainer);
+  document.body.appendChild(gazeTargetsContainer);
+  const procedureResult = await calibrationProcedure({
+    drawGazeTarget,
+    gazeTargetsCoords,
+    webgazer
+  });
+  gazeTargetsContainer.remove();
+  return procedureResult;
+};
+
+const getDrawGazeTargetCallback = ({radius, targetsContainer}) => {
+  return pos =>  getGazeTarget({
+    targetsContainer,
+    targetPos: pos,
+    radius
+  });
 };
 
 export {
-  getDrawGazeTargetCallback, runGazeCalibration, runClickCalibration,
-  nineTargetsCalibrationFiveTargetsValidation
+  runClickCalibration, runGazeCalibration, runValidation
 };
 

@@ -15,11 +15,23 @@ const main = async () => {
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal);
   await runGazeCalibration({numTargets: 5, webgazer: webgazerLocal});
 
+  // Sized Thresholds in html px
+  const maxFixationDispersion = createPos({x: 100, y: 100});
+  const minTargetRadii = createPos({x: 150, y: 100});
+  
+  // Timed Thresholds
+  const fixationDurationThreshold = 200;
+  const dwellDurationThreshold = 1000;
+  const webgazerBufferDuration = 500;
+  const maxFixationDuration =
+    2 * dwellDurationThreshold + webgazerBufferDuration;
+
   runMainProgram({
-    dwellDurationThreshold: 1500,
-    fixationDispersionThreshold: createPos({x: 100, y: 100}),
-    fixationDurationThreshold: 200,
-    maxFixationDuration: 2000,
+    dwellDurationThreshold,
+    fixationDispersionThreshold: maxFixationDispersion,
+    fixationDurationThreshold,
+    maxFixationDuration,
+    minTargetRadii,
     webgazer: webgazerLocal
   });
 };

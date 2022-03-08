@@ -1,4 +1,5 @@
-import {createElementFromHTML} from '../util/browser.js';
+import {createPos} from '../data_types.js';
+import {createElementFromHTML, vh, vw} from '../util/browser.js';
 
 import {html} from 'common-tags';
 
@@ -23,5 +24,28 @@ const getMainMenuPage = () => createElementFromHTML(html`
   </div>
 `);
 
-export {getMainMenuPage};
+const fitCanvasToContainer = canvas => {
+  canvas.style.width ='100%';
+  canvas.style.height='100%';
+  canvas.width  = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+};
+
+const getDrawingCanvas = parentEl => {
+  const canvasContainer = createElementFromHTML(html`
+    <div id="canvasContainer">
+      <canvas id="drawingCanvas">
+      </canvas>
+    </div>
+  `, parentEl);
+  const canvas = document.getElementById('drawingCanvas');
+  fitCanvasToContainer(canvas);
+  return canvasContainer;
+};
+
+const getDrawingPage = parentEl => {
+  return getDrawingCanvas(parentEl);
+};
+
+export {getDrawingPage, getMainMenuPage};
 

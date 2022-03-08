@@ -10,13 +10,14 @@ const getGreetingPage = () => {
     <div id="calibrationStudyTextContainer">
       <h3>Herzlich Willkommen zu meiner Webcam Eyetracking Kalibrierungsstudie.</h3>
       <p>
-        Diese Studie findet im Rahmen meiner Bachelorarbeit statt. Das Ziel ist es malen mit den Augen, mithilfe einer
-        Webcam zu ermöglichen.<br>
-        Insgesamt besteht die Studie aus sechs kleinen "Durchgängen".<br>
-        In den ersten drei Durchgängen müssen sie auf Ziele klicken.
-        In den letzten drei Durchgängen starren sie einfach auf die Mitte der Ziele.<br>
-        Die Aufgeben werden nochmal genauer beschrieben.<br>
-        Das Teilnehmen an der Studie sollte maximal 10 Minuten dauren.
+        Im Rahmen meiner Bachelorarbeit versuche ich Erkentnisse über die
+        Genaugikeit von Webcam Eye-Tracking zu gewinnen.
+        Das Ziel ist es malen mit den Augen in einem Web Browser zu ermöglichen.
+        <br>
+        In sechs kleinen Durchgängen, absolvieren sie nacheinander,
+        verschiedene Kalibrierungsprozesse. Am Ende von jedem Kalibrierungsprozess
+        folgt eine kurze Validierung.<br>
+        Die Aufgaben werden gleich noch genauer erklärt.
       </p>
       <p>
         <br>
@@ -53,7 +54,7 @@ const getParticipantDataPage = () => {
           <p id="invalidInput" class="error" hidden><em>
             Entschuldigung, eine der Eingaben ist ungültig.</em></p>
           <p id="serverError" class="error" hidden><em>
-            Entschuldigung, bei der Anwendung ist etwas schief gelaufen.
+            Entschuldigung, auf unserem Server ist etwas schief gelaufen.
             </em></p>
         </div>
         <div id="submitHolder">
@@ -69,7 +70,7 @@ const getThankYouPage = () => {
     <div id="calibrationStudyTextContainer" class="
       centeredContent contentCenteredVertically
     ">
-      <h2>Das wars! Vielen Dank für deine Teilnahme.</h2>
+      <h2>Das wars! Vielen Dank für ihre Teilnahme.</h2>
     </div>
   `);
 };
@@ -88,89 +89,85 @@ const getTypeIntroductionPage = ({taskName, introductionLines}) => {
   `);
 }
 
-const getClickCalibrationIntroductionPage = () => {
-  return getTypeIntroductionPage({
-    taskName: 'Klickkalibrierung',
-    introductionLines: [
-      oneLine`Bei der Klickkalibrierung müssen sie nacheinander auf die
-       erscheinenden Ziele klicken.
-      `,
-      `Am Ende folgt noch eine Validierung.`
-    ]
-  });
-};
+const getClickCalibrationIntroductionPage = () => getTypeIntroductionPage({
+  taskName: 'Klickkalibrierung',
+  introductionLines: [
+    oneLine`Bei der Klickkalibrierung müssen sie nacheinander auf die
+     erscheinenden Ziele klicken.
+    `,
+    `Am Ende folgt eine kurze Validierung.`
+  ]
+});
 
-const getGazeCalibrationIntroductionPage = () => {
-  return getTypeIntroductionPage({
-    taskName: 'Blickkalibrierung',
-    introductionLines: [
-      oneLine`Bei der Blickkalibrierung müssen sie nacheinander auf die
-       erscheinenden Ziele starren.
-      `,
-      `Am Ende folgt noch eine Validierung.`
-    ]
-  });
-};
+const getGazeCalibrationIntroductionPage = () => getTypeIntroductionPage({
+  taskName: 'Blickkalibrierung',
+  introductionLines: [
+    oneLine`Bei der Blickkalibrierung müssen sie nacheinander auf die
+     erscheinenden Ziele starren.
+    `,
+    `Am Ende folgt eine kurze Validierung.`
+  ]
+});
 
 
 const getTaskInstructionsPage = ({title, instructions}) => {
-  return createElementFromHTML(html`
-    <div id="calibrationStudyTextContainer">
-      <h2>${title}</h2>
-      <div class="text">
-        <ul>
-          ${instructions.map(instruction => `<li>${instruction}</li>`)}
-        </ul>
-      </div>
-      <div id="submitHolder">
-        <button type="submit">Los geht's</button>
-      </div>
+return createElementFromHTML(html`
+  <div id="calibrationStudyTextContainer">
+    <h2>${title}</h2>
+    <div class="text">
+      <ul>
+        ${instructions.map(instruction => `<li>${instruction}</li>`)}
+      </ul>
     </div>
-  `);
+    <div id="submitHolder">
+      <button type="submit">Los geht's</button>
+    </div>
+  </div>
+`);
 }
 
 const getClickCalibrationInstructionsPage = ({
-  currentTaskNum, numTasks, numTargets
+currentTaskNum, numTasks, numTargets
 }) => {
-  return getTaskInstructionsPage({
-    title: oneLineTrim`
-      (${currentTaskNum}/${numTasks}) Klickkalibrierung mit ${numTargets} Zielen
-      `,
-    instructions: [
-      `Klicken sie nacheinander auf die Ziele`,
-      `Schauen sie dabei auf die Mitte der Ziele`,
-      `Halten sie den Kopf möglichst gerade.`,
-    ]
-  });
+return getTaskInstructionsPage({
+  title: oneLineTrim`
+    (${currentTaskNum}/${numTasks}) Klickkalibrierung mit ${numTargets} Zielen
+    `,
+  instructions: [
+    `Klicken sie nacheinander auf die Ziele`,
+    `Schauen sie dabei auf die Mitte der Ziele`,
+    `Halten sie den Kopf möglichst gerade.`,
+  ]
+});
 };
 
 const getGazeCalibrationInstructionsPage = ({
-  currentTaskNum, numTasks, numTargets
+currentTaskNum, numTasks, numTargets
 }) => {
-  return getTaskInstructionsPage({
-    title: oneLineTrim`
-      (${currentTaskNum}/${numTasks}) Blickkalibrierung mit ${numTargets} Zielen
-      `,
-    instructions: [
-      `Schauen sie auf die Mitte jedes Ziels.`,
-      `Halten sie dabei den Kopf möglichst gerade.`,
-    ]
-  });
+return getTaskInstructionsPage({
+  title: oneLineTrim`
+    (${currentTaskNum}/${numTasks}) Blickkalibrierung mit ${numTargets} Zielen
+    `,
+  instructions: [
+    `Schauen sie auf die Mitte jedes Ziels.`,
+    `Halten sie den Kopf möglichst gerade.`,
+  ]
+});
 }
 
 const getValidationInstructionsPage = numTargets => {
-  return getTaskInstructionsPage({
-    title: `Validierung mit ${numTargets} Zielen`,
-    instructions: [
-      `Schauen sie auf die Mitte jedes Ziels.`,
-      `Halten sie dabei den Kopf möglichst gerade.`,
-    ]
-  });
+return getTaskInstructionsPage({
+  title: `Validierung mit ${numTargets} Zielen`,
+  instructions: [
+    `Schauen sie auf die Mitte jedes Ziels.`,
+    `Halten sie den Kopf möglichst gerade.`,
+  ]
+});
 }
 
 export {getClickCalibrationInstructionsPage,
-  getClickCalibrationIntroductionPage, getGazeCalibrationInstructionsPage,
-  getGazeCalibrationIntroductionPage, getGreetingPage, getParticipantDataPage,
-  getThankYouPage, getValidationInstructionsPage
+getClickCalibrationIntroductionPage, getGazeCalibrationInstructionsPage,
+getGazeCalibrationIntroductionPage, getGreetingPage, getParticipantDataPage,
+getThankYouPage, getValidationInstructionsPage
 };
 

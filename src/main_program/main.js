@@ -1,16 +1,19 @@
+import {startDrawLineMode} from './draw_line_mode.js';
 import {getMainMenuPage} from './view.js';
 import {createEllipse, inEllipse} from '../data_types.js';
 import {drawDotOnScreen, getElementCenter, getElementRadii} from '../util/browser.js';
 import {runWebgazerFixationDetection} from '../webgazer_extensions/fixation_detection.js';
+import {setWebgazerGazeDotColor} from '../webgazer_extensions/setup.js';
 
 const runMainProgram = ({
   dwellDurationThreshold,
   fixationDispersionThreshold,
   fixationDurationThreshold,
   maxFixationDuration,
+  minTargetRadii,
   webgazer
 }) => {
-  const drawnLines = [];
+  const lines = [];
   const runFixationDetectionFixedThresholds = onFixation => {
     return runWebgazerFixationDetection({
       dispersionThreshold: fixationDispersionThreshold,
@@ -23,14 +26,45 @@ const runMainProgram = ({
   const actionOnDwellFixedThreshold = ({btnList, fixation}) => actionOnDwell({
     btnList, fixation, dwellDurationThreshold
   });
-  invokeMainMenuPage({
+
+  /*
+  MainMenuPage({
     actionOnDwellFixedThreshold,
     drawnLines,
     runFixationDetectionFixedThresholds
   });
+  */
+
+  startDrawLineMode({
+    dwellDurationThreshold,
+    lines,
+    minTargetRadii,
+    runFixationDetectionFixedThresholds,
+    webgazer
+  });
 };
 
-const invokeMainMenuPage = ({
+const drawLines = ({canvas, canvasCtx, lines}) => {
+  clearCanvas({canvas, canvasCtx});
+  for (const line of lines) {
+    drawLine(canvasCtx, line);
+  }
+};
+
+const clearCanvas = ({canvas, canvasCtx}) => {
+  canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+};
+
+const drawLine = ({canvasCtx, line}) => {
+  canvasCtx.strokeStyle = line.properties.color;
+  canvasCtx.lineWidth = line.properties.lineWidth;
+  canvasCtx.beginPath();
+  canvasCtx.moveTo(line.startPoint.x, line.startPoint.y);
+  canvasCtx.lineTo(line.endPoint.x, line.endPoint.y);
+  canvasCtx.stroke();
+};
+
+const mainMenuPage = ({
   actionOnDwellFixedThreshold,
   drawnLines,
   runFixationDetectionFixedThresholds
@@ -39,6 +73,7 @@ const invokeMainMenuPage = ({
   document.body.append(mainMenuPage);
   const dwellBtnList = Array.from(mainMenuPage.querySelectorAll('button')).map(
     btn => {
+      // TODO: Reset from btn.id to btn.name
       const btnAction = getDwellBtnAction(btn.id);
       btn.addEventListener('click', btnAction);
       const btnEllipse = createEllipse({
@@ -85,5 +120,5 @@ const getDwellBtnAction = dwellBtnId => {
   }
 }
 
-export {runMainProgram};
+export {drawLine, drawLines, runMainProgram};
 

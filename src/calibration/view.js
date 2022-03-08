@@ -10,30 +10,23 @@ const getGazeTarget = ({
   targetsContainer,
   targetPos = createPos({x: 50, y: 50}),
   radius=15
-} = {}) => {
-  return createElementFromHTML(html`
-    <button style="width:${2 * radius}px;
-                   height:${2 * radius}px;
-                   left:${targetPos.x}%;
-                   top:${targetPos.y}%;"
-            class="gazeTarget"
-    >
-      <div class="gazeTargetCrossHor"></div>
-      <div class="gazeTargetCrossVert"></div>
-      <div class="gazeTargetInnerDot"></div>
-    </button>
-  `, targetsContainer);
-};
+} = {}) => createElementFromHTML(html`
+  <button style="width:${2 * radius}px;
+                 height:${2 * radius}px;
+                 left:${targetPos.x}%;
+                 top:${targetPos.y}%;"
+          class="gazeTarget"
+  >
+    <div class="gazeTargetCrossHor"></div>
+    <div class="gazeTargetCrossVert"></div>
+    <div class="gazeTargetInnerDot"></div>
+  </button>
+`, targetsContainer);
 
-const getGazeTargetsContainer = ({
-  root = document.body,
-  id = 'calibrationContainer'
-} = {}) => {
-  return createElementFromHTML(html`
-    <div id="${id}" class="gazeTargetsContainer">
-    </div>
-  `, root);
-};
+const getGazeTargetsContainer = (id="") => createElementFromHTML(html`
+  <div id="${id}" class="gazeTargetsContainer">
+  </div>
+`);
 
 export {getGazeTarget, getGazeTargetsContainer};
 

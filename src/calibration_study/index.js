@@ -4,12 +4,10 @@ import {getClickCalibrationInstructionsPage,
   getThankYouPage, getValidationInstructionsPage
 } from './view.js';
 import {createDetailedInformationGazeAtTargetData, createGazeAtTargetData, createPos} from '../data_types.js';
-import {getDrawGazeTargetCallback} from '../calibration/main.js';
+import {runClickCalibration, runGazeCalibration, runValidation} from '../calibration/main.js';
 import {getPatternCoordsInPct} from '../calibration/patterns.js';
-import {getGazeTargetsContainer} from '../calibration/view.js';
 import {setupWebgazer} from '../setup_webgazer/main.js';
 import {popRandomItem} from '../util/main.js';
-import {clickCalibration, gazeCalibration, validation} from '../webgazer_extensions/calibration.js';
 import {showWebgazerVideoWhenFaceIsNotDetected} from '../webgazer_extensions/setup.js';
 
 const setup = () => {
@@ -81,25 +79,21 @@ const main = async() => {
 
   let currentTaskNum = 1;
   const targetsNums = [5, 9, 13];
-  const calibrationTypes = ['clickCalibration', 'gazeCalibration'];
+  const calibrationTypes = ['click', 'gaze'];
   const numTasks = targetsNums.length * calibrationTypes.length;
-  const calibrationContainer = getGazeTargetsContainer(document.body);
   const numValidationTargets = 4;
   let calibrationType;
   while (calibrationType = popRandomItem(calibrationTypes)) {
-    let calibrationProcedure;
+    let runCalibration;
     let calibrationTypeIntroduction;
     let getCalibrationTaskInstructionsPage;
     switch (calibrationType) {
-      case 'clickCalibration':
-        calibrationProcedure = async ({
-          webgazer, gazeTargetsCoords, drawGazeTarget
-        }) => {
+      case 'click':
+        runCalibration = async ({numTargets,webgazer}) => {
           webgazer.addMouseEventListeners();
-          await clickCalibration({
+          await runClickCalibration({
+            numTargets,
             webgazer,
-            gazeTargetsCoords,
-            drawGazeTarget
           });
           webgazer.removeMouseEventListeners();
         };
@@ -107,8 +101,8 @@ const main = async() => {
         getCalibrationTaskInstructionsPage =
           getClickCalibrationInstructionsPage;
         break;
-      case 'gazeCalibration':
-        calibrationProcedure = gazeCalibration;
+      case 'gaze':
+        runCalibration = runGazeCalibration;
         calibrationTypeIntroduction = getGazeCalibrationIntroductionPage();
         getCalibrationTaskInstructionsPage = getGazeCalibrationInstructionsPage;
         webgazer.removeMouseEventListeners();
@@ -116,14 +110,12 @@ const main = async() => {
       default:
         throw new Error(`No Calibration type: ${calibrationType} available.`);
     }
-
     await showPageUntilSubmit(calibrationTypeIntroduction);
     currentTaskNum = await tasksForTypeConduction({
-      calibrationProcedure,
+      runCalibration,
       calibrationType,
       getCalibrationTaskInstructionsPage,
       currentTaskNum,
-      drawGazeTarget: getDrawGazeTargetCallback(calibrationContainer),
       numTasks,
       numValidationTargets,
       serverAddress,
@@ -137,11 +129,10 @@ const main = async() => {
 };
 
 const tasksForTypeConduction = async ({
-  calibrationProcedure,
+  runCalibration,
   calibrationType,
   getCalibrationTaskInstructionsPage,
   currentTaskNum,
-  drawGazeTarget,
   numTasks,
   numValidationTargets,
   serverProtocolData,
@@ -151,28 +142,20 @@ const tasksForTypeConduction = async ({
 }) => {
   while (targetsNums.length > 0) {
     const numCalibrationTargets = popRandomItem(targetsNums);
-    const calibrationTargets = getPatternCoordsInPct({
-      numTargets: numCalibrationTargets, type: 'calibration'
-    });
-    const validationTargets = getPatternCoordsInPct({
-      numTargets: numValidationTargets, type: 'validation'
-    });
     await showPageUntilSubmit(getCalibrationTaskInstructionsPage({
       currentTaskNum, numTasks, numTargets: numCalibrationTargets
     }));
     webgazer.clearData();
-    await calibrationProcedure({
-      webgazer,
-      gazeTargetsCoords: calibrationTargets,
-      drawGazeTarget
+    await runCalibration({
+      numTargets: numCalibrationTargets,
+      webgazer
     });
     await showPageUntilSubmit(getValidationInstructionsPage(
       numValidationTargets
     ));
-    const validationData = await validation({
-      webgazer,
-      gazeTargetsCoords: validationTargets,
-      drawGazeTarget
+    const validationData = await runValidation({
+      numTargets: numValidationTargets,
+      webgazer
     })
     // send validation data to server
     appendResultsToProtocol({

@@ -12,7 +12,6 @@ const setupWebgazer = ({
   title = 'Open Draw'
 } = {}) => {
   return new Promise(resolve => { 
-    console.log('hello from the setup webgazer function');
     const videoSize = createPos({x: 320, y: 240});
     const page = getSetupInstructionsPage({
       bigTitle,

@@ -102,43 +102,30 @@ const createProtocolStringForValidationEntry = ({
   validationData
 }) => {
   let validationProtocol = '\n' + oneLine`
-    Extended Validation Data for ${calibrationType}
+    Important Features from the Validation Data for ${calibrationType}
     with ${numCalibrationTargets} targets
   `;
   validationProtocol +=
-    '\n=================================================\n\n';
+    '\n=================================================================\n\n';
 
   validationData.forEach(gazeAtTargetData => {
     let gazeAtTargetProtocol = "";
+    gazeAtTargetProtocol += oneLine`
+      Target Position Name: ${gazeAtTargetData.targetPosName}
+      (Realtive Position: ${gazeAtTargetData.targetPosRelative})
+    `;
     gazeAtTargetProtocol += createValidationValuesString ({
-      name: 'Target Position',
-      absoluteVal: gazeAtTargetData.targetPos,
-      relativeVal: gazeAtTargetData.targetPosRelative
+      name: 'Recommended Fixation Size',
+      absoluteVal: gazeAtTargetData.recommendedFixationSize,
+      relativeVal: gazeAtTargetData.recommendedFixationSizeRelative
     });
     gazeAtTargetProtocol += createValidationValuesString ({
-      name: 'Target Accuracy',
-      absoluteVal: gazeAtTargetData.accuracy,
-      relativeVal: gazeAtTargetData.accuracyRelative
-    });
-    gazeAtTargetProtocol += createValidationValuesString ({
-      name: 'Gaze Precision',
-      absoluteVal: gazeAtTargetData.precision,
-      relativeVal: gazeAtTargetData.precisionRelative
-    });
-    gazeAtTargetProtocol += createValidationValuesString ({
-      name: 'Recommended Target Size',
-      absoluteVal: gazeAtTargetData.recommendedTargetSize,
-      relativeVal: gazeAtTargetData.recommendedTargetSizeRelative
+      name: 'Minimum Target Size',
+      absoluteVal: gazeAtTargetData.minTargetSize,
+      relativeVal: gazeAtTargetData.minTargetSizeRelative
     });
     gazeAtTargetProtocol += `Viewport: ${posStr(gazeAtTargetData.viewport)}`
       + '\n';
-    gazeAtTargetProtocol += 'Gaze Estimations: ';
-    gazeAtTargetData.gazeEstimations.forEach((est, idx) => {
-      gazeAtTargetProtocol += posStr(est);
-      if (idx === gazeAtTargetData.gazeEstimations.length - 1) {
-        gazeAtTargetProtocol += ', ';
-      }
-    });
     gazeAtTargetProtocol +=
       '\n-------------------------------------------------\n\n'
     validationProtocol += gazeAtTargetProtocol
@@ -192,24 +179,43 @@ const saveValidationDataInDB = async ({
     });
     const studyDBInsertPos = getDBInsertPos({db, gazeAtTargetDataID});
     const targetPosID = await studyDBInsertPos(gazeAtTargetData.targetPos);
-    const targetPosRelativeID = await studyDBInsertPos(gazeAtTargetData.targetPosRelative);
+    const targetPosRelativeID = await studyDBInsertPos(
+      gazeAtTargetData.targetPosRelative
+    );
+    const targetPosNameID = await studyDBInsertPos(
+      gazeAtTargetData.targetName
+    );
     const accuracyID = await studyDBInsertPos(gazeAtTargetData.accuracy);
-    const accuracyRelativeID = await studyDBInsertPos(gazeAtTargetData.accuracyRelative);
-    const precisionID = await studyDBInsertPos(gazeAtTargetData.precision);
-    const precisionRelativeID = await studyDBInsertPos(gazeAtTargetData.precisionRelative);
+    const accuracyRelativeID = await studyDBInsertPos(
+      gazeAtTargetData.accuracyRelative
+    );
+    const minTargetSizeID = await studyDBInsertPos(
+      gazeAtTargetData.minTargetSize
+    );
+    const minTargetSizeRelativeID = await studyDBInsertPos(
+      gazeAtTargetData.minTargetSizeRelative
+    );
+
+    const precisionID = await studyDBInsertPos(
+      gazeAtTargetData.precision
+    );
+    const precisionRelativeID = await studyDBInsertPos(
+      gazeAtTargetData.precisionRelative
+    );
     const recommendedTargetSizeID = await studyDBInsertPos(
-      gazeAtTargetData.recommendedTargetSize
+      gazeAtTargetData.recommendedFixationSize
     );
     const recommendedTargetSizeRelativeID = await studyDBInsertPos(
-      gazeAtTargetData.recommendedTargetSizeRelative
+      gazeAtTargetData.recommendedFixationSizeRelative
     );
     const viewportID = await studyDBInsertPos(gazeAtTargetData.viewport);
     await dbUpdate({
       colNames: [
-        'target_pos_id', 'target_pos_relative_id',
+        'target_pos_id', 'target_pos_relative_id', 'target_pos_name_id',
         'accuracy_id', 'accuracy_relative_id',
+        'min_target_size_id', 'min_target_size_relative_id',
         'precision_id', 'precision_relative_id',
-        'recommended_target_size_id', 'recommended_target_size_relative_id',
+        'recommended_fixation_size_id', 'recommended_fixation_size_relative_id',
         'viewport_id'
       ],
       db,
@@ -217,10 +223,11 @@ const saveValidationDataInDB = async ({
       rowID: gazeAtTargetDataID,
       tableName: 'gazeAtTargetDatas',
       values: [
-        targetPosID, targetPosRelativeID,
+        targetPosID, targetPosRelativeID, targetPosNameID,
         accuracyID, accuracyRelativeID,
+        minTargetSizeID, minTargetSizeRelativeID,
         precisionID, precisionRelativeID,
-        recommendedTargetSizeID, recommendedTargetSizeRelativeID,
+        recommendedFixationSizeID, recommendedFixationeSizeRelativeID,
         viewportID
       ]
     });

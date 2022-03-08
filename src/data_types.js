@@ -3,6 +3,7 @@ import {meanOffset, round, standardDeviation} from './util/math.js';
 import {stripIndent} from 'common-tags';
 import {Item} from '../other_modules/linked-list.js';
 
+// Pos
 const createPos = ({
   x = 0,
   y = 0
@@ -21,21 +22,81 @@ const posSubtract = (pos1, pos2) => createPos({
   x: pos1.x - pos2.x, y: pos1.y - pos2.y
 });
 
+// Timed Pos
 const createTimedPosItem = ({timestamp, pos}) => {
   const it = new Item()
   it.timestamp = timestamp;
   it.pos = pos;
   return it;
-}
+};
 
-const createEllipse = ({center, radius}) => ({center, radius});
+// Line
+const createLine = ({startPoint, endPoint, properties}) => ({
+  startPoint,
+  endPoint,
+  properties
+});
+
+// Stroke Properties
+const createStrokeProperties = ({color, lineWidth}) => ({color, lineWidth});
+
+// Dot Colors
+const createDrawStateGazeDotColors = ({drawing, looking}) => ({drawing, looking});
+
+// Ellipse
+const createEllipse = ({center, radii}) => ({center, radii});
 
 const inEllipse = ({ellipse, pos}) => ((
-  (Math.pow(pos.x - ellipse.center.x, 2) / Math.pow(ellipse.radius.x, 2)) +
-  (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radius.y, 2))
+  (Math.pow(pos.x - ellipse.center.x, 2) / Math.pow(ellipse.radii.x, 2)) +
+  (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radii.y, 2))
 ) <= 1);
 
+// Fixation
 const createFixation = ({center, duration}) => ({center, duration});
+
+// Simple Gaze at Target Data
+const createGazeAtTargetData = ({
+  targetPos,
+  gazeEstimations
+}) => ({
+  targetPos,
+  gazeEstimations,
+  viewport: createPos({x: vw(), y: vh()})
+});
+
+// Detailed Gaze at Target Data
+const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
+  const viewportPos = gazeAtTargetData.viewport;
+  const targetPos = gazeAtTargetData.targetPos;
+  const targetPosRelative = relativePos({pos: targetPos, viewportPos});
+  const gazeEstimations = gazeAtTargetData.gazeEstimations;
+  const accuracy = gazeAtTargetAccuracy({targetPos, gazeEstimations});
+  const precision = gazePrecision(gazeEstimations);
+  const minTargetSize = getMinGazeTargetSize({accuracy, precision});
+  const recommendedFixationSize = getRecommendedFixationSize(precision);
+
+  return {
+    targetPos: gazeAtTargetData.targetPos,
+    gazeEstimations: gazeAtTargetData.gazeEstimations,
+    targetPosRelative: targetPosRelative,
+    targetPosName: getRelativeTargetPosName(targetPosRelative),
+    accuracy,
+    accuracyRelative: relativePos({pos: accuracy, viewportPos}),
+    minTargetSize,
+    minTargetSizeRelative: relativePos({
+      pos: recommendedTargetSize,
+      viewportPos
+    }),
+    precision,
+    precisionRelative: relativePos({pos: precision, viewportPos}),
+    recommendedFixationSize,
+    recommendedFixationSizeRelative: relativePos({
+      pos: recommendedFixationSize,
+      viewportPos
+    }),
+    viewport: viewportPos
+  }
+};
 
 const gazeAtTargetAccuracy = ({
   targetPos,
@@ -50,28 +111,24 @@ const gazePrecision = gazeEstimations => createPos({
   y: standardDeviation(gazeEstimations.map(pos => pos.y))
 });
 
-const recommendedGazeTargetSize = ({
-  accuracy,
-  precision,
-  sigmaFactor = 2
-}) => createPos({
-  x: gazeTargetLength({
-    accuracy: accuracy.x, precision: precision.x, sigmaFactor
-  }),
-  y: gazeTargetLength({
-    accuracy: accuracy.y, precision: precision.y, sigmaFactor
-  })
+const getMinGazeTargetSize = accuracy => createPos({
+  x: 2 * accuracy.x,
+  y: 2 * accuracy.y
 });
 
-/*
- * According to: Toward Everyday Gaze Input: Accuracy and Precision of
- * Eye Tracking and Implications for Design, by Feit, et. al. (2017)
- */
-const gazeTargetLength = ({
-  accuracy,
-  precision,
-  sigmaFactor = 2
-}) => Math.round(2 * (accuracy + sigmaFactor * precision));
+const getRecommendedFixationSize = precision => {
+  /*
+   * Precision is the standard deviation, so we know that about 95% of the
+   * gaze points lie within a dispersion of 2 times the precision, if the
+   * gaze points are normaly distributed;
+   * Choose a higher factot if a higher success rate than 95% is necassary.
+   */
+  const distributionFactor = 2;
+  return createPos({
+    x: distributionFactor * precision.x,
+    y: distributionFactor * precision.y
+});
+};
 
 const relativePos = ({pos, viewportPos}) => {
   const roundThreeDigitsAfterComma = num => round({num, digitsAfterComma: 3});
@@ -81,43 +138,33 @@ const relativePos = ({pos, viewportPos}) => {
   });
 };
 
-const createGazeAtTargetData = ({
-  targetPos,
-  gazeEstimations
-}) => ({
-  targetPos,
-  gazeEstimations,
-  viewport: createPos({x: vw(), y: vh()})
-});
+// Works only for if validation is done with 5 targets (which is standard).
+const getRelativeTargetPosName = relTargetPos => {
+  const isCenter = num => num > 49 && num < 51;
+  const isLower = num => num <= 49;
+  let name = '';
 
-const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
-  const viewportPos = gazeAtTargetData.viewport;
-  const targetPos = gazeAtTargetData.targetPos;
-  const gazeEstimations = gazeAtTargetData.gazeEstimations;
-  const accuracy = gazeAtTargetAccuracy({targetPos, gazeEstimations});
-  const precision = gazePrecision(gazeEstimations);
-  const recommendedTargetSize = recommendedGazeTargetSize({accuracy, precision});
+  if (isCenter(relTargetPos.y)) {
+    name += 'center ';
+  } else if (isLower(relTargetPos.y)) {
+    name += 'upper ';
+  } else {
+    name += 'lower ';
+  }
 
-  return {
-    targetPos: gazeAtTargetData.targetPos,
-    gazeEstimations: gazeAtTargetData.gazeEstimations,
-    targetPosRelative: relativePos({pos: targetPos, viewportPos}),
-    accuracy,
-    accuracyRelative: relativePos({pos: accuracy, viewportPos}),
-    precision,
-    precisionRelative: relativePos({pos: precision, viewportPos}),
-    recommendedTargetSize,
-    recommendedTargetSizeRelative: relativePos({
-      pos: recommendedTargetSize,
-      viewportPos
-    }),
-    viewport: viewportPos
+  if (isCenter(relTargetPos.x)) {
+    name += 'center';
+  } else if (isLower(relTargetPos.x)) {
+    name += 'left';
+  } else {
+    name += 'right';
   }
 };
 
 export {
-  createDetailedInformationGazeAtTargetData, createEllipse, createFixation,
-  createGazeAtTargetData, createPos, createTimedPosItem, inEllipse,
-  posLowerThanOrEqual, posSubtract
+  createDetailedInformationGazeAtTargetData, createDrawStateGazeDotColors,
+  createEllipse, createFixation, createGazeAtTargetData, createLine, createPos,
+  createStrokeProperties, createTimedPosItem, inEllipse, posLowerThanOrEqual,
+  posSubtract
 };
 

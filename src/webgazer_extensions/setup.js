@@ -128,8 +128,20 @@ const showWebgazerVideoWhenFaceIsNotDetected = webgazer => {
   webgazer.faceDetector.start();
 };
 
+const setWebgazerGazeDotColor = cssColorCode => {
+  let gazeDot;
+  if(gazeDot = document.getElementById('webgazerGazeDot')) {
+    gazeDot.style.backgroundColor = cssColorCode;
+  } else {
+    throw new Error('Webgazer GazeDot is not available, probably this means' +
+      ' Webgazer is not available.'
+    );
+  }
+};
+
 export {
-  attachWebgazerVideo, detachWebgazerVideo, initWebgazer, setWebgazerVideo,
+  attachWebgazerVideo, detachWebgazerVideo, initWebgazer,
+  setWebgazerGazeDotColor, setWebgazerVideo,
   showWebgazerVideoWhenFaceIsNotDetected
 };
 
