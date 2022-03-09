@@ -68,29 +68,29 @@ const createGazeAtTargetData = ({
 const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
   const viewportPos = gazeAtTargetData.viewport;
   const targetPos = gazeAtTargetData.targetPos;
-  const targetPosRelative = relativePos({pos: targetPos, viewportPos});
+  const targetPosRelative = getRelativePos({pos: targetPos, viewportPos});
   const gazeEstimations = gazeAtTargetData.gazeEstimations;
   const accuracy = gazeAtTargetAccuracy({targetPos, gazeEstimations});
   const precision = gazePrecision(gazeEstimations);
-  const minTargetSize = getMinGazeTargetSize({accuracy, precision});
+  const minTargetSize = getMinGazeTargetSize(accuracy);
   const recommendedFixationSize = getRecommendedFixationSize(precision);
 
   return {
     targetPos: gazeAtTargetData.targetPos,
     gazeEstimations: gazeAtTargetData.gazeEstimations,
-    targetPosRelative: targetPosRelative,
+    targetPosRelative,
     targetPosName: getRelativeTargetPosName(targetPosRelative),
     accuracy,
-    accuracyRelative: relativePos({pos: accuracy, viewportPos}),
+    accuracyRelative: getRelativePos({pos: accuracy, viewportPos}),
     minTargetSize,
-    minTargetSizeRelative: relativePos({
-      pos: recommendedTargetSize,
+    minTargetSizeRelative: getRelativePos({
+      pos: minTargetSize,
       viewportPos
     }),
     precision,
-    precisionRelative: relativePos({pos: precision, viewportPos}),
+    precisionRelative: getRelativePos({pos: precision, viewportPos}),
     recommendedFixationSize,
-    recommendedFixationSizeRelative: relativePos({
+    recommendedFixationSizeRelative: getRelativePos({
       pos: recommendedFixationSize,
       viewportPos
     }),
@@ -130,8 +130,8 @@ const getRecommendedFixationSize = precision => {
 });
 };
 
-const relativePos = ({pos, viewportPos}) => {
-  const roundThreeDigitsAfterComma = num => round({num, digitsAfterComma: 3});
+const getRelativePos = ({pos, viewportPos}) => {
+  const roundThreeDigitsAfterComma = num => round(num, 3);
   return createPos({
     x: roundThreeDigitsAfterComma(pos.x / viewportPos.x),
     y: roundThreeDigitsAfterComma(pos.y / viewportPos.y)
@@ -139,26 +139,27 @@ const relativePos = ({pos, viewportPos}) => {
 };
 
 // Works only for if validation is done with 5 targets (which is standard).
-const getRelativeTargetPosName = relTargetPos => {
-  const isCenter = num => num > 49 && num < 51;
-  const isLower = num => num <= 49;
+const getRelativeTargetPosName = targetPosRel => {
+  const isCenter = num => num > 0.49 && num < 0.51;
+  const isLower = num => num <= 0.49;
   let name = '';
 
-  if (isCenter(relTargetPos.y)) {
+  if (isCenter(targetPosRel.y)) {
     name += 'center ';
-  } else if (isLower(relTargetPos.y)) {
+  } else if (isLower(targetPosRel.y)) {
     name += 'upper ';
   } else {
     name += 'lower ';
   }
 
-  if (isCenter(relTargetPos.x)) {
+  if (isCenter(targetPosRel.x)) {
     name += 'center';
-  } else if (isLower(relTargetPos.x)) {
+  } else if (isLower(targetPosRel.x)) {
     name += 'left';
   } else {
     name += 'right';
   }
+  return name;
 };
 
 export {

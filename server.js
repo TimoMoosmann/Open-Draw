@@ -173,17 +173,20 @@ const saveValidationDataInDB = async ({
   for (let i=0; i<validationData.length; i++) {
     const gazeAtTargetData = validationData[i];
     const gazeAtTargetDataID = await studyDBInsert({
-      colNames: ['num_gaze_estimations', 'validation_data_id'],
+      colNames: [
+        'num_gaze_estimations', 'validation_data_id', 'target_pos_name'
+      ],
       tableName: 'gazeAtTargetDatas',
-      values: [gazeAtTargetData.gazeEstimations.length, validationDataID]
+      values: [
+        gazeAtTargetData.gazeEstimations.length,
+        validationDataID,
+        gazeAtTargetData.targetPosName
+      ]
     });
     const studyDBInsertPos = getDBInsertPos({db, gazeAtTargetDataID});
     const targetPosID = await studyDBInsertPos(gazeAtTargetData.targetPos);
     const targetPosRelativeID = await studyDBInsertPos(
       gazeAtTargetData.targetPosRelative
-    );
-    const targetPosNameID = await studyDBInsertPos(
-      gazeAtTargetData.targetName
     );
     const accuracyID = await studyDBInsertPos(gazeAtTargetData.accuracy);
     const accuracyRelativeID = await studyDBInsertPos(
@@ -202,16 +205,16 @@ const saveValidationDataInDB = async ({
     const precisionRelativeID = await studyDBInsertPos(
       gazeAtTargetData.precisionRelative
     );
-    const recommendedTargetSizeID = await studyDBInsertPos(
+    const recommendedFixationSizeID = await studyDBInsertPos(
       gazeAtTargetData.recommendedFixationSize
     );
-    const recommendedTargetSizeRelativeID = await studyDBInsertPos(
+    const recommendedFixationSizeRelativeID = await studyDBInsertPos(
       gazeAtTargetData.recommendedFixationSizeRelative
     );
     const viewportID = await studyDBInsertPos(gazeAtTargetData.viewport);
     await dbUpdate({
       colNames: [
-        'target_pos_id', 'target_pos_relative_id', 'target_pos_name_id',
+        'target_pos_id', 'target_pos_relative_id',
         'accuracy_id', 'accuracy_relative_id',
         'min_target_size_id', 'min_target_size_relative_id',
         'precision_id', 'precision_relative_id',
@@ -223,11 +226,11 @@ const saveValidationDataInDB = async ({
       rowID: gazeAtTargetDataID,
       tableName: 'gazeAtTargetDatas',
       values: [
-        targetPosID, targetPosRelativeID, targetPosNameID,
+        targetPosID, targetPosRelativeID,
         accuracyID, accuracyRelativeID,
         minTargetSizeID, minTargetSizeRelativeID,
         precisionID, precisionRelativeID,
-        recommendedFixationSizeID, recommendedFixationeSizeRelativeID,
+        recommendedFixationSizeID, recommendedFixationSizeRelativeID,
         viewportID
       ]
     });

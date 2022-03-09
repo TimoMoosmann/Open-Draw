@@ -78,8 +78,10 @@ const main = async() => {
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal);
 
   let currentTaskNum = 1;
-  const targetsNums = [5, 9, 13];
-  const calibrationTypes = ['click', 'gaze'];
+  //const targetsNums = [5, 9, 13];
+  const targetsNums = [5];
+  //const calibrationTypes = ['click', 'gaze'];
+  const calibrationTypes = ['gaze'];
   const numTasks = targetsNums.length * calibrationTypes.length;
   const numValidationTargets = 4;
   let calibrationType;
@@ -124,7 +126,6 @@ const main = async() => {
       webgazer: webgazerLocal
     });
   }
-  calibrationContainer.remove();
   document.body.appendChild(getThankYouPage());
 };
 

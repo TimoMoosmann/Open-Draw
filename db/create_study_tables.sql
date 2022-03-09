@@ -19,7 +19,7 @@ CREATE TABLE gazeAtTargetDatas (
   gaze_at_target_data_id INTEGER PRIMARY KEY,
   target_pos_id INTEGER,
   target_pos_relative_id INTEGER,
-  target_pos_name_id INTEGER,
+  target_pos_name TEXT NOT NULL,
   accuracy_id INTEGER,
   accuracy_relative_id INTEGER,
   min_target_size_id INTEGER,
