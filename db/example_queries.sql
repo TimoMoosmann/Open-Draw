@@ -21,3 +21,12 @@ SELECT avg(x) FROM positions
 WHERE position_id = (
   SELECT min_target_size_relative_id FROM gazeAtTargetDatas;
 );
+
+-- Delete all datas with less than (6?) validationDatas
+SELECT p.participant_study_data_id, COUNT(*)
+FROM participantStudyDatas p
+LEFT JOIN validationDatas v
+ON v.participant_study_data_id =
+  p.participant_study_data_id
+GROUP BY p.participant_study_data_id
+

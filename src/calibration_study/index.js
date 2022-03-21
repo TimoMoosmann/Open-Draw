@@ -72,14 +72,13 @@ const main = async() => {
   await setupWebgazer({
     webgazer: webgazerLocal,
     bigTitle: false,
-    showPredictionPoints: true,
     title: 'Jetzt, richten sie noch ihre Kamera ein.'
   });
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal);
 
   let currentTaskNum = 1;
   //const targetsNums = [5, 9, 13];
-  const targetsNums = [5];
+  const targetsNums = [5, 9];
   //const calibrationTypes = ['click', 'gaze'];
   const calibrationTypes = ['gaze'];
   const numTasks = targetsNums.length * calibrationTypes.length;
@@ -146,6 +145,7 @@ const tasksForTypeConduction = async ({
     await showPageUntilSubmit(getCalibrationTaskInstructionsPage({
       currentTaskNum, numTasks, numTargets: numCalibrationTargets
     }));
+    webgazer.showPredictionPoints(false);
     webgazer.clearData();
     await runCalibration({
       numTargets: numCalibrationTargets,
@@ -167,6 +167,7 @@ const tasksForTypeConduction = async ({
       validationData
     });
     currentTaskNum += 1;
+    webgazer.showPredictionPoints(true);
   }
   return currentTaskNum;
 };

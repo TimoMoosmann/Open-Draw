@@ -4,12 +4,14 @@ const logger = require('morgan');
 const fs = require('fs/promises');
 const {body, validationResult} = require('express-validator');
 
+const dbHelper = require('./db/helper.js');
+
 const commonTags  = require('common-tags');
 const stripIndent = commonTags.stripIndent;
 const oneLine = commonTags.oneLine;
-const sqlite3 = require('sqlite3').verbose();
 
 const protocolsFolder = './study_protocols';
+const pathToStudyDB = './db/study_data.db';
 
 app.use(logger('dev'));                                                         
 app.use(express.urlencoded({extended: true}));
@@ -18,7 +20,8 @@ app.use(express.json());
 app.use(express.static('./public/'));
 
 app.post('/create-study-protocol',
-  body('name', 'invalid name').trim().isLength({min:1}).isAlpha().escape(),
+  body('name', 'invalid name').trim().isLength({min:1}).isAlpha(['de-DE'])
+    .escape(),
   body('age').isNumeric().isLength({min:1, max:2}),
   body('eyeColor', 'invalid eye color').trim().isLength({min:1})
     .isAlpha(['de-DE']).escape(),
@@ -42,14 +45,14 @@ app.post('/create-study-protocol',
     try {
       await fs.appendFile(`${protocolsFolder}/${protocolFileName}`
         , protocolHeader);
-      const db = await openStudyDB();
-      const participantStudyDataID = await dbInsert({
+      const studyDB = await dbHelper.open(pathToStudyDB);
+      const participantStudyDataID = await dbHelper.insert({
         colNames: ['prename', 'age', 'eye_color'],
-        db,
+        db: studyDB,
         tableName: "participantStudyDatas",
         values: [req.body.name, req.body.age, req.body.eyeColor]
       });
-      await closeDB(db);
+      await dbHelper.close(studyDB);
       return res.status(200).json({participantStudyDataID, protocolFileName});
     } catch (err) {
       return next(err);
@@ -112,8 +115,8 @@ const createProtocolStringForValidationEntry = ({
     let gazeAtTargetProtocol = "";
     gazeAtTargetProtocol += oneLine`
       Target Position Name: ${gazeAtTargetData.targetPosName}
-      (Realtive Position: ${gazeAtTargetData.targetPosRelative})
-    `;
+      (Realtive Position: ${posStr(gazeAtTargetData.targetPosRelative)})
+    ` + '\n';
     gazeAtTargetProtocol += createValidationValuesString ({
       name: 'Recommended Fixation Size',
       absoluteVal: gazeAtTargetData.recommendedFixationSize,
@@ -137,11 +140,11 @@ const createValidationValuesString = ({
   name,
   absoluteVal,
   relativeVal
-}) => stripIndent`
-  ${name}
+}) => {return oneLine`
+  ${name}:  
   Absolute values: ${posStr(absoluteVal)},
   Relative values: ${posStr(relativeVal)}
-`;
+` + '\n'};
 
 const posStr = pos => `(${pos.x}|${pos.y})`;
 
@@ -151,10 +154,12 @@ const saveValidationDataInDB = async ({
   participantStudyDataID,
   validationData
 }) => {
-  const db = await openStudyDB();
+  console.log(validationData);
+  console.log(numCalibrationTargets);
+  const studyDB = await dbHelper.open(pathToStudyDB);
   const studyDBInsert =
-    async ({colNames, tableName, values}) => await dbInsert({
-      colNames, db, tableName, values
+    async ({colNames, tableName, values}) => await dbHelper.insert({
+      colNames, db: studyDB, tableName, values
     });
   const validationDataID = await studyDBInsert({
     colNames: [
@@ -183,7 +188,7 @@ const saveValidationDataInDB = async ({
         gazeAtTargetData.targetPosName
       ]
     });
-    const studyDBInsertPos = getDBInsertPos({db, gazeAtTargetDataID});
+    const studyDBInsertPos = getDBInsertPos({db: studyDB, gazeAtTargetDataID});
     const targetPosID = await studyDBInsertPos(gazeAtTargetData.targetPos);
     const targetPosRelativeID = await studyDBInsertPos(
       gazeAtTargetData.targetPosRelative
@@ -212,7 +217,7 @@ const saveValidationDataInDB = async ({
       gazeAtTargetData.recommendedFixationSizeRelative
     );
     const viewportID = await studyDBInsertPos(gazeAtTargetData.viewport);
-    await dbUpdate({
+    await dbHelper.update({
       colNames: [
         'target_pos_id', 'target_pos_relative_id',
         'accuracy_id', 'accuracy_relative_id',
@@ -221,7 +226,7 @@ const saveValidationDataInDB = async ({
         'recommended_fixation_size_id', 'recommended_fixation_size_relative_id',
         'viewport_id'
       ],
-      db,
+      db: studyDB,
       idColName: 'gaze_at_target_data_id',
       rowID: gazeAtTargetDataID,
       tableName: 'gazeAtTargetDatas',
@@ -233,78 +238,16 @@ const saveValidationDataInDB = async ({
         recommendedFixationSizeID, recommendedFixationSizeRelativeID,
         viewportID
       ]
-    });
+    })
   };
+  await dbHelper.close(studyDB);;
 };
 
-const openStudyDB = () => new Promise((resolve, reject) => {
-  new sqlite3.Database(
-    './db/study_data.db',
-    function(err) {
-      if (err) {
-        reject(err);
-      }
-      resolve(this);
-    }
-  )
-});
-
-const dbRunOnStudyTable = ({db, stmt, values}) => new Promise(
-  (resolve, reject) => {
-    db.run(
-      stmt,
-      values,
-      function (err) {
-        if (err) {
-          reject(err);
-        }
-        resolve(this.lastID);
-      }
-    );
-  }
-);
-
-const insertStmt = ({colNames, tableName}) => stripIndent`
-  INSERT INTO ${tableName} (${colNames})
-  VALUES (${"?,".repeat(colNames.length -1)}?)
-`;
-
-const updateStmt = ({colNames, idColName, rowID, tableName}) => stripIndent`
-  UPDATE ${tableName}
-  SET ${colNames.map(colName => `${colName} = ?`)}
-  WHERE ${idColName} = ${rowID};
-`;
-
-const dbInsert = async ({colNames, db, tableName, values}) => {
-  return await dbRunOnStudyTable({
-    db,
-    stmt: insertStmt({colNames, tableName}),
-    values,
-  });
-};
-
-const dbUpdate = async ({
-  colNames, db, idColName, rowID, tableName, values
-}) => {
-  return await dbRunOnStudyTable({
-    db,
-    stmt: updateStmt({colNames, idColName, rowID, tableName}),
-    values,
-  });
-};
-
-getDBInsertPos = ({db, gazeAtTargetDataID}) => async pos => dbInsert({
+getDBInsertPos = ({db, gazeAtTargetDataID}) => async pos => dbHelper.insert({
   colNames: ['x', 'y', 'gaze_at_target_data_id'],
   db,
   tableName: 'positions',
   values: [pos.x, pos.y, gazeAtTargetDataID]
-});
-
-const closeDB = db => new Promise((resolve, reject) => {
-  db.close(err => {
-    if (err) reject(err);
-    resolve();
-  });
 });
 
 module.exports = app;

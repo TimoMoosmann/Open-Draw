@@ -32,7 +32,7 @@ CREATE TABLE gazeAtTargetDatas (
   num_gaze_estimations INTEGER NOT NULL,
   validation_data_id INTEGER NOT NULL,
   FOREIGN KEY (validation_data_id)
-    REFERENCES validation_datas (validation_data_id)
+    REFERENCES validationDatas (validation_data_id)
       ON DELETE CASCADE
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE positions (
   y INTEGER NOT NULL,
   gaze_at_target_data_id INTEGER NOT NULL,
   FOREIGN KEY (gaze_at_target_data_id)
-    REFERENCES gaze_at_target_datas (gaze_at_target_data_id)
+    REFERENCES gazeAtTargetDatas (gaze_at_target_data_id)
       ON DELETE CASCADE
 );
 
