@@ -154,8 +154,6 @@ const saveValidationDataInDB = async ({
   participantStudyDataID,
   validationData
 }) => {
-  console.log(validationData);
-  console.log(numCalibrationTargets);
   const studyDB = await dbHelper.open(pathToStudyDB);
   const studyDBInsert =
     async ({colNames, tableName, values}) => await dbHelper.insert({

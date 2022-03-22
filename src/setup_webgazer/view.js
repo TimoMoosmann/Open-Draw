@@ -41,16 +41,18 @@ const getSetupInstructions = (language = 'german') => {
       return [
         'Please <b>give camera permissions</b> to our application.',
         '<b>Wait</b> until you see the camera view (can take up to 60s).',
-        '<b>Center your head in the camera view</b> till it turns green.',
+        '<b>Center your head in the camera view</b> until it turns green.',
         'When you are ready to start, <b>click on the screen</b>.'
       ];
       break;
     case 'german':
       return [
-        'Bitte <b>erlaube die Kameranutzung</b> für dies Anwendung',
-        '<b>Warte</b> bis du das Kamerabild siehst (kann bis zu 60s dauern)',
-        '<b>Zentriere dein Kopf im Kamerabild</b>, so dass there Rahmen grün wird',
-        'Wenn du bereit bist, <b>Klicke irgendwo auf den Bilschirm</b>'
+        'Bitte <b>erlauben sie die Kameranutzung</b> für diese Anwendung',
+        '<b>Warten sie</b> bis das Kamerabild erscheint' +
+          ' (kann bis zu 60s dauern)',
+        '<b>Zentrieren sie ihren Kopf im Kamerabild</b>, ' +
+          'bis der Rahmen grün wird',
+        'Wenn sie bereit sind, <b>Klicken sie irgendwo auf den Bilschirm</b>'
       ];
       break;
     default:

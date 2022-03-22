@@ -182,7 +182,9 @@ const validationDatasPerParticipant = 2;
 
   // Per Participant
   const avgPerEyeColorStmt = property => codeBlock`
-    SELECT eye_color, avg(pos.x) x_avg, avg(pos.y) y_avg
+    SELECT eye_color,
+      COUNT(DISTINCT p.participant_study_data_id) participant_count,
+      avg(pos.x) x_avg, avg(pos.y) y_avg
     FROM participantStudyDatas p
     LEFT JOIN validationDatas v
       ON v.participant_study_data_id = p.participant_study_data_id
@@ -194,8 +196,6 @@ const validationDatasPerParticipant = 2;
   avgAccuracyPerEyeColor = await dbHelper.getAll({
     db, stmt: avgPerEyeColorStmt('accuracy')
   });
-  console.log(avgAccuracyPerEyeColor);
-
 
   const outString = codeBlock`
     Minumum number of gaze Estimations on any target: ${minNumGazeEstimations}
@@ -246,6 +246,11 @@ const validationDatasPerParticipant = 2;
     ${JSON.stringify(
       avgPrecPerTargetTopEightyPct, null, 4
     )}
+
+    Data specific to participants individual properties
+    ---------------------------------------------------
+    Average Accuracy per Eye Color:
+    ${JSON.stringify(avgAccuracyPerEyeColor, null, 4)}
   `;
   console.log(outString);
 })();

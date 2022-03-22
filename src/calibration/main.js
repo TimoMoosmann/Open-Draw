@@ -3,19 +3,17 @@ import {getGazeTarget, getGazeTargetsContainer} from './view.js';
 import {clickCalibration, gazeCalibration, validation} from '../webgazer_extensions/calibration.js';
 
 const runGazeCalibration = async ({
-  afterRecordBufferDuration = 500,
   numTargets,
-  recordDuration = 1000,
-  recordIntervalDuration = 100,
+  recordDuration = 1300,
+  recordIntervalDuration = 50,
   targetRadius = 20,
-  timeTillRecord = 800,
+  timeTillRecord = 700,
   webgazer
 }) => {
   const gazeTargetsCoords = getPatternCoordsInPct({
     type: 'calibration', numTargets
   });
   const calibrationProcedure = drawGazeTarget => gazeCalibration({
-    afterRecordBufferDuration,
     drawGazeTarget,
     gazeTargetsCoords,
     recordDuration,
@@ -42,17 +40,15 @@ const runClickCalibration = async ({
 };
 
 const runValidation = async ({
-  afterCaptureBufferDuration=500,
-  captureDuration=1000,
+  captureDuration=1300,
   numTargets,
   targetRadius = 20,
-  timeTillCapture = 1000,
+  timeTillCapture = 700,
   webgazer}) => {
   const gazeTargetsCoords = getPatternCoordsInPct({
     type: 'validation', numTargets
   });
   const calibrationProcedure = drawGazeTarget => validation({
-    afterCaptureBufferDuration,
     captureDuration,
     drawGazeTarget,
     gazeTargetsCoords,

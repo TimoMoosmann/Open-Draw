@@ -94,7 +94,6 @@ const validation = ({
   gazeTargetsCoords = [createPos({x: 0, y: 0})],
   timeTillCapture = 1000,
   captureDuration=1000,
-  afterCaptureBufferDuration=500,
   drawGazeTarget = pos => {}
 }) => {
   return new Promise(resolve => {
@@ -110,7 +109,6 @@ const validation = ({
           target: currentTarget,
           timeTillCapture,
           captureDuration,
-          afterCaptureBufferDuration,
           onFinish: drawNextTarget
         });
       }
@@ -149,7 +147,7 @@ const recordGazeAtTarget = ({
     }, recordIntervalDuration);
     setTimeout(() => {
       clearInterval(recordGazeAtTargetInterval);
-      setTimeout(onFinish, afterRecordBufferDuration);
+      onFinish();
     }, recordDuration);
   }, timeTillRecord);
 }
@@ -168,7 +166,6 @@ const captureValidationDataForTarget = ({
   target,
   timeTillCapture,
   captureDuration,
-  afterCaptureBufferDuration,
   onFinish
 }) => {
   const targetPos = getElementsCenter(target);
@@ -189,7 +186,7 @@ const captureValidationDataForTarget = ({
       } else {
         validationData.push(targetData);
         webgazer.clearGazeListener();
-        setTimeout(onFinish, afterCaptureBufferDuration);
+        onFinish();
       }
     });
   }, timeTillCapture);
