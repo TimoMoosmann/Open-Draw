@@ -27,14 +27,13 @@ const runMainProgram = ({
     btnList, fixation, dwellDurationThreshold
   });
 
-  /*
   MainMenuPage({
     actionOnDwellFixedThreshold,
     drawnLines,
     runFixationDetectionFixedThresholds
   });
-  */
 
+  /*
   startDrawLineMode({
     dwellDurationThreshold,
     lines,
@@ -42,6 +41,7 @@ const runMainProgram = ({
     runFixationDetectionFixedThresholds,
     webgazer
   });
+  */
 };
 
 const drawLines = ({canvas, canvasCtx, lines}) => {
