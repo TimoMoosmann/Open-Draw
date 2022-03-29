@@ -11,8 +11,8 @@ const oneLineTrim = commonTags.oneLineTrim;
 const codeBlock = commonTags.codeBlock;
 
 const pathToStudyDB = './study_data.db';
-// TODO: change to 6 in production
-const validationDatasPerParticipant = 2;
+
+const validationDatasPerParticipant = 6;
 
 (async () => {
   const db = await dbHelper.open(pathToStudyDB);

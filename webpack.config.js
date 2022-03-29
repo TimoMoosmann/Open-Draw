@@ -9,7 +9,6 @@ module.exports = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'public/bundled'),
     },
-    mode: "development",
     module: {
         rules: [
             {

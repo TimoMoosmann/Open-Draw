@@ -13,7 +13,7 @@ import {showWebgazerVideoWhenFaceIsNotDetected} from '../webgazer_extensions/set
 const setup = () => {
   let serverAddress;
   if (process.env.NODE_ENV === 'production') {
-    serverAddress = 'https://open-draw-project.org/study';
+    serverAddress = 'https://open-draw-project.org';
   } else {
     serverAddress = 'http://localhost:3000'
   }
