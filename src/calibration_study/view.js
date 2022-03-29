@@ -134,8 +134,8 @@ return getTaskInstructionsPage({
     (${currentTaskNum}/${numTasks}) Klickkalibrierung mit ${numTargets} Zielen
     `,
   instructions: [
-    `Klicken sie nacheinander auf die Ziele`,
-    `Schauen sie dabei auf die Mitte der Ziele`,
+    `Klicken sie nacheinander auf die Ziele.`,
+    `Schauen sie dabei auf die Mitte der Ziele.`,
     `Halten sie den Kopf möglichst gerade.`,
   ]
 });
