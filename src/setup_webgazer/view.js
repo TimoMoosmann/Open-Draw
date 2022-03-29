@@ -52,7 +52,7 @@ const getSetupInstructions = (language = 'german') => {
           ' (kann bis zu 60s dauern)',
         '<b>Zentrieren sie ihren Kopf im Kamerabild</b>, ' +
           'bis der Rahmen grün wird',
-        'Wenn sie bereit sind, <b>Klicken sie irgendwo auf den Bilschirm</b>'
+        'Wenn sie bereit sind, <b>klicken sie irgendwo auf den Bilschirm</b>'
       ];
       break;
     default:

@@ -77,10 +77,8 @@ const main = async() => {
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal);
 
   let currentTaskNum = 1;
-  //const targetsNums = [5, 9, 13];
-  const targetsNums = [5, 9];
-  //const calibrationTypes = ['click', 'gaze'];
-  const calibrationTypes = ['gaze'];
+  const targetsNums = [5, 9, 13];
+  const calibrationTypes = ['click', 'gaze'];
   const numTasks = targetsNums.length * calibrationTypes.length;
   const numValidationTargets = 4;
   let calibrationType;

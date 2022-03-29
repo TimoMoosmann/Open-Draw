@@ -27,9 +27,9 @@ const runMainProgram = ({
     btnList, fixation, dwellDurationThreshold
   });
 
-  MainMenuPage({
+  mainMenuPage({
     actionOnDwellFixedThreshold,
-    drawnLines,
+    lines,
     runFixationDetectionFixedThresholds
   });
 
@@ -66,7 +66,7 @@ const drawLine = ({canvasCtx, line}) => {
 
 const mainMenuPage = ({
   actionOnDwellFixedThreshold,
-  drawnLines,
+  lines,
   runFixationDetectionFixedThresholds
 }) => {
   const mainMenuPage = getMainMenuPage();
