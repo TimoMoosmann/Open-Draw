@@ -106,10 +106,11 @@ const createProtocolStringForValidationEntry = ({
 }) => {
   let validationProtocol = '\n' + oneLine`
     Important Features from the Validation Data for ${calibrationType}
-    with ${numCalibrationTargets} targets
+    calibration with ${numCalibrationTargets} targets
   `;
   validationProtocol +=
-    '\n=================================================================\n\n';
+    '\n================================================================' +
+    '==================\n\n';
 
   validationData.forEach(gazeAtTargetData => {
     let gazeAtTargetProtocol = "";

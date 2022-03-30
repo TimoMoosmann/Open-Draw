@@ -101,6 +101,13 @@ const actionOnDwell = ({btnList, fixation, dwellDurationThreshold}) => {
 
 const createDwellBtn = ({action, ellipse}) => ({action, ellipse});
 
+// Dwell Button Specs
+// Width, Height
+// (Position)
+// Action
+// activationTime
+// (Symbol / Icon)
+
 const getDwellBtnAction = dwellBtnId => {
   switch (dwellBtnId) {
     case 'drawBtn':

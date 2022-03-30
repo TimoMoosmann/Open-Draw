@@ -2,12 +2,15 @@ import {getPatternCoordsInPct} from './patterns.js';
 import {getGazeTarget, getGazeTargetsContainer} from './view.js';
 import {clickCalibration, gazeCalibration, validation} from '../webgazer_extensions/calibration.js';
 
+const defaultTargetRadius = 27;
+const recommendedTimeTillCapture = 700
+
 const runGazeCalibration = async ({
   numTargets,
   recordDuration = 1300,
   recordIntervalDuration = 50,
-  targetRadius = 27,
-  timeTillRecord = 700,
+  targetRadius = defaultTargetRadius,
+  timeTillRecord = recommendedTimeTillCapture,
   webgazer
 }) => {
   const gazeTargetsCoords = getPatternCoordsInPct({
@@ -26,7 +29,7 @@ const runGazeCalibration = async ({
 
 const runClickCalibration = async ({
   numTargets,
-  targetRadius = 20,
+  targetRadius = defaultTargetRadius,
   webgazer}) => {
   const gazeTargetsCoords = getPatternCoordsInPct({
     type: 'calibration', numTargets
@@ -40,10 +43,10 @@ const runClickCalibration = async ({
 };
 
 const runValidation = async ({
-  captureDuration=1300,
+  captureDuration=1000,
   numTargets,
-  targetRadius = 20,
-  timeTillCapture = 700,
+  targetRadius = defaultTargetRadius,
+  timeTillCapture = recommendedTimeTillCapture,
   webgazer}) => {
   const gazeTargetsCoords = getPatternCoordsInPct({
     type: 'validation', numTargets
