@@ -6,7 +6,7 @@ const runGazeCalibration = async ({
   numTargets,
   recordDuration = 1300,
   recordIntervalDuration = 50,
-  targetRadius = 20,
+  targetRadius = 27,
   timeTillRecord = 700,
   webgazer
 }) => {
