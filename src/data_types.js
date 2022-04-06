@@ -51,6 +51,18 @@ const inEllipse = ({ellipse, pos}) => ((
   (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radii.y, 2))
 ) <= 1);
 
+/*
+const creatDwellButton = ({
+  action,
+  heigth,
+  iconSrc,
+  name,
+  width,
+  relativeScreenPosition
+}) => {
+  const btnEllipse = createEllipse({center = 
+*/
+
 // Zoom
 const createZoom = ({offsetFactorShiftAmount, zoomFactors}) => ({
   level: createZoomLevels(zoomFactors.map(zoomFactor => zoomFactor / 2)),

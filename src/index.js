@@ -18,6 +18,14 @@ const main = async () => {
   // Sized Thresholds in html px
   const maxFixationDispersion = createPos({x: 100, y: 100});
   const minTargetRadii = createPos({x: 150, y: 100});
+
+  // Min possible target size: 1/6 of screen width and height
+  // Recommended target size 1/9 of screen width and heigth
+  // Perfect target size: 1/12
+  //
+  // if accuracy not reaches the requirements for min possible:
+  //  -> Ask for reacalibration
+  // 
   
   // Timed Thresholds
   const fixationDurationThreshold = 200;

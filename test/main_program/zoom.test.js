@@ -30,6 +30,15 @@ test('Create illegal zoom levels.', () => {
   );
 });
 
+/*
+ * Zoom Level 1: Max Offset: 0, from level 2 -> 1: offset = 0
+ * Zoom Level 2: Max Offset: 0.5, from Level 1 -> 2: offset += 0.25
+ * Zoom Level 3: Max Offset: 1.0, from Level 2 -> 3: offset += 0.25
+ *                                from Level 3 -> 2: offset -= 0.25
+ * Zoom Level 4: Max Offset: 2.0, from Level 3 -> 4: offset += 0.5
+ *                                           4 -> 3:        -= 0.5
+ */
+
 test('Move around in Zoom level 1 (Zoomfactor: 1.0)', () => {
   const zoom = createTestZoom();
   const unmovedZoom = createTestZoom();
@@ -100,13 +109,4 @@ test('Switch zoom levels from first to last and then back to first.', () => {
   expect(canZoomOut(zoom)).toBe(false);
   expect(zoomOut(zoom).canvasOffsetFactor.y).toBe(0);
 });
-
-/*
- * Zoom Level 1: Max Offset: 0, from level 2 -> 1: offset = 0
- * Zoom Level 2: Max Offset: 0.5, from Level 1 -> 2: offset += 0.25
- * Zoom Level 3: Max Offset: 1.0, from Level 2 -> 3: offset += 0.25
- *                                from Level 3 -> 2: offset -= 0.25
- * Zoom Level 4: Max Offset: 2.0, from Level 3 -> 4: offset += 0.5
- *                                           4 -> 3:        -= 0.5
- */
 

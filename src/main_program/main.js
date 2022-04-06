@@ -1,6 +1,6 @@
 import {startDrawLineMode} from './draw_line_mode.js';
 import {getMainMenuPage} from './view.js';
-import {createEllipse, inEllipse} from '../data_types.js';
+import {createEllipse, inEllipse, createLine} from '../data_types.js';
 import {drawDotOnScreen, getElementCenter, getElementRadii} from '../util/browser.js';
 import {runWebgazerFixationDetection} from '../webgazer_extensions/fixation_detection.js';
 import {setWebgazerGazeDotColor} from '../webgazer_extensions/setup.js';
@@ -50,6 +50,25 @@ const drawLines = ({canvas, canvasCtx, lines}) => {
     drawLine(canvasCtx, line);
   }
 };
+
+/*
+const createZoomedLine = ({line, viewport, zoom}) => {
+  drawLine(canvasCtx, createLine({
+   startPoint: createPos{
+     x: line.startPoint.x * zoom.level.factor - zoom.canvasOffsetFactor * 
+}
+
+const createUnzoomedLine = ({line, viewport, zoom}) => {
+};
+
+const drawLinesZoomed = ({lines, zoom}) => {
+  clearCanvas({canvas, canvsCtx});
+  for (const line of lines) {
+    drawLine(canvasCtx, createLine({
+      startPoint: createPos{
+        x: 
+};
+*/
 
 const clearCanvas = ({canvas, canvasCtx}) => {
   canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
