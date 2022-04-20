@@ -7,6 +7,27 @@ import '../../assets/css/style.css';
 import '../../assets/css/main_program.css';
 import '../../assets/css/main_menu.css';
 
+const getDwellBtnContainer = () => createElementFromHTML(html`
+  <div class="dwellBtnContainer">
+  </div>
+`);
+
+const getDwellBtnDomEl = dwellBtn => {
+  const btnWidth = dwellBtn.ellipse.radii.x * 2;
+  const btnHeight = dwellBtn.ellipse.radii.y * 2;
+  const left = dwellBtn.ellipse.center.x;
+  const top = dwellBtn.ellipse.center.y;
+
+  return createElementFromHTML(html`
+    <button id="${dwellBtn.domId}" class="dwellBtnSingle"
+      style="width:${btnWidth}px; height:${btnHeight}px;
+        left:${left}px; top:${top}px"
+    >
+      <h2>${dwellBtn.label}</h2>
+    </button>
+  `)
+};
+
 const getMainMenuPage = () => createElementFromHTML(html`
   <div id="mainMenuContainer">
     <button id="drawBtn" class="dwellBtn">
@@ -47,5 +68,6 @@ const getDrawingPage = parentEl => {
   return getDrawingCanvas(parentEl);
 };
 
-export {getDrawingPage, getMainMenuPage};
+export {getDrawingPage, getMainMenuPage,
+getDwellBtnDomEl, getDwellBtnContainer};
 

@@ -41,6 +41,7 @@ const startDrawLineMode = ({
     });
   };
 
+  console.log(runFixationDetectionFixedThresholds);
   runFixationDetectionFixedThresholds(fixation => {
     setWebgazerGazeDotColor(drawStateGazeDotColors[drawState.name]);
     switch (drawState.name) {

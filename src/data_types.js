@@ -51,17 +51,34 @@ const inEllipse = ({ellipse, pos}) => ((
   (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radii.y, 2))
 ) <= 1);
 
-/*
-const creatDwellButton = ({
+const createDwellBtn = ({
+  centerPosRel,
+  domId,
+  size,
+  timeTillActivation,
   action,
-  heigth,
-  iconSrc,
-  name,
-  width,
-  relativeScreenPosition
-}) => {
-  const btnEllipse = createEllipse({center = 
-*/
+  viewport
+}) => ({
+  action,
+  ellipse: createEllipse({
+    center: createPos({
+      x: (centerPosRel.x / 100) * viewport.x,
+      y: (centerPosRel.y / 100) * viewport.y,
+    }),
+    radii: createPos({x: size.x / 2, y: size.y / 2})
+  }),
+  domId,
+  timeTillActivation,
+});
+
+const createDwellBtnProgress = ({
+  btnId = false,
+  progressInPct = 0
+}) => ({
+  btnId,
+  progressInPct
+});
+
 
 // Zoom
 const createZoom = ({offsetFactorShiftAmount, zoomFactors}) => ({
@@ -207,7 +224,8 @@ const getRelativeTargetPosName = targetPosRel => {
 
 export {
   createDetailedInformationGazeAtTargetData, createDrawStateGazeDotColors,
-  createEllipse, createFixation, createGazeAtTargetData, createLine, createPos,
+  createEllipse, createDwellBtn, createDwellBtnProgress, createFixation,
+  createGazeAtTargetData, createLine, createPos,
   createStrokeProperties, createTimedPosItem, createZoom, createZoomLevels,
   inEllipse, posLowerThanOrEqual, posSubtract
 };

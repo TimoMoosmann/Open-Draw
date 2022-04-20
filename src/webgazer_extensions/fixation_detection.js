@@ -11,18 +11,22 @@ const runWebgazerFixationDetection = ({
   webgazer
 }) => {
   const timedGazePositions = new List();
+  let lastDetectionWasAFixation = false;
   webgazer.setGazeListener((gazePos, timestamp) => {
     if (!gazePos) return false;
     const timedGazePosItem = createTimedPosItem({timestamp, pos: gazePos});
     timedGazePositions.append(timedGazePosItem);
-    let fixation;
+    let fixation = false;
     if (fixation = idtOneIteration({
       dispersionThreshold,
       durationThreshold,
       maxFixationDuration,
       timedGazePositions
-    })) {
+    }) || lastDetectionWasAFixation) {
+      lastDetectionWasAFixation = true;
       onFixation(fixation);
+    } else {
+      lastDetectionWasAFixation = false;
     }
   });
 };
