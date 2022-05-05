@@ -3,7 +3,7 @@ import {getGazeTarget, getGazeTargetsContainer} from './view.js';
 import {clickCalibration, gazeCalibration, validation} from '../webgazer_extensions/calibration.js';
 
 const defaultTargetRadius = 27;
-const recommendedTimeTillCapture = 700
+const recommendedTimeTillCapture = 700;
 
 const runGazeCalibration = async ({
   numTargets,
@@ -39,7 +39,9 @@ const runClickCalibration = async ({
     gazeTargetsCoords,
     webgazer
   });
+  webgazer.addMouseEventListeners();
   await runCalibrationProcedure({calibrationProcedure, targetRadius});
+  webgazer.removeMouseEventListeners();
 };
 
 const runValidation = async ({

@@ -6,6 +6,13 @@ const getWorstRelAccAndPrec = validationData => {
   for (const gazeAtTargetData of validationData) {
     const {relAcc, relPrec} =
       createEvaluatedGazeAtTargetData(gazeAtTargetData);
+
+    console.log('relAcc:');
+    console.log(relAcc);
+    console.log('relPrec:');
+    console.log(relPrec);
+    console.log();
+
     if (worstRelAcc === undefined) {
       worstRelAcc = relAcc;
       worstRelPrec = relPrec;

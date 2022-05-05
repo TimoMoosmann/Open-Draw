@@ -14,9 +14,9 @@ const main = async () => {
   const webgazerLocal = webgazer;
   await setupWebgazer({
     webgazer: webgazerLocal,
-    mouseModeOn: true,
+    mouseModeOn: false,
     root: document.body,
-    showPredictionPoints: true
+    showPredictionPoints: false
   });
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal);
 
@@ -25,8 +25,6 @@ const main = async () => {
 
   const {worstRelAcc, worstRelPrec} = getWorstRelAccAndPrec(validationData);
 
-  console.log(worstRelAcc);
-  console.log(worstRelPrec);
   // Determined after evaluating the calibration study.
   const borderAcc = createPos({x: 0.06, y: 0.12});
   const perfectAcc = createPos({x: 0.03, y: 0.06});
