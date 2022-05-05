@@ -1,5 +1,5 @@
 import {createPos} from '../../src/data_types.js';
-import {calcCalibrationScore, createCalcScoreEvalOut, evaluateCalibrationScore} from '../../src/calibration/success_score.js';
+import {calcCalibrationScore, createCalibrationScoreEvalOut, getCalibrationScoreEvaluation} from '../../src/calibration/success_score.js';
 
 const testBorderAcc = createPos({x: 0.06, y: 0.12});
 const testPerfectAcc = createPos({x: 0.03, y: 0.06});
@@ -35,7 +35,7 @@ test('calcCalibrationScore works well', () => {
   })).toEqual(createPos({x: 50, y: 50}));
 });
 
-const createCalcScoreInp = ({
+const createCalibrationScoreInp = ({
   xAcc, yAcc, xPrec, yPrec, trys
 }) => ({
   borderAcc: testBorderAcc,
@@ -48,12 +48,12 @@ const createCalcScoreInp = ({
 
 test('Insufficent Precision', () => {
   const trys = {trys: 0};
-  const lowYPrecisionHighAccuracy = createCalcScoreInp({
+  const lowYPrecisionHighAccuracy = createCalibrationScoreInp({
     xAcc: 0.01, yAcc: 0.02, xPrec: 0.01, yPrec: 0.2, trys
   });
-  const firstTryNotAbleToProceed = createCalcScoreEvalOut({
+  const firstTryNotAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 100, y: 100}),
-    accScoreColor: 'green',
+    accScoreColor: createPos({x: 'green', y: 'green'}),
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
@@ -62,16 +62,16 @@ test('Insufficent Precision', () => {
       'Please calibrate again.',
     proceedBtnActive: false
   });
-  expect(evaluateCalibrationScore(lowYPrecisionHighAccuracy))
+  expect(getCalibrationScoreEvaluation(lowYPrecisionHighAccuracy))
     .toEqual(firstTryNotAbleToProceed);
   expect(trys.trys).toBe(1);
 
-  const lowXPrecisionHighAccuracy = createCalcScoreInp({
+  const lowXPrecisionHighAccuracy = createCalibrationScoreInp({
     xAcc: 0.042, yAcc: 0.084, xPrec: 0.1, yPrec: 0.02, trys
   });
-  const secondTryAbleToProceed = createCalcScoreEvalOut({
+  const secondTryAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 80, y: 80}),
-    accScoreColor: 'green',
+    accScoreColor: createPos({x: 'green', y: 'green'}),
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
@@ -80,19 +80,19 @@ test('Insufficent Precision', () => {
       'Please calibrate again, or proceed with limited quality.',
     proceedBtnActive: true
   });
-  expect(evaluateCalibrationScore(lowXPrecisionHighAccuracy))
+  expect(getCalibrationScoreEvaluation(lowXPrecisionHighAccuracy))
     .toEqual(secondTryAbleToProceed);
   expect(trys.trys).toBe(2);
 });
 
 test('Relative Accuracy is lower than 50% in X or Y', () => {
   const trys = {trys: 0};
-  const lowXAccHighPrec = createCalcScoreInp({
+  const lowXAccHighPrec = createCalibrationScoreInp({
     xAcc: 0.0606, yAcc: 0.02, xPrec: 0.01, yPrec: 0.02, trys
   });
-  const firstTryNotAbleToProceed = createCalcScoreEvalOut({
+  const firstTryNotAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 49, y: 100}),
-    accScoreColor: 'red',
+    accScoreColor: createPos({x: 'red', y: 'green'}),
     precStatus: 'good',
     precStatusColor: 'green',
     message:
@@ -100,16 +100,16 @@ test('Relative Accuracy is lower than 50% in X or Y', () => {
       'Please calibrate again.',
     proceedBtnActive: false
   });
-  expect(evaluateCalibrationScore(lowXAccHighPrec))
+  expect(getCalibrationScoreEvaluation(lowXAccHighPrec))
     .toEqual(firstTryNotAbleToProceed);
   expect(trys.trys).toBe(1);
 
-  const lowYAccHighPrec = createCalcScoreInp({
+  const lowYAccHighPrec = createCalibrationScoreInp({
     xAcc: 0.02, yAcc: 0.1212, xPrec: 0.01, yPrec: 0.02, trys
   });
-  const secondTryAbleToProceed = createCalcScoreEvalOut({
+  const secondTryAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 100, y: 49}),
-    accScoreColor: 'red',
+    accScoreColor: createPos({x: 'green', y: 'red'}),
     precStatus: 'good',
     precStatusColor: 'green',
     message:
@@ -117,19 +117,19 @@ test('Relative Accuracy is lower than 50% in X or Y', () => {
       'Please calibrate again, or proceed with limited quality.',
     proceedBtnActive: true
   });
-  expect(evaluateCalibrationScore(lowYAccHighPrec))
+  expect(getCalibrationScoreEvaluation(lowYAccHighPrec))
     .toEqual(secondTryAbleToProceed);
   expect(trys.trys).toBe(2);
 });
 
 test('Accuracy and Precision too low', () => {
   const trys = {trys: 0};
-  const lowXAccHighPrec = createCalcScoreInp({
+  const lowXAccHighPrec = createCalibrationScoreInp({
     xAcc: 0.0606, yAcc: 0.1212, xPrec: 0.1, yPrec: 0.02, trys
   });
-  const firstTryNotAbleToProceed = createCalcScoreEvalOut({
+  const firstTryNotAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 49, y: 49}),
-    accScoreColor: 'red',
+    accScoreColor: createPos({x: 'red', y: 'red'}),
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
@@ -138,16 +138,16 @@ test('Accuracy and Precision too low', () => {
       'Please calibrate again.',
     proceedBtnActive: false
   });
-  expect(evaluateCalibrationScore(lowXAccHighPrec))
+  expect(getCalibrationScoreEvaluation(lowXAccHighPrec))
     .toEqual(firstTryNotAbleToProceed);
   expect(trys.trys).toBe(1);
 
-  const lowYAccHighPrec = createCalcScoreInp({
+  const lowYAccHighPrec = createCalibrationScoreInp({
     xAcc: 0.02, yAcc: 0.1212, xPrec: 0.01, yPrec: 0.2, trys
   });
-  const secondTryAbleToProceed = createCalcScoreEvalOut({
+  const secondTryAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 100, y: 49}),
-    accScoreColor: 'red',
+    accScoreColor: createPos({x: 'green', y: 'red'}),
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
@@ -156,19 +156,19 @@ test('Accuracy and Precision too low', () => {
       'Please calibrate again, or proceed with limited quality.',
     proceedBtnActive: true
   });
-  expect(evaluateCalibrationScore(lowYAccHighPrec))
+  expect(getCalibrationScoreEvaluation(lowYAccHighPrec))
     .toEqual(secondTryAbleToProceed);
   expect(trys.trys).toBe(2);
 });
 
 test('Precision and Accuracy are just enough', () => {
   const trys = {trys: 0};
-  const medAccMedPrec = createCalcScoreInp({
+  const medAccMedPrec = createCalibrationScoreInp({
     xAcc: 0.06, yAcc: 0.12, xPrec: 0.06, yPrec: 0.1, trys
   });
-  const firstTryAbleToProceed = createCalcScoreEvalOut({
+  const firstTryAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 50, y: 50}),
-    accScoreColor: 'orange',
+    accScoreColor: createPos({x: 'orange', y: 'orange'}),
     precStatus: 'good',
     precStatusColor: 'green',
     message:
@@ -176,19 +176,19 @@ test('Precision and Accuracy are just enough', () => {
       'If you want an better experience, try to calibrate again.',
     proceedBtnActive: true
   });
-  expect(evaluateCalibrationScore(medAccMedPrec))
+  expect(getCalibrationScoreEvaluation(medAccMedPrec))
     .toEqual(firstTryAbleToProceed);
   expect(trys.trys).toBe(1);
 });
 
 test('Accuracy is 65% and precision okay', () => {
   const trys = {trys: 0};
-  const goodAccMedPrec = createCalcScoreInp({
+  const goodAccMedPrec = createCalibrationScoreInp({
     xAcc: 0.051, yAcc: 0.102, xPrec: 0.06, yPrec: 0.1, trys
   });
-  const firstTryAbleToProceed = createCalcScoreEvalOut({
+  const firstTryAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 65, y: 65}),
-    accScoreColor: 'yellow',
+    accScoreColor: createPos({x: 'yellow', y: 'yellow'}),
     precStatus: 'good',
     precStatusColor: 'green',
     message:
@@ -196,25 +196,25 @@ test('Accuracy is 65% and precision okay', () => {
       'If you want an better experience, try to calibrate again.',
     proceedBtnActive: true
   });
-  expect(evaluateCalibrationScore(goodAccMedPrec))
+  expect(getCalibrationScoreEvaluation(goodAccMedPrec))
     .toEqual(firstTryAbleToProceed);
   expect(trys.trys).toBe(1);
 });
 
 test('Accuracy is 80% and precision okay', () => {
   const trys = {trys: 0};
-  const veryGoodAccMedPrec = createCalcScoreInp({
+  const veryGoodAccMedPrec = createCalibrationScoreInp({
     xAcc: 0.042, yAcc: 0.084, xPrec: 0.06, yPrec: 0.1, trys
   });
-  const firstTryAbleToProceed = createCalcScoreEvalOut({
+  const firstTryAbleToProceed = createCalibrationScoreEvalOut({
     accScore: createPos({x: 80, y: 80}),
-    accScoreColor: 'green',
+    accScoreColor: createPos({x: 'green', y: 'green'}),
     precStatus: 'good',
     precStatusColor: 'green',
     message: 'Your accuracy is good.',
     proceedBtnActive: true
   });
-  expect(evaluateCalibrationScore(veryGoodAccMedPrec))
+  expect(getCalibrationScoreEvaluation(veryGoodAccMedPrec))
     .toEqual(firstTryAbleToProceed);
   expect(trys.trys).toBe(1);
 });

@@ -17,10 +17,13 @@ const calcCalibrationScore = ({acc, borderAcc, perfectAcc}) => {
   });
 };
 
-const evaluateCalibrationScore = ({
+const getCalibrationScoreEvaluation = ({
   borderAcc,
   perfectAcc,
   borderPrec,
+  minForGreen = 80,
+  minForYellow = 65,
+  minForOrange = 50,
   relAcc,
   relPrec,
   trys
@@ -28,22 +31,19 @@ const evaluateCalibrationScore = ({
   const calibrationScore = calcCalibrationScore({
     acc: relAcc, borderAcc, perfectAcc
   });
-  const minForGreen = 80;
-  const minForYellow = 65;
-  const minForOrange = 50;
 
-  let accScoreColor = 'red';
-  if (calibrationScore.x >= minForGreen && calibrationScore.y >= minForGreen) {
-    accScoreColor = 'green';
-  } else if (
-    calibrationScore.x >= minForYellow && calibrationScore.y >= minForYellow
-  ) {
-    accScoreColor = 'yellow';
-  } else if (
-    calibrationScore.x >= minForOrange && calibrationScore.y >= minForOrange
-  ) {
-    accScoreColor = 'orange';
-  }
+  const getAccScoreColorFixed = score =>  getAccScoreColor({
+    score,
+    minForGreen,
+    minForOrange,
+    minForYellow
+  });
+  const accScoreColor = createPos({
+    x: getAccScoreColorFixed(calibrationScore.x),
+    y: getAccScoreColorFixed(calibrationScore.y)
+  });
+  const minAccScoreColor = calibrationScore.x < calibrationScore.y ?
+    accScoreColor.x : accScoreColor.y;
 
   let precStatus = 'bad';
   let precStatusColor = 'red';
@@ -53,7 +53,7 @@ const evaluateCalibrationScore = ({
   };
   let proceedBtnActive = true;
   let message = '';
-  switch(accScoreColor) {
+  switch(minAccScoreColor) {
     case 'red':
       message += 'Your accuracy is too low to use the program properly.';
       break;
@@ -75,7 +75,7 @@ const evaluateCalibrationScore = ({
     );
   }
 
-  if (accScoreColor === 'red' || precStatusColor === 'red') {
+  if (minAccScoreColor === 'red' || precStatusColor === 'red') {
     if (trys.trys > 0) {
       message = addToStringWithNewLine(
         message, 'Please calibrate again, or proceed with limited quality.'
@@ -84,14 +84,14 @@ const evaluateCalibrationScore = ({
       proceedBtnActive = false;
       message = addToStringWithNewLine(message, 'Please calibrate again.');
     }
-  } else if (accScoreColor === 'orange' || accScoreColor === 'yellow') {
+  } else if (minAccScoreColor === 'orange' || minAccScoreColor === 'yellow') {
     message = addToStringWithNewLine(
       message, 'If you want an better experience, try to calibrate again.'
     );
   }
 
   trys.trys++;
-  return createCalcScoreEvalOut({
+  return createCalibrationScoreEvalOut({
     accScore: calibrationScore,
     accScoreColor,
     precStatus,
@@ -101,11 +101,28 @@ const evaluateCalibrationScore = ({
   });
 };
 
+const getAccScoreColor = ({
+  minForGreen,
+  minForOrange,
+  minForYellow,
+  score
+}) => {
+  let accScoreColor = 'red';
+  if (score >= minForGreen) {
+    accScoreColor = 'green';
+  } else if (score >= minForYellow) {
+    accScoreColor = 'yellow';
+  } else if (score >= minForOrange ) {
+    accScoreColor = 'orange';
+  }
+  return accScoreColor;
+};
+
 const addToStringWithNewLine = (str, appendStr) => {
   return (str.length > 0) ? str + '\n' + appendStr : appendStr;
 }
 
-const createCalcScoreEvalOut = ({
+const createCalibrationScoreEvalOut = ({
   accScore,
   accScoreColor,
   precStatus,
@@ -121,4 +138,7 @@ const createCalcScoreEvalOut = ({
   proceedBtnActive
 });
 
-export {calcCalibrationScore, createCalcScoreEvalOut, evaluateCalibrationScore};
+export {
+  calcCalibrationScore, createCalibrationScoreEvalOut,
+  getCalibrationScoreEvaluation
+};

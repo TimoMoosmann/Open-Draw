@@ -1,5 +1,5 @@
 import {vh, vw} from './util/browser.js';
-import {meanOffset, round, standardDeviation} from './util/math.js';
+import {meanOffset, round, calcSampleStandardDeviation} from './util/math.js';
 import {stripIndent} from 'common-tags';
 import {List, Item} from '../other_modules/linked-list.js';
 
@@ -11,6 +11,26 @@ const createPos = ({
   x,
   y
 });
+
+const checkPos = pos => {
+  if(!(pos.hasOwnProperty('x') && pos.hasOwnProperty('y'))) {
+    throw 'Invalid pos.';
+  }
+};
+
+const checkNumericPos = pos => {
+  checkPos(pos);
+  if(isNaN(pos.x) || isNaN(pos.y)) {
+    throw 'Invalid numericPos.';
+  }
+};
+
+const checkPositiveNumericPos = pos => {
+  checkNumericPos(pos);
+  if(pos.x <= 0 || pos.y <= 0) {
+    throw 'Invalid positiveNumericPos.';
+  }
+};
 
 const posEqual = (pos1, pos2) => pos1.x === pos2.x && pos1.y === pos2.y;
 
@@ -28,6 +48,29 @@ const createTimedPosItem = ({timestamp, pos}) => {
   it.timestamp = timestamp;
   it.pos = pos;
   return it;
+};
+
+// Arrays
+const checkArray = arr => {
+  if (!Array.isArray(arr)) {
+    throw 'Invalid Array given.';
+  }
+};
+
+const checkNonEmptyArray = array => {
+  checkArray(array);
+  if (array.length === 0) {
+    throw 'Invalid NonEmptyArray given.';
+  }
+};
+
+const checkNumbersArray = numbers => {
+  checkNonEmptyArray(numbers);
+  for (let num of numbers) {
+    if (isNaN(num)) {
+      throw 'Invalid NumbersArray given.';
+    }
+  }
 };
 
 // Line
@@ -114,15 +157,81 @@ const createZoomLevels = zoomFactorHalfs => {
 // Fixation
 const createFixation = ({center, duration}) => ({center, duration});
 
-// Simple Gaze at Target Data
+// Gaze at Target Data Raw Informations
 const createGazeAtTargetData = ({
   targetPos,
-  gazeEstimations
-}) => ({
-  targetPos,
   gazeEstimations,
-  viewport: createPos({x: vw(), y: vh()})
-});
+  viewport = createPos({x: vw(), y: vh()})
+}) => {
+  const gazeAtTargetData = {
+    targetPos,
+    gazeEstimations,
+    viewport
+  };
+  checkGazeAtTargetData(gazeAtTargetData);
+  return gazeAtTargetData;
+};
+
+const checkValidTargetPosAndViewport = ({targetPos, viewport}) => {
+  checkPositiveNumericPos(targetPos);
+  checkPositiveNumericPos(viewport);
+  if (targetPos.x >= viewport.x || targetPos.y >= viewport.y) {
+    throw 'targetPos is outside the viewport.';
+  };
+}
+
+const checkValidGazeEstimations = gazeEstimations => {
+  if (!Array.isArray(gazeEstimations)) {
+    throw 'Invalid gazeEstimations.';
+  }
+  for (let gazeEstimation of gazeEstimations) {
+    checkNumericPos(gazeEstimation);
+  }
+  if (gazeEstimations.length < 2) {
+    throw 'gazeEstimations needs at least two estimations to be valid.';
+  }
+};
+
+const checkGazeAtTargetData = gazeAtTargetData => {
+  const {targetPos, viewport, gazeEstimations} = gazeAtTargetData;
+  if (
+    targetPos === undefined ||
+    viewport === undefined ||
+    gazeEstimations === undefined
+  ) {
+    throw('Invalid GazeEstimations object given.');
+  }
+  checkValidTargetPosAndViewport({targetPos, viewport});
+  checkValidGazeEstimations(gazeEstimations);
+};
+
+const checkValidationData = validationData => {
+  if (!Array.isArray(validationData)) {
+    throw 'ValidationData object needs to be an array.';
+  }
+  if (validationData.length < 1) {
+    throw 'ValidationData object needs at least one element in it.';
+  }
+  for (let gazeAtTargetData of validationData) {
+    checkGazeAtTargetData(gazeAtTargetData);
+  }
+};
+
+const createEvaluatedGazeAtTargetData = gazeAtTargetData => {
+  const targetPos = gazeAtTargetData.targetPos;
+  const gazeEstimations = gazeAtTargetData.gazeEstimations;
+  const viewportPos = gazeAtTargetData.viewport;
+  return {
+    relAcc: getRelativePos({
+      pos: gazeAtTargetAccuracy({targetPos, gazeEstimations}),
+      viewportPos
+    }),
+    relPrec: getRelativePos({
+      pos: gazePrecision(gazeEstimations),
+      viewportPos
+    })
+  }
+};
 
 // Detailed Gaze at Target Data
 const createDetailedInformationGazeAtTargetData = (gazeAtTargetData) => {
@@ -167,8 +276,8 @@ const gazeAtTargetAccuracy = ({
 });
 
 const gazePrecision = gazeEstimations => createPos({
-  x: standardDeviation(gazeEstimations.map(pos => pos.x)), 
-  y: standardDeviation(gazeEstimations.map(pos => pos.y))
+  x: calcSampleStandardDeviation(gazeEstimations.map(pos => pos.x)), 
+  y: calcSampleStandardDeviation(gazeEstimations.map(pos => pos.y))
 });
 
 const getMinGazeTargetSize = accuracy => createPos({
@@ -223,8 +332,10 @@ const getRelativeTargetPosName = targetPosRel => {
 };
 
 export {
+  checkGazeAtTargetData, checkNumbersArray, checkValidationData,
   createDetailedInformationGazeAtTargetData, createDrawStateGazeDotColors,
-  createEllipse, createDwellBtn, createDwellBtnProgress, createFixation,
+  createEllipse, createEvaluatedGazeAtTargetData,
+  createDwellBtn, createDwellBtnProgress, createFixation,
   createGazeAtTargetData, createLine, createPos,
   createStrokeProperties, createTimedPosItem, createZoom, createZoomLevels,
   inEllipse, posLowerThanOrEqual, posSubtract

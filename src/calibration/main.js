@@ -44,7 +44,7 @@ const runClickCalibration = async ({
 
 const runValidation = async ({
   captureDuration=1000,
-  numTargets,
+  numTargets = 4,
   targetRadius = defaultTargetRadius,
   timeTillCapture = recommendedTimeTillCapture,
   webgazer}) => {

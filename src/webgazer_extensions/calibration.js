@@ -170,21 +170,21 @@ const captureValidationDataForTarget = ({
 }) => {
   const targetPos = getElementsCenter(target);
   setTimeout(() => {
-    const targetData = createGazeAtTargetData({
-      targetPos,
-      gazeEstimations: []
-    });
+    const gazeEstimations = [];
     const gazeEstimationCaptureStartTime = Date.now();
     webgazer.setGazeListener((estimatedGazePoint, elapsedTime) => {
       if (estimatedGazePoint &&
         (Date.now() - gazeEstimationCaptureStartTime) < captureDuration
       ){
-        targetData.gazeEstimations.push(createPos({
+        gazeEstimations.push(createPos({
           x: Math.round(estimatedGazePoint.x),
           y: Math.round(estimatedGazePoint.y)
         }));
       } else {
-        validationData.push(targetData);
+        validationData.push(createGazeAtTargetData({
+          targetPos,
+          gazeEstimations
+        }));
         webgazer.clearGazeListener();
         onFinish();
       }
