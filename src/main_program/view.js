@@ -18,7 +18,7 @@ const getDwellBtnDomEl = dwellBtn => {
   const left = dwellBtn.ellipse.center.x;
   const top = dwellBtn.ellipse.center.y;
 
-  return createElementFromHTML(html`
+  const btnEl = createElementFromHTML(html`
     <button id="${dwellBtn.domId}" class="dwellBtnSingle"
       style="width:${btnWidth}px; height:${btnHeight}px;
         left:${left}px; top:${top}px"
@@ -26,6 +26,8 @@ const getDwellBtnDomEl = dwellBtn => {
       <h2>${dwellBtn.label}</h2>
     </button>
   `)
+  btnEl.style.backgroundImage = `url(${dwellBtn.icon})`;
+  return btnEl;
 };
 
 const getMainMenuPage = () => createElementFromHTML(html`

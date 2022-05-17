@@ -1,9 +1,6 @@
 import {createDwellBtn, createDwellBtnProgress, createFixation, createPos} from '../../src/data_types.js';
 import {gazeAtDwellBtns} from '../../src/main_program/main.js';
 
-const vw = 1600;
-const vh = 900;
-
 const getNoCurrentBtn = () => createDwellBtnProgress({
   btnId: false, progressInPct: 0
 });
@@ -18,13 +15,12 @@ test(
     let onGazeAtBtnTriggered = false;
 
     const testDwellBtnCenterd = createDwellBtn({
-      centerPosRel: createPos({x: 50, y: 50}),
+      center: createPos({x: 350, y: 300}),
       domId: 'testBtn',
       size: createPos({x: 300, y: 200}),
       timeTillActivation: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false),
-      viewport: createPos({x: vw, y: vh})
     });
 
     const btnProgress0 = createDwellBtnProgress({
@@ -78,13 +74,12 @@ test(
     });
     let onGazeAtBtnTriggered = false;
     const testDwellBtnCenterd = createDwellBtn({
-      centerPosRel: createPos({x: 50, y: 50}),
+      center: createPos({x: 700, y: 500}),
       domId: 'testBtn2',
       size: createPos({x: 300, y: 200}),
       timeTillActivation: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false),
-      viewport: createPos({x: vw, y: vh})
     });
 
     const falseFixation = false;
@@ -118,13 +113,12 @@ test(
     const currentBtn = getNoCurrentBtn();
     let onGazeAtBtnTriggered = false;
     const testDwellBtnCenterd = createDwellBtn({
-      centerPosRel: createPos({x: 50, y: 50}),
+      center: createPos({x: 600, y: 450}),
       domId: 'testBtn3',
       size: createPos({x: 300, y: 200}),
       timeTillActivation: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false),
-      viewport: createPos({x: vw, y: vh})
     });
 
     const shortFixationCenter = createFixation({
@@ -165,21 +159,20 @@ test(
     let onGazeAtBtnTriggeredFirst = false;
     let onGazeAtBtnTriggeredSecond = false;
     const testDwellBtnCenterd = createDwellBtn({
-      centerPosRel: createPos({x: 50, y: 50}),
+      center: createPos({x: 700, y: 400}),
       domId: 'testBtn4',
       size: createPos({x: 300, y: 200}),
       timeTillActivation: 1000,
       // if action is triggered the test fails
       action: () => btnActionTriggeredCount++,
-      viewport: createPos({x: vw, y: vh})
     });
 
     const longFixationAtCenter = createFixation({
-      center: createPos({x: 900, y: 500}),
+      center: createPos({x: 700, y: 500}),
       duration: 1200
     });
     const evenLongerFixationAtCenter = createFixation({
-      center: createPos({x: 920, y: 480}),
+      center: createPos({x: 850, y: 400}),
       duration: 1400
     });
     const btnProgress100 = createDwellBtnProgress({
@@ -223,7 +216,6 @@ test(
 
 
 // create Zoom from with different levels ([1.0, 1.5, 3.0})
-// Define a test viewport: 32: 20
 // Define test lines: start: 0, 0; end: 31, 17
 //                    start: 20, 10 end: 30, 14
 //
@@ -243,13 +235,13 @@ const getRoot = (callback = () => {}) => ({
 
 test('create Two Overlapping dwell Btns',() => {
   const dwellBtnCenter = createDwellBtn({
-    centerPosRel: createPos({x: 45, y: 45}),
+    center: createPos({x: 45, y: 45}),
     id: 'center1',
     size: createPos({x: 200, y: 100}),
   });
 
   const dwellBtnCenter2 = createDwellBtn({
-    centerPosRel: createPos({x: 55, y: 55}),
+    center: createPos({x: 55, y: 55}),
     id: 'center2',
     size: createPos({x: 200, y: 100})
   });

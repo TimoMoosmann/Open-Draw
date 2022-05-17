@@ -1,7 +1,10 @@
 import {vh, vw} from './util/browser.js';
+import {checkAddArgNameToErrMsg, checkSetErrMsg} from './util/error_handling.js';
 import {meanOffset, round, calcSampleStandardDeviation} from './util/math.js';
 import {stripIndent} from 'common-tags';
 import {List, Item} from '../other_modules/linked-list.js';
+
+import eyeIcon from '../assets/img/eye-scanner.png';
 
 // Pos
 const createPos = ({
@@ -12,25 +15,30 @@ const createPos = ({
   y
 });
 
-const checkPos = pos => {
+const checkPos = (pos, argName) => {
   if(!(pos.hasOwnProperty('x') && pos.hasOwnProperty('y'))) {
-    throw 'Invalid pos.';
+    throw new TypeError(argName + ': Invalid pos.');
   }
 };
 
-const checkNumericPos = pos => {
-  checkPos(pos);
+const checkNumericPos = (pos, argName) => {
+  checkPos(pos, argName);
   if(isNaN(pos.x) || isNaN(pos.y)) {
-    throw 'Invalid numericPos.';
+    throw new TypeError(argName + ': Invalid numericPos.');
   }
 };
 
-const checkPositiveNumericPos = pos => {
-  checkNumericPos(pos);
+const checkPositiveNumericPos = (pos, argName) => {
+  checkNumericPos(pos, argName);
   if(pos.x <= 0 || pos.y <= 0) {
-    throw 'Invalid positiveNumericPos.';
+    throw argName + ': Invalid positiveNumericPos.';
   }
 };
+
+const multPos = (pos, mult) => createPos({
+  x: pos.x * mult,
+  y: pos.y * mult
+});
 
 const posEqual = (pos1, pos2) => pos1.x === pos2.x && pos1.y === pos2.y;
 
@@ -51,24 +59,24 @@ const createTimedPosItem = ({timestamp, pos}) => {
 };
 
 // Arrays
-const checkArray = arr => {
+const checkArray = (arr, argName) => {
   if (!Array.isArray(arr)) {
-    throw 'Invalid Array given.';
+    throw new TypeError(argName + ': Invalid Array given.');
   }
 };
 
-const checkNonEmptyArray = array => {
-  checkArray(array);
+const checkNonEmptyArray = (array, argName) => {
+  checkArray(array, argName);
   if (array.length === 0) {
-    throw 'Invalid NonEmptyArray given.';
+    throw new TypeError(argName + ': Invalid NonEmptyArray given.');
   }
 };
 
-const checkNumbersArray = numbers => {
+const checkNumbersArray = (numbers, argName) => {
   checkNonEmptyArray(numbers);
   for (let num of numbers) {
     if (isNaN(num)) {
-      throw 'Invalid NumbersArray given.';
+      throw new TypeError(argName + ': Invalid NumbersArray given.');
     }
   }
 };
@@ -89,30 +97,90 @@ const createDrawStateGazeDotColors = ({drawing, looking}) => ({drawing, looking}
 // Ellipse
 const createEllipse = ({center, radii}) => ({center, radii});
 
+const checkEllipse = (ellipse, argName) => {
+  checkNumericPos(ellipse.center, argName + '.center');
+  checkPositiveNumericPos(ellipse.radii, argName + '.radii');
+};
+
 const inEllipse = ({ellipse, pos}) => ((
   (Math.pow(pos.x - ellipse.center.x, 2) / Math.pow(ellipse.radii.x, 2)) +
   (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radii.y, 2))
 ) <= 1);
 
 const createDwellBtn = ({
-  centerPosRel,
+  center= createPos({x: 0, y: 0}),
   domId,
+  icon = eyeIcon,
   size,
-  timeTillActivation,
-  action,
-  viewport
+  timeTillActivation = 1000,
+  action = () => {},
 }) => ({
   action,
   ellipse: createEllipse({
-    center: createPos({
-      x: (centerPosRel.x / 100) * viewport.x,
-      y: (centerPosRel.y / 100) * viewport.y,
-    }),
+    center,
     radii: createPos({x: size.x / 2, y: size.y / 2})
   }),
   domId,
-  timeTillActivation,
+  icon,
+  timeTillActivation
 });
+
+const createDwellBtnFromDwellBtnAndCenter = (dwellBtn, center) => createDwellBtn({
+  center,
+  domId: dwellBtn.domId, 
+  icon: dwellBtn.icon,
+  size: multPos(dwellBtn.ellipse.radii, 2),
+  timeTillActivation: dwellBtn.timeTillActivation,
+  action: dwellBtn.action
+});
+
+
+const checkEquallySizedDwellBtns = (dwellBtns, argName) => {
+    if (!Array.isArray(dwellBtns) || dwellBtns.length < 1) {
+      throw new TypeError(
+        argName +
+        ': Object of type EquallySizedDwellBtns is an Array ' +
+        'with at least one element.'
+      );
+    }
+    let prevDwellBtnRadii = false;
+    for (const dwellBtn of dwellBtns) {
+      checkDwellBtn(dwellBtn, argName + ': DwellBtn');
+
+      if (
+        prevDwellBtnRadii !== false &&
+        !posEqual(dwellBtn.ellipse.radii, prevDwellBtnRadii)
+      ) {
+        throw new TypeError(argName + ': DwellBtns are not sized equally.');
+      }
+      prevDwellBtnRadii = dwellBtn.ellipse.radii;
+    }
+  };
+
+const checkDwellBtn = (dwellBtn, argName) => {
+  const preText = argName + ': Illegal DwellBtn Object, ';
+  const {ellipse, domId, icon, size, timeTillActivation, action} = dwellBtn;
+
+  if (!(typeof(domId) === 'string')) {
+    throw new TypeError(
+      preText + 'domId needs to be a string.'
+    );
+  }
+  if (!(typeof(icon) === 'string')) {
+    throw new TypeError(preText + 'icon needs to be a string.');
+  }
+  if (!(Number.isInteger(timeTillActivation) && timeTillActivation > 0)) {
+    throw new TypeError(
+      preText +
+      'timeTillActivation needs to be a number greater than 0.'
+    );
+  }
+  if (!(typeof action === 'function')) {
+    throw new TypeError(preText + 'action needs to be function.');
+  }
+
+  checkEllipse(ellipse, argName);
+};
 
 const createDwellBtnProgress = ({
   btnId = false,
@@ -332,12 +400,30 @@ const getRelativeTargetPosName = targetPosRel => {
 };
 
 export {
-  checkGazeAtTargetData, checkNumbersArray, checkValidationData,
-  createDetailedInformationGazeAtTargetData, createDrawStateGazeDotColors,
-  createEllipse, createEvaluatedGazeAtTargetData,
-  createDwellBtn, createDwellBtnProgress, createFixation,
-  createGazeAtTargetData, createLine, createPos,
-  createStrokeProperties, createTimedPosItem, createZoom, createZoomLevels,
-  inEllipse, posLowerThanOrEqual, posSubtract
+  checkDwellBtn,
+  checkEquallySizedDwellBtns,
+  checkGazeAtTargetData,
+  checkNumbersArray,
+  checkValidationData,
+  createDetailedInformationGazeAtTargetData,
+  createDrawStateGazeDotColors,
+  createDwellBtn,
+  createDwellBtnFromDwellBtnAndCenter,
+  createDwellBtnProgress,
+  createEllipse,
+  createEvaluatedGazeAtTargetData,
+  createFixation,
+  createGazeAtTargetData,
+  createLine,
+  createPos,
+  createStrokeProperties,
+  createTimedPosItem,
+  createZoom,
+  createZoomLevels,
+  inEllipse,
+  multPos,
+  posEqual,
+  posLowerThanOrEqual,
+  posSubtract
 };
 
