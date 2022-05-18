@@ -1,12 +1,13 @@
-import { checkDwellBtn, checkEquallySizedDwellBtns, createDwellBtnFromDwellBtnAndCenter, createPos, posEqual } from '../data_types.js';
+import { checkDwellBtn, checkEquallySizedDwellBtns, checkIdxInBounds, checkUnsignedInteger, createDwellBtnFromDwellBtnAndCenter, createPos, posEqual } from '../data_types.js';
 import { checkAddArgNameToErrMsg } from '../util/error_handling.js';
 
 const arrangeEquallySizedDwellBtnsToParallelMenu = ({
   distToNeighbor,
+  endIdx = false,
   equallySizedDwellBtns,
   minDistToEdge,
-  nextBtn,
-  prevBtn,
+  getNextBtn,
+  getPrevBtn,
   startIdx = 0,
   viewport
 }) => {
@@ -20,13 +21,22 @@ const arrangeEquallySizedDwellBtnsToParallelMenu = ({
     }
   };
 
-  if (nextBtn) {
-    checkDwellBtn(nextBtn, 'nextBtn') 
-    checkDwellBtnCorrectSized(nextBtn, 'nextBtn');
+  if (startIdx) {
+    checkUnsignedInteger(startIdx, 'startIdx');
+    checkIdxInBounds(startIdx, equallySizedDwellBtns, 'startIdx');
+    endIdx = false;
   }
-  if (prevBtn) {
-    checkDwellBtn(prevBtn, 'prevBtn');
-    checkDwellBtnCorrectSized(prevBtn, 'prevBtn');
+  if (endIdx) {
+    checkUnsignedInteger(endIdx, 'endIdx');
+    checkIdxInBounds(endIdx, equallySizedDwellBtns, 'endIdx');
+    startIdx = false;
+  }
+
+  if (getNextBtn && !(typeof(getNextBtn) === 'function')) {
+    throw new TypeError('getNextBtn: Needs to be a callback function.');
+  }
+  if (getPrevBtn && !(typeof(getPrevBtn) === 'function')) {
+    throw new TypeError('getPrevBtn: Needs to be a callback function.');
   }
 
   const btnRadii = equallySizedDwellBtns[0].ellipse.radii;
@@ -52,41 +62,73 @@ const arrangeEquallySizedDwellBtnsToParallelMenu = ({
     }
   }
 
-  const arrangedDwellBtns = [];
-  const numAvailableDwellBtns = equallySizedDwellBtns.length - startIdx;
-  let lastArrangedBtnIdx = startIdx -1;
+  let numFreePositions = availablePositions.length;
+  let hasNextBtn = false;
+  let hasPrevBtn = false;
 
-  for (
-    let positionsIdx = 0;
-    positionsIdx < availablePositions.length;
-    positionsIdx++
-  ) {
-    let currDwellBtn = false;
-
-    if (positionsIdx === 0 && prevBtn && startIdx > 0) {
-      currDwellBtn = prevBtn;
-    } else if (
-      positionsIdx === availablePositions.length - 1 &&
-      nextBtn &&
-      // Checks if there are one or less dwell btns left
-      // Because only when there is more than one dwell btn left a next btn
-      // id needed.
-      lastArrangedBtnIdx < equallySizedDwellBtns.length - 2
-    ) {
-      currDwellBtn = nextBtn;
-    } else if (equallySizedDwellBtns.length > lastArrangedBtnIdx + 1) {
-      currDwellBtn = equallySizedDwellBtns[++lastArrangedBtnIdx];
+  if (Number.isInteger(startIdx)) {
+    if ( startIdx > 0 && getPrevBtn ) {
+      hasPrevBtn = true;
+      numFreePositions--;
     }
-    if (currDwellBtn) {
-      const arrangedDwellBtn = createDwellBtnFromDwellBtnAndCenter(
-        currDwellBtn,
-        availablePositions[positionsIdx],
-      );
-      arrangedDwellBtns.push(arrangedDwellBtn);
-    } else break;
+    if (
+      startIdx + numFreePositions < equallySizedDwellBtns.length &&
+      getNextBtn
+    ) {
+      hasNextBtn = true;
+      numFreePositions--;
+    }
+    endIdx = startIdx + numFreePositions - 1;
+    if (endIdx >= equallySizedDwellBtns.length) {
+      endIdx = equallySizedDwellBtns.length - 1;
+    }
+  }
+  else if (Number.isInteger(endIdx)) {
+    if ( endIdx < equallySizedDwellBtns.length - 1 && getNextBtn ) {
+      hasNextBtn = true;
+      numFreePositions--;
+    }
+    if (endIdx - numFreePositions > 0 && getPrevBtn) {
+      hasPrevBtn = true;
+      numFreePositions--;
+    }
+    startIdx = endIdx - numFreePositions + 1;
+    if (startIdx < 0) startIdx = 0;
   }
 
-  return {arrangedDwellBtns, lastArrangedBtnIdx};
+  const arrangedDwellBtns = [];
+  let availablePositionsIdx = 0;
+
+  if (hasPrevBtn) {
+    const prevBtn = getPrevBtn(startIdx - 1);
+    checkDwellBtn(prevBtn, 'getPrevBtn return');
+    checkDwellBtnCorrectSized(prevBtn, 'getPrevBtn return');
+    arrangedDwellBtns.push(createDwellBtnFromDwellBtnAndCenter(
+      prevBtn,
+      availablePositions[0]
+    ));
+    availablePositionsIdx++;
+  }
+
+  for (let menuBtnIdx = startIdx; menuBtnIdx <= endIdx; menuBtnIdx++) {
+    arrangedDwellBtns.push(createDwellBtnFromDwellBtnAndCenter(
+      equallySizedDwellBtns[menuBtnIdx],
+      availablePositions[availablePositionsIdx],
+    ));
+    availablePositionsIdx++;
+  }
+  
+  if (hasNextBtn) {
+    const nextBtn = getNextBtn(endIdx + 1);
+    checkDwellBtn(nextBtn, 'getNextBtn return');
+    checkDwellBtnCorrectSized(nextBtn, 'getNextBtn return');
+    arrangedDwellBtns.push(createDwellBtnFromDwellBtnAndCenter(
+      nextBtn,
+      availablePositions[availablePositions.length - 1]
+    ));
+  }
+
+  return {arrangedDwellBtns, hasNextBtn, hasPrevBtn};
 };
 
 const getAvailableCoordsPerAxis = ({

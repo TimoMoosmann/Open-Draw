@@ -6,6 +6,13 @@ import {List, Item} from '../other_modules/linked-list.js';
 
 import eyeIcon from '../assets/img/eye-scanner.png';
 
+// Unsigned Integer
+const checkUnsignedInteger = (val, argName) => {
+  if (!Number.isInteger(val) || val < 0) {
+    throw new TypeError(argName + ': Needs to be an unsigned Integer.');
+  }
+};
+
 // Pos
 const createPos = ({
   x = 0,
@@ -78,6 +85,12 @@ const checkNumbersArray = (numbers, argName) => {
     if (isNaN(num)) {
       throw new TypeError(argName + ': Invalid NumbersArray given.');
     }
+  }
+};
+
+const checkIdxInBounds = ( idx, array, argName ) => {
+  if ( idx >= array.length ) {
+    throw new TypeError(argName + ': Index out of bounds.');
   }
 };
 
@@ -403,7 +416,9 @@ export {
   checkDwellBtn,
   checkEquallySizedDwellBtns,
   checkGazeAtTargetData,
+  checkIdxInBounds,
   checkNumbersArray,
+  checkUnsignedInteger,
   checkValidationData,
   createDetailedInformationGazeAtTargetData,
   createDrawStateGazeDotColors,

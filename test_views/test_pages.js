@@ -41,6 +41,62 @@ const testDwellBtns = createTestPage({
   getPage: getDwellBtnsPage
 })
 
+const createStandardDwellBtn = (domId, action) => createDwellBtn({
+  domId,
+  size: createPos({x: 200, y: 200}),
+  timeTillActivation: 1000,
+  action
+});
+
+const drawMenu({
+  distToNeighbor = 150,
+  equallySizedDwellBtns,
+  minDistToEdge = 200,
+  startIdx
+}) => {
+  const getNextBtn = createStandardDwellBtn('nextBtn', newStartIdx => {
+    drawMenu({
+      equallySizedDwellBtns,
+      startIdx: newStartIdx
+    });
+  };
+
+  const prevBtn = createStandardDwellBtn('prevBtn', () => {});
+
+  const {arrangedDwellBtns, lastArrangedBtnIdx} =
+    arrangeEquallySizedDwellBtnsToParallelMenu({
+      distToNeighbor,
+      equallySizedDwellBtns,
+      minDistToEdge,
+      nextBtn,
+      prevBtn,
+      startIdx,
+      viewport: createPos({x: vw(), y: vh()})
+    });
+
+  const nextBtn.action = drawMenu({
+    equallySizedDwellBtns,
+    startIdx: lastArrangangedBtnIdx + 1
+  });
+};
+
+const getMenuFromStat = () => {
+
+  const distToNeighbor = 150;
+  const minDistToEdge = 200;
+  const nextBtn = createStandardDwellBtn
+  const numTestDwellBtns = 15;
+
+  const testDwellBtns = [];
+  for (let i = 0; i < numTestDwellBtns; i++) {
+    const domId = 'btn' + i;
+    testDwellBtns.push(  }
+  
+  const arrangedBtns = arrangeEquallySizedDwellBtnsToParallelMenu({
+
+
+};
+
 const testPages = [
   testDwellBtns
 ];
