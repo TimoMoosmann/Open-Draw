@@ -1,5 +1,8 @@
 import { createDwellBtn, createPos } from '../../src/data_types.js';
-import { arrangeEquallySizedDwellBtnsToParallelMenu } from '../../src/main_program/dwell_btn_patterns.js';
+import {
+  arrangeEquallySizedDwellBtnsToParallelMenu,
+  arrangeOneBtnToLowerRight
+} from '../../src/main_program/dwell_btn_patterns.js';
 
 const getTestViewport = () => createPos({
   x: 1600, y: 1000
@@ -14,12 +17,16 @@ const getTestDistToNeighbor = () => createPos({
 });
 
 const arrangeToParallelMenuWithTestSettings = args => {
-  return arrangeEquallySizedDwellBtnsToParallelMenu({
-    ...args,
-    minDistToEdge: getTestMinDistToEdge(),
-    distToNeighbor: getTestDistToNeighbor(),
-    viewport: getTestViewport()
-  });
+  if (!args.hasOwnProperty('minDistToEdge')) {
+    args.minDistToEdge = getTestMinDistToEdge();
+  }
+  if (!args.hasOwnProperty('distToNeighbor')) {
+    args.distToNeighbor = getTestDistToNeighbor();
+  }
+  if (!args.hasOwnProperty('viewport')) {
+    args.viewport = getTestViewport();
+  }
+  return arrangeEquallySizedDwellBtnsToParallelMenu(args);
 };
 
 const createSimpleDwellBtn = ({
@@ -96,9 +103,11 @@ const createTestGetPrevBtn = (
 
 const deleteActionsFromDwellBtns = dwellBtnArr => {
   for (let i = 0; i < dwellBtnArr.length; i++) {
-    delete dwellBtnArr[i]['action'];
+    deleteActionFromDwellBtn(dwellBtnArr[i]);
   }
 };
+
+const deleteActionFromDwellBtn = dwellBtn => delete dwellBtn['action'];
 
 /*
  * Test arrangeEquallySizedDwellBtnsToParallelMenu
@@ -562,4 +571,41 @@ test(
     expect(twelveTestBtnsArranged).toEqual(expected);
   }
 );
+
+test('When the viewport is to little, no buttons should be displayed.', () => {
+  const arrangedWithToSmallViewport = arrangeToParallelMenuWithTestSettings({
+    equallySizedDwellBtns: createTestDwellBtns(12),
+    getNextBtn: createTestGetNextBtn(false),
+    getPrevBtn: createTestGetPrevBtn(false),
+    viewport: createPos({x: 1200, y: 400})
+  });
+
+  const expected = {
+    arrangedDwellBtns: [],
+    hasNextBtn: false,
+    hasPrevBtn: false
+  };
+
+  expect(arrangedWithToSmallViewport).toEqual(expected);
+});
+
+// Test arrangeOneBtnToLowerRight
+test('When there is space for the dwellBtn place it correctly.', () => {
+  const dwellBtn = createSimpleDwellBtn({domId: 'btn'});
+  const minDistToEdge = getTestMinDistToEdge();
+  const viewport = getTestViewport();
+
+  const dwellBtnArrangedToLowerRight =
+    arrangeOneBtnToLowerRight({dwellBtn, minDistToEdge, viewport});
+
+  const expected = createSimpleDwellBtn({
+    domId: 'btn',
+    center: createPos({x: 1300, y: 700})
+  });
+
+  deleteActionFromDwellBtn(dwellBtnArrangedToLowerRight);
+  deleteActionFromDwellBtn(expected);
+
+  expect(dwellBtnArrangedToLowerRight).toEqual(expected);
+});
 

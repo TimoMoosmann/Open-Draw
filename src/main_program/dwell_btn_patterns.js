@@ -1,4 +1,9 @@
-import { checkDwellBtn, checkEquallySizedDwellBtns, checkIdxInBounds, checkUnsignedInteger, createDwellBtnFromDwellBtnAndCenter, createPos, posEqual } from '../data_types.js';
+import {
+  checkDwellBtn, checkEquallySizedDwellBtns, checkIdxInBounds,
+  checkPositiveNumericPos, checkUnsignedInteger,
+  createDwellBtnFromDwellBtnAndCenter, createPos, posEqual,
+  posSubtract
+} from '../data_types.js';
 import { checkAddArgNameToErrMsg } from '../util/error_handling.js';
 
 const arrangeEquallySizedDwellBtnsToParallelMenu = ({
@@ -12,6 +17,9 @@ const arrangeEquallySizedDwellBtnsToParallelMenu = ({
   viewport
 }) => {
   checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns');
+  checkPositiveNumericPos(distToNeighbor, 'distToNeighbor');
+  checkPositiveNumericPos(minDistToEdge, 'minDistToEdge');
+  checkPositiveNumericPos(viewport, 'viewport');
 
   const checkDwellBtnCorrectSized = (dwellBtn, argName) => {
     if (!posEqual(
@@ -63,16 +71,22 @@ const arrangeEquallySizedDwellBtnsToParallelMenu = ({
   }
 
   let numFreePositions = availablePositions.length;
+
   let hasNextBtn = false;
   let hasPrevBtn = false;
 
   if (Number.isInteger(startIdx)) {
-    if ( startIdx > 0 && getPrevBtn ) {
+    if ( 
+      startIdx > 0 &&
+      numFreePositions > 0 &&
+      getPrevBtn
+    ) {
       hasPrevBtn = true;
       numFreePositions--;
     }
     if (
       startIdx + numFreePositions < equallySizedDwellBtns.length &&
+      numFreePositions > 0 &&
       getNextBtn
     ) {
       hasNextBtn = true;
@@ -84,11 +98,19 @@ const arrangeEquallySizedDwellBtnsToParallelMenu = ({
     }
   }
   else if (Number.isInteger(endIdx)) {
-    if ( endIdx < equallySizedDwellBtns.length - 1 && getNextBtn ) {
+    if (
+      endIdx < equallySizedDwellBtns.length - 1 &&
+      numFreePositions > 0 &&
+      getNextBtn
+    ) {
       hasNextBtn = true;
       numFreePositions--;
     }
-    if (endIdx - numFreePositions > 0 && getPrevBtn) {
+    if (
+      endIdx - numFreePositions > 0 &&
+      numFreePositions > 0 &&
+      getPrevBtn
+    ) {
       hasPrevBtn = true;
       numFreePositions--;
     }
@@ -148,4 +170,22 @@ const getAvailableCoordsPerAxis = ({
   return availableCentered;
 };
 
-export { arrangeEquallySizedDwellBtnsToParallelMenu };
+const arrangeOneBtnToLowerRight = ({
+  dwellBtn,
+  minDistToEdge,
+  viewport
+}) => {
+  checkDwellBtn(dwellBtn, 'dwellBtn');
+  checkPositiveNumericPos(minDistToEdge, 'minDistToEdge');
+  checkPositiveNumericPos(viewport, 'viewport');
+
+  return createDwellBtnFromDwellBtnAndCenter(
+    dwellBtn,
+    posSubtract(posSubtract(viewport, minDistToEdge), dwellBtn.ellipse.radii)
+  );
+};
+
+export {
+  arrangeEquallySizedDwellBtnsToParallelMenu,
+  arrangeOneBtnToLowerRight
+};

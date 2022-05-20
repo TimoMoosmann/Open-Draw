@@ -1,6 +1,6 @@
 import {runClickCalibration, runGazeCalibration, runValidation} from './calibration/main.js';
 import {createPos} from './data_types.js';
-import {runMainProgram} from './main_program/main.js';
+import {startMainProgram} from './main_program/main.js';
 import {setupWebgazer} from './setup_webgazer/main.js';
 import {setWebgazerVideo, showWebgazerVideoWhenFaceIsNotDetected} from './webgazer_extensions/setup.js';
 
@@ -11,6 +11,7 @@ import {getCalibrationScorePage} from './calibration/view.js';
 
 const main = async () => {
 
+  /*
   const webgazerLocal = webgazer;
   await setupWebgazer({
     webgazer: webgazerLocal,
@@ -46,14 +47,13 @@ const main = async () => {
   const calibrationScorePage = getCalibrationScorePage(calibrationScore);
   document.body.appendChild(calibrationScorePage);
 
- /* 
   const minTargetSize = worstRelAcc * 2.5;
   const maxFixationDispersion = worstRelPrec * 2.5;
-
+  */
 
   // Sized Thresholds in html px
-  const maxFixationDispersion = createPos({x: 150, y: 100});
-  const minTargetRadii = createPos({x: 150, y: 100});
+  const testMaxFixationDispersion = createPos({x: 150, y: 150});
+  const testMinTargetSize = createPos({x: 200, y: 200});
   
   // Timed Thresholds
   const fixationDurationThreshold = 200;
@@ -62,14 +62,18 @@ const main = async () => {
   const maxFixationDuration =
     2 * dwellDurationThreshold + webgazerBufferDuration;
 
-  runMainProgram({
+  startMainProgram({
+    minTargetSize: testMinTargetSize
+  })
+  /*
+  startMainProgram({
     dwellDurationThreshold,
     fixationDispersionThreshold: maxFixationDispersion,
     fixationDurationThreshold,
     maxFixationDuration,
-    minTargetRadii,
+    minTargetSize,
     webgazer: webgazerLocal
-  });
+  })
   */
 };
 

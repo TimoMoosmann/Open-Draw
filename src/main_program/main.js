@@ -1,34 +1,94 @@
-import {startDrawLineMode} from './draw_line_mode.js';
-import {getDwellBtnContainer, getDwellBtnDomEl, getMainMenuPage} from './view.js';
-import {createDwellBtn, createEllipse, inEllipse, createLine, createPos} from '../data_types.js';
-import {createElementFromHTML, drawDotOnScreen, getElementCenter, getElementRadii, vh, vw} from '../util/browser.js';
-import {runWebgazerFixationDetection} from '../webgazer_extensions/fixation_detection.js';
-import {setWebgazerGazeDotColor} from '../webgazer_extensions/setup.js';
+import { startDrawLineMode } from './draw_line_mode.js'
+import { arrangeOneBtnToLowerRight } from './dwell_btn_patterns.js'
+import {
+  getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl,
+  getMainMenuPage, getMainProgramContainer
+} from './view.js'
+import {
+  createDwellBtn, createEllipse, createLine, createStrokeProperties,
+  inEllipse, createPos
+} from '../data_types.js'
+import {
+  createElementFromHTML, drawDotOnScreen, getElementCenter, getElementRadii, vh, vw
+} from '../util/browser.js'
+import {
+  runWebgazerFixationDetection
+} from '../webgazer_extensions/fixation_detection.js'
+import { setWebgazerGazeDotColor } from '../webgazer_extensions/setup.js'
 
-import {html} from 'common-tags';
+import openMenuIcon from '../../assets/img/open_menu.png'
 
 /*
-const getDwellBtns = () => [
-  createDwellBtn({
-    centerPosRel: createPos({x: 25, y: 25}),
-    domId: 'testBtnUpperLeft',
-    label: 'Upper Left',
-    size: createPos({x: 200, y: 150}),
-    timeTillActivation: 1000,
-    action: () => alert('pushed upper left button'),
-    viewport: createPos({x: vw(), y: vh()})
-  }),
-  createDwellBtn({
-    centerPosRel: createPos({x: 75, y: 75}),
-    domId: 'testBtnlowerRight',
-    label: 'Lower Right',
-    size: createPos({x: 300, y: 250}),
-    timeTillActivation: 1500,
-    action: () => alert('pushed lower right button'),
-    viewport: createPos({x: vw(), y: vh()})
-  })
-];
+const getMainMenuDwellBtns () => {
+  return [
+    getStartDrawModeDwellBtn(), getStartZoomModeDwellBtn(),
+    getStartColorChooserDwellBtn(),
+};
 */
+
+const startMainProgram = ({
+  minTargetSize
+}) => {
+  const mainProgramContainer = getMainProgramContainer()
+  
+  const testLines = [
+    createLine({
+      startPoint: createPos({ x: 0, y: 0 }),
+      endPoint: createPos({ x: 200, y: 200 }),
+      strokeProperties: createStrokeProperties({
+        color: 'blue',
+        lineWidth: 2
+      })
+    })
+  ]
+
+  document.body.appendChild(mainProgramContainer)
+
+  startMainMenuClosedScreen({
+    lines: testLines,
+    minTargetSize,
+    root: mainProgramContainer
+  })
+}
+
+const startMainMenuClosedScreen = ({
+  lines,
+  minTargetSize,
+  root,
+  standardTimeTillActivation = 1000
+}) => {
+  const openMainMenuDwellBtn = createDwellBtn({
+    action: () => alert('open Main menu now.'),
+    domId: 'openMainMenuBtn',
+    icon: openMenuIcon,
+    size: minTargetSize,
+    timeTillActivation: standardTimeTillActivation,
+    title: 'Open Menu'
+  });
+
+  const arrangedOpenMainMenuDwellBtn = arrangeOneBtnToLowerRight({
+    dwellBtn: openMainMenuDwellBtn,
+    minDistToEdge: getMinDistToEdge(),
+    viewport: createPos({x: vw(), y: vh()})
+  });
+
+  const dwellBtnContainer = getDwellBtnContainer()
+  dwellBtnContainer.appendChild(getDwellBtnDomEl(
+    arrangedOpenMainMenuDwellBtn
+  ))
+
+  const { drawingCanvas, drawingCanvasContainer } =
+    getDrawingCanvasInContainer()
+  
+  root.appendChild(dwellBtnContainer)
+  root.appendChild(drawingCanvasContainer)
+  drawingCanvas.drawLines(lines)
+}
+
+const getMinDistToEdge = () => createPos({
+  x: vw() * (1 / 10),
+  y: vh() * (1 / 10)
+})
 
 const runMainProgram = ({
   dwellDurationThreshold,
@@ -39,13 +99,11 @@ const runMainProgram = ({
   webgazer
 }) => {
 
-  /*
   const container = getDwellBtnContainer();
   document.body.appendChild(container);
   for (const dwellBtn of getDwellBtns()) {
     container.appendChild(getDwellBtnDomEl(dwellBtn));
   }
-  */
 
   const lines = [];
   const runFixationDetectionFixedThresholds = onFixation => {
@@ -81,10 +139,11 @@ const runMainProgram = ({
   */
 };
 
-const drawLines = ({canvas, canvasCtx, lines}) => {
-  clearCanvas({canvas, canvasCtx});
+const drawLines = ({drawingCanvas, lines}) => {
+  const ctx = drawingCanvas.getContext('2d');
+  clearCanvas(drawingCanvas);
   for (const line of lines) {
-    drawLine(canvasCtx, line);
+    drawLine({ ctx, line });
   }
 };
 
@@ -107,17 +166,18 @@ const drawLinesZoomed = ({lines, zoom}) => {
 };
 */
 
-const clearCanvas = ({canvas, canvasCtx}) => {
-  canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+const clearCanvas = canvas => {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 };
 
-const drawLine = ({canvasCtx, line}) => {
-  canvasCtx.strokeStyle = line.properties.color;
-  canvasCtx.lineWidth = line.properties.lineWidth;
-  canvasCtx.beginPath();
-  canvasCtx.moveTo(line.startPoint.x, line.startPoint.y);
-  canvasCtx.lineTo(line.endPoint.x, line.endPoint.y);
-  canvasCtx.stroke();
+const drawLine = ({ctx, line}) => {
+  ctx.strokeStyle = line.strokeProperties.color;
+  ctx.lineWidth = line.strokeProperties.lineWidth;
+  ctx.beginPath();
+  ctx.moveTo(line.startPoint.x, line.startPoint.y);
+  ctx.lineTo(line.endPoint.x, line.endPoint.y);
+  ctx.stroke();
 };
 
 const mainMenuPage = ({
@@ -263,4 +323,4 @@ const verifyDwellBtns = dwellBtns => {
 };
 */
 
-export {drawLine, drawLines, gazeAtDwellBtns, runMainProgram};
+export {drawLine, drawLines, gazeAtDwellBtns, startMainProgram};

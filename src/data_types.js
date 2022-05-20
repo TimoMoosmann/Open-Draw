@@ -95,10 +95,10 @@ const checkIdxInBounds = ( idx, array, argName ) => {
 };
 
 // Line
-const createLine = ({startPoint, endPoint, properties}) => ({
+const createLine = ({startPoint, endPoint, strokeProperties}) => ({
   startPoint,
   endPoint,
-  properties
+  strokeProperties
 });
 
 // Stroke Properties
@@ -121,12 +121,13 @@ const inEllipse = ({ellipse, pos}) => ((
 ) <= 1);
 
 const createDwellBtn = ({
+  action = () => {},
   center= createPos({x: 0, y: 0}),
   domId,
   icon = eyeIcon,
   size,
   timeTillActivation = 1000,
-  action = () => {},
+  title = false
 }) => ({
   action,
   ellipse: createEllipse({
@@ -135,7 +136,8 @@ const createDwellBtn = ({
   }),
   domId,
   icon,
-  timeTillActivation
+  timeTillActivation,
+  title
 });
 
 const createDwellBtnFromDwellBtnAndCenter = (dwellBtn, center) => createDwellBtn({
@@ -418,6 +420,7 @@ export {
   checkGazeAtTargetData,
   checkIdxInBounds,
   checkNumbersArray,
+  checkPositiveNumericPos,
   checkUnsignedInteger,
   checkValidationData,
   createDetailedInformationGazeAtTargetData,
