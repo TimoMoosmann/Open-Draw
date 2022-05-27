@@ -1,24 +1,32 @@
-import {getTestPages} from './test_pages.js';
+import { dwellBtnsMenuTest } from 'TestViews/pages/menu.js'
+import { dwellBtnArrangedLowerRightTest } from 'TestViews/pages/lower_right_btn.js'
+import { dwellBtnsTest } from 'TestViews/pages/dwell_btns.js'
+import { dwellBtnsAndDrawingCanvasTest } from 'TestViews/pages/canvas_and_dwell_btns.js'
 
-import '../assets/css/test_views.css';
+import 'Assets/css/test_views.css'
 
-const main = () => {
+const testPages = [
+  dwellBtnsMenuTest,
+  dwellBtnArrangedLowerRightTest,
+  dwellBtnsTest,
+  dwellBtnsAndDrawingCanvasTest
+]
 
-  const container = document.createElement('div');
-  container.id = 'startTestBtnsContainer';
+function main () {
+  const container = document.createElement('div')
+  container.id = 'startTestBtnsContainer'
+  document.body.appendChild(container)
 
-  for (const testPage of getTestPages()) {
-    const startTestBtn = document.createElement('button');
-    startTestBtn.className = 'startTestBtn';
-    startTestBtn.innerHTML = testPage.name;
+  for (const testPage of testPages) {
+    const startTestBtn = document.createElement('button')
+    startTestBtn.className = 'startTestBtn'
+    startTestBtn.innerHTML = testPage.name
     startTestBtn.addEventListener('click', () => {
-      const body = document.createElement('div');
-      document.body.innerHTML = '';
+      document.body.innerHTML = ''
       testPage.drawPage()
-    });
-    document.body.appendChild(startTestBtn);
+    })
+    container.appendChild(startTestBtn)
   }
 }
 
-main();
-
+main()

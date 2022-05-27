@@ -1,38 +1,41 @@
-import {createPos} from '../data_types.js';
-import {createElementFromHTML} from '../util/browser.js';
+import { createPos } from 'Src/data_types/pos.js'
+import { createElementFromHTML } from 'Src/util/browser.js'
 
-import {html} from 'common-tags';
+import { html } from 'common-tags'
 
-import '../../assets/css/calibration.css';
-import '../../assets/css/calibration_score.css';
-import '../../assets/css/style.css';
+import '../../assets/css/calibration.css'
+import '../../assets/css/calibration_score.css'
+import '../../assets/css/style.css'
 
-const getGazeTarget = ({
+function getGazeTarget ({
   targetsContainer,
-  targetPos = createPos({x: 50, y: 50}),
-  radius=15
-} = {}) => createElementFromHTML(html`
-  <button style="width:${2 * radius}px;
-                 height:${2 * radius}px;
-                 left:${targetPos.x}%;
-                 top:${targetPos.y}%;"
-          class="gazeTarget"
-  >
-    <div class="gazeTargetCrossHor"></div>
-    <div class="gazeTargetCrossVert"></div>
-    <div class="gazeTargetInnerDot"></div>
-  </button>
-`, targetsContainer);
+  targetPos = createPos({ x: 50, y: 50 }),
+  radius = 15
+} = {}) {
+  return createElementFromHTML(html`
+    <button style="width:${2 * radius}px;
+                   height:${2 * radius}px;
+                   left:${targetPos.x}%;
+                   top:${targetPos.y}%;"
+            class="gazeTarget"
+    >
+      <div class="gazeTargetCrossHor"></div>
+      <div class="gazeTargetCrossVert"></div>
+      <div class="gazeTargetInnerDot"></div>
+    </button>
+  `, targetsContainer)
+}
 
-const getGazeTargetsContainer = (id="") => createElementFromHTML(html`
-  <div id="${id}" class="gazeTargetsContainer">
-  </div>
-`);
+function getGazeTargetsContainer (id = '') {
+  return createElementFromHTML(html`
+    <div id="${id}" class="gazeTargetsContainer">
+    </div>
+  `)
+}
 
-const getCalibrationScorePage = calibrationScore => {
-
+function getCalibrationScorePage (calibrationScore) {
   const continueBtnState =
-    calibrationScore.proceedBtnActive ? 'enabled' : 'disabled';
+    calibrationScore.proceedBtnActive ? 'enabled' : 'disabled'
 
   const calibrationScorePage = createElementFromHTML(html`
     <div id="calibrationScoreContainer">
@@ -52,17 +55,16 @@ const getCalibrationScorePage = calibrationScore => {
           <button>Recalibrate</button>
       </div>
     </div>
-  `);
+  `)
 
   calibrationScorePage.querySelector('#accScoreX').style.color =
-    calibrationScore.accScoreColor.x;
+    calibrationScore.accScoreColor.x
   calibrationScorePage.querySelector('#accScoreY').style.color =
-    calibrationScore.accScoreColor.y;
+    calibrationScore.accScoreColor.y
   calibrationScorePage.querySelector('#precStatus').style.color =
-    calibrationScore.precStatusColor;
+    calibrationScore.precStatusColor
 
-  return calibrationScorePage;
-};
+  return calibrationScorePage
+}
 
-export {getCalibrationScorePage, getGazeTarget, getGazeTargetsContainer};
-
+export { getCalibrationScorePage, getGazeTarget, getGazeTargetsContainer }

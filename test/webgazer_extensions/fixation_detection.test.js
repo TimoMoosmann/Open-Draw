@@ -1,5 +1,6 @@
 import {idtOneIteration} from '../../src/webgazer_extensions/fixation_detection.js';
-import {createFixation, createPos, createTimedPosItem, posEqual} from '../../src/data_types.js';
+import {createFixation, createPos, createTimedPosItem, isPosEqual} from '../../src/data_types.js';
+import {createFixation, createPos, createTimedPosItem, isPosEqual} from '../../src/data_types.js';
 import {arraysEqual} from '../../src/util/main.js';
 
 import {List} from '../../other_modules/linked-list.js';
@@ -11,7 +12,8 @@ const posListEquals = (posList1, posList2) => {
   if (posList1.size != posList2.size) return false;
   for (let i = 0; i < posList1.size; i++) {
     if(
-      !posEqual(posList1[i].pos, posList2[i].pos) ||
+      !isPosEqual(posList1[i].pos, posList2[i].pos) ||
+      !isPosEqual(posList1[i].pos, posList2[i].pos) ||
       posList1[i].timestamp !== posList2[i].timestamp
     ) {
       return false;

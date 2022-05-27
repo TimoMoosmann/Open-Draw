@@ -8,16 +8,20 @@ import '../../assets/css/style.css'
 import '../../assets/css/main_program.css'
 import '../../assets/css/main_menu.css'
 
-const getMainProgramContainer = () => createElementFromHTML(html`
-  <div id="mainProgramContainer"></div>
-`)
+function getMainProgramContainer () {
+  return createElementFromHTML(html`
+    <div id="mainProgramContainer"></div>
+  `)
+}
 
-const getDwellBtnContainer = () => createElementFromHTML(html`
-  <div class="dwellBtnContainer">
-  </div>
-`)
+function getDwellBtnContainer () {
+  return createElementFromHTML(html`
+    <div class="dwellBtnContainer">
+    </div>
+  `)
+}
 
-const getDwellBtnDomEl = dwellBtn => {
+function getDwellBtnDomEl (dwellBtn) {
   const btnWidth = dwellBtn.ellipse.radii.x * 2
   const btnHeight = dwellBtn.ellipse.radii.y * 2
   const left = dwellBtn.ellipse.center.x
@@ -51,24 +55,26 @@ const getDwellBtnDomEl = dwellBtn => {
   return btnContainer
 }
 
-const getMainMenuPage = () => createElementFromHTML(html`
-  <div id="mainMenuContainer">
-    <button id="drawBtn" class="dwellBtn">
-      <h2>Draw</h2>
-    </button>
-    <button id="moveBtn" class="dwellBtn">
-      <h2>Move & Zoom</h2>
-    </button>
-    <button id="editBtn" class="dwellBtn">
-      <h2>Edit</h2>
-    </button>
-    <button id="colorBtn" class="dwellBtn">
-      <h2>Color</h2>
-    </button>
-  </div>
-`)
+function getMainMenuPage () {
+  return createElementFromHTML(html`
+    <div id="mainMenuContainer">
+      <button id="drawBtn" class="dwellBtn">
+        <h2>Draw</h2>
+      </button>
+      <button id="moveBtn" class="dwellBtn">
+        <h2>Move & Zoom</h2>
+      </button>
+      <button id="editBtn" class="dwellBtn">
+        <h2>Edit</h2>
+      </button>
+      <button id="colorBtn" class="dwellBtn">
+        <h2>Color</h2>
+      </button>
+    </div>
+  `)
+}
 
-const getDrawingCanvasInContainer = () => {
+function getDrawingCanvasInContainer () {
   const drawingCanvasContainer = createElementFromHTML(html`
     <div id="canvasContainer">
       <canvas id="drawingCanvas">
@@ -107,7 +113,7 @@ const getDrawingCanvasInContainer = () => {
   return { drawingCanvas, drawingCanvasContainer }
 }
 
-const fitCanvasToContainer = canvas => {
+function fitCanvasToContainer (canvas) {
   canvas.style.width = '100%'
   canvas.style.height = '100%'
   canvas.width = canvas.offsetWidth

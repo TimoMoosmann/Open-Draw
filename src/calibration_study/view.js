@@ -1,11 +1,11 @@
-import {createElementFromHTML} from '../util/browser.js';
+import { createElementFromHTML } from 'Src/util/browser.js'
 
-import {html, oneLine, oneLineTrim} from 'common-tags';
+import { html, oneLine, oneLineTrim } from 'common-tags'
 
-import '../../assets/css/calibration_study.css';
-import '../../assets/css/style.css';
+import 'Assets/css/calibration_study.css'
+import 'Assets/css/style.css'
 
-const getGreetingPage = () => {
+function getGreetingPage () {
   return createElementFromHTML(html`
     <div id="calibrationStudyTextContainer">
       <h3>Herzlich Willkommen zu meiner Webcam Eyetracking Kalibrierungsstudie.</h3>
@@ -28,10 +28,10 @@ const getGreetingPage = () => {
         <button type="submit">Los geht's</button>
       </div>
     </div>
-  `);
-};
+  `)
+}
 
-const getParticipantDataPage = () => {
+function getParticipantDataPage () {
   return createElementFromHTML(html`
     <div id="calibrationStudyTextContainer" class="contentCenteredVertically">
       <h2>Bitte füllen sie das Formular aus.</h2>
@@ -62,20 +62,20 @@ const getParticipantDataPage = () => {
         </div>
       </form>
     </div>
-  `);
-};
+  `)
+}
 
-const getThankYouPage = () => {
+function getThankYouPage () {
   return createElementFromHTML(html`
     <div id="calibrationStudyTextContainer" class="
       centeredContent contentCenteredVertically
     ">
       <h2>Das wars! Vielen Dank für ihre Teilnahme.</h2>
     </div>
-  `);
-};
+  `)
+}
 
-const getTypeIntroductionPage = ({taskName, introductionLines}) => {
+function getTypeIntroductionPage ({ taskName, introductionLines }) {
   return createElementFromHTML(html`
     <div id="calibrationStudyTextContainer" class="centeredContent">
       <h2>${taskName}</h2>
@@ -86,88 +86,95 @@ const getTypeIntroductionPage = ({taskName, introductionLines}) => {
         <button type="submit">Weiter</button>
       </div>
     </div>
-  `);
+  `)
 }
 
-const getClickCalibrationIntroductionPage = () => getTypeIntroductionPage({
-  taskName: 'Klickkalibrierung',
-  introductionLines: [
-    oneLine`Bei der Klickkalibrierung müssen sie nacheinander auf die
-     erscheinenden Ziele klicken.
-    `,
-    `Am Ende folgt eine kurze Validierung.`
-  ]
-});
+function getClickCalibrationIntroductionPage () {
+  return getTypeIntroductionPage({
+    taskName: 'Klickkalibrierung',
+    introductionLines: [
+      oneLine`Bei der Klickkalibrierung müssen sie nacheinander auf die
+       erscheinenden Ziele klicken.
+      `,
+      'Am Ende folgt eine kurze Validierung.'
+    ]
+  })
+}
 
-const getGazeCalibrationIntroductionPage = () => getTypeIntroductionPage({
-  taskName: 'Blickkalibrierung',
-  introductionLines: [
-    oneLine`Bei der Blickkalibrierung müssen sie nacheinander auf die
-     erscheinenden Ziele starren.
-    `,
-    `Am Ende folgt eine kurze Validierung.`
-  ]
-});
+function getGazeCalibrationIntroductionPage () {
+  return getTypeIntroductionPage({
+    taskName: 'Blickkalibrierung',
+    introductionLines: [
+      oneLine`Bei der Blickkalibrierung müssen sie nacheinander auf die
+       erscheinenden Ziele starren.
+      `,
+      'Am Ende folgt eine kurze Validierung.'
+    ]
+  })
+}
 
-
-const getTaskInstructionsPage = ({title, instructions}) => {
-return createElementFromHTML(html`
-  <div id="calibrationStudyTextContainer">
-    <h2>${title}</h2>
-    <div class="text">
-      <ul>
-        ${instructions.map(instruction => `<li>${instruction}</li>`)}
-      </ul>
+function getTaskInstructionsPage ({ title, instructions }) {
+  return createElementFromHTML(html`
+    <div id="calibrationStudyTextContainer">
+      <h2>${title}</h2>
+      <div class="text">
+        <ul>
+          ${instructions.map(instruction => `<li>${instruction}</li>`)}
+        </ul>
+      </div>
+      <div id="submitHolder">
+        <button type="submit">Los geht's</button>
+      </div>
     </div>
-    <div id="submitHolder">
-      <button type="submit">Los geht's</button>
-    </div>
-  </div>
-`);
+  `)
 }
 
-const getClickCalibrationInstructionsPage = ({
-currentTaskNum, numTasks, numTargets
-}) => {
-return getTaskInstructionsPage({
-  title: oneLineTrim`
-    (${currentTaskNum}/${numTasks}) Klickkalibrierung mit ${numTargets} Zielen
-    `,
-  instructions: [
-    `Klicken sie nacheinander auf die Ziele.`,
-    `Schauen sie dabei auf die Mitte der Ziele.`,
-    `Halten sie den Kopf möglichst gerade.`,
-  ]
-});
-};
-
-const getGazeCalibrationInstructionsPage = ({
-currentTaskNum, numTasks, numTargets
-}) => {
-return getTaskInstructionsPage({
-  title: oneLineTrim`
-    (${currentTaskNum}/${numTasks}) Blickkalibrierung mit ${numTargets} Zielen
-    `,
-  instructions: [
-    `Schauen sie auf die Mitte jedes Ziels.`,
-    `Halten sie den Kopf möglichst gerade.`,
-  ]
-});
+function getClickCalibrationInstructionsPage ({
+  currentTaskNum, numTasks, numTargets
+}) {
+  return getTaskInstructionsPage({
+    title: oneLineTrim`
+      (${currentTaskNum}/${numTasks}) Klickkalibrierung mit ${numTargets} Zielen
+      `,
+    instructions: [
+      'Klicken sie nacheinander auf die Ziele.',
+      'Schauen sie dabei auf die Mitte der Ziele.',
+      'Halten sie den Kopf möglichst gerade.'
+    ]
+  })
 }
 
-const getValidationInstructionsPage = numTargets => {
-return getTaskInstructionsPage({
-  title: `Validierung mit ${numTargets} Zielen`,
-  instructions: [
-    `Schauen sie auf die Mitte jedes Ziels.`,
-    `Halten sie den Kopf möglichst gerade.`,
-  ]
-});
+function getGazeCalibrationInstructionsPage ({
+  currentTaskNum, numTasks, numTargets
+}) {
+  return getTaskInstructionsPage({
+    title: oneLineTrim`
+      (${currentTaskNum}/${numTasks}) Blickkalibrierung mit ${numTargets} Zielen
+      `,
+    instructions: [
+      'Schauen sie auf die Mitte jedes Ziels.',
+      'Halten sie den Kopf möglichst gerade.'
+    ]
+  })
 }
 
-export {getClickCalibrationInstructionsPage,
-getClickCalibrationIntroductionPage, getGazeCalibrationInstructionsPage,
-getGazeCalibrationIntroductionPage, getGreetingPage, getParticipantDataPage,
-getThankYouPage, getValidationInstructionsPage
-};
+function getValidationInstructionsPage (numTargets) {
+  return getTaskInstructionsPage({
+    title: `Validierung mit ${numTargets} Zielen`,
+    instructions: [
+      'Schauen sie auf die Mitte jedes Ziels.',
+      'Halten sie den Kopf möglichst gerade.'
+    ]
+  })
+}
 
+export {
+  getClickCalibrationInstructionsPage,
+  getClickCalibrationIntroductionPage,
+  getGazeCalibrationInstructionsPage,
+  getGazeCalibrationIntroductionPage,
+  getGreetingPage,
+  getParticipantDataPage,
+  getThankYouPage,
+  getValidationInstructionsPage
+}

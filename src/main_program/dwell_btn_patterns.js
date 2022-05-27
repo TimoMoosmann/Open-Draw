@@ -1,12 +1,14 @@
 import {
-  checkDwellBtn, checkEquallySizedDwellBtns, checkIdxInBounds,
-  checkPositiveNumericPos, checkUnsignedInteger,
-  createDwellBtnFromDwellBtnAndCenter, createPos, posEqual,
-  posSubtract
-} from '../data_types.js';
-import { checkAddArgNameToErrMsg } from '../util/error_handling.js';
+  checkDwellBtn, createDwellBtnFromDwellBtnAndCenter
+} from 'Src/main_program/data_types/dwell_btn.js'
+import { checkEquallySizedDwellBtns } from 'Src/main_program/data_types/equally_sized_dwell_btns.js'
+import { checkIdxInBounds } from 'Src/data_types/array.js'
+import {
+  checkPositiveNumericPos, createPos, isPosEqual, subPositions
+} from 'Src/data_types/pos.js'
+import { checkUnsignedInteger } from 'Src/data_types/numbers.js'
 
-const arrangeEquallySizedDwellBtnsToParallelMenu = ({
+function arrangeEquallySizedDwellBtnsToParallelMenu ({
   distToNeighbor,
   endIdx = false,
   equallySizedDwellBtns,
@@ -15,46 +17,46 @@ const arrangeEquallySizedDwellBtnsToParallelMenu = ({
   getPrevBtn,
   startIdx = 0,
   viewport
-}) => {
-  checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns');
-  checkPositiveNumericPos(distToNeighbor, 'distToNeighbor');
-  checkPositiveNumericPos(minDistToEdge, 'minDistToEdge');
-  checkPositiveNumericPos(viewport, 'viewport');
+}) {
+  checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns')
+  checkPositiveNumericPos(distToNeighbor, 'distToNeighbor')
+  checkPositiveNumericPos(minDistToEdge, 'minDistToEdge')
+  checkPositiveNumericPos(viewport, 'viewport')
 
   const checkDwellBtnCorrectSized = (dwellBtn, argName) => {
-    if (!posEqual(
+    if (!isPosEqual(
       equallySizedDwellBtns[0].ellipse.radii, dwellBtn.ellipse.radii
     )) {
-      throw new TypeError(argName + ': Not sized like equallySizedDwellBtns.');
+      throw new TypeError(argName + ': Not sized like equallySizedDwellBtns.')
     }
-  };
+  }
 
   if (startIdx) {
-    checkUnsignedInteger(startIdx, 'startIdx');
-    checkIdxInBounds(startIdx, equallySizedDwellBtns, 'startIdx');
-    endIdx = false;
+    checkUnsignedInteger(startIdx, 'startIdx')
+    checkIdxInBounds(startIdx, equallySizedDwellBtns, 'startIdx')
+    endIdx = false
   }
   if (endIdx) {
-    checkUnsignedInteger(endIdx, 'endIdx');
-    checkIdxInBounds(endIdx, equallySizedDwellBtns, 'endIdx');
-    startIdx = false;
+    checkUnsignedInteger(endIdx, 'endIdx')
+    checkIdxInBounds(endIdx, equallySizedDwellBtns, 'endIdx')
+    startIdx = false
   }
 
-  if (getNextBtn && !(typeof(getNextBtn) === 'function')) {
-    throw new TypeError('getNextBtn: Needs to be a callback function.');
+  if (getNextBtn && !(typeof (getNextBtn) === 'function')) {
+    throw new TypeError('getNextBtn: Needs to be a callback function.')
   }
-  if (getPrevBtn && !(typeof(getPrevBtn) === 'function')) {
-    throw new TypeError('getPrevBtn: Needs to be a callback function.');
+  if (getPrevBtn && !(typeof (getPrevBtn) === 'function')) {
+    throw new TypeError('getPrevBtn: Needs to be a callback function.')
   }
 
-  const btnRadii = equallySizedDwellBtns[0].ellipse.radii;
+  const btnRadii = equallySizedDwellBtns[0].ellipse.radii
 
   const availableXs = getAvailableCoordsPerAxis({
     axisBtnRadii: btnRadii.x,
     axisDistToNeighbor: distToNeighbor.x,
     axisMinDistToEdge: minDistToEdge.x,
     axisViewport: viewport.x
-  });
+  })
 
   const availableYs = getAvailableCoordsPerAxis({
     axisBtnRadii: btnRadii.y,
@@ -63,129 +65,128 @@ const arrangeEquallySizedDwellBtnsToParallelMenu = ({
     axisViewport: viewport.y
   })
 
-  const availablePositions = [];
+  const availablePositions = []
   for (const y of availableYs) {
     for (const x of availableXs) {
-      availablePositions.push(createPos({x, y}));
+      availablePositions.push(createPos({ x, y }))
     }
   }
 
-  let numFreePositions = availablePositions.length;
+  let numFreePositions = availablePositions.length
 
-  let hasNextBtn = false;
-  let hasPrevBtn = false;
+  let hasNextBtn = false
+  let hasPrevBtn = false
 
   if (Number.isInteger(startIdx)) {
-    if ( 
+    if (
       startIdx > 0 &&
       numFreePositions > 0 &&
       getPrevBtn
     ) {
-      hasPrevBtn = true;
-      numFreePositions--;
+      hasPrevBtn = true
+      numFreePositions--
     }
     if (
       startIdx + numFreePositions < equallySizedDwellBtns.length &&
       numFreePositions > 0 &&
       getNextBtn
     ) {
-      hasNextBtn = true;
-      numFreePositions--;
+      hasNextBtn = true
+      numFreePositions--
     }
-    endIdx = startIdx + numFreePositions - 1;
+    endIdx = startIdx + numFreePositions - 1
     if (endIdx >= equallySizedDwellBtns.length) {
-      endIdx = equallySizedDwellBtns.length - 1;
+      endIdx = equallySizedDwellBtns.length - 1
     }
-  }
-  else if (Number.isInteger(endIdx)) {
+  } else if (Number.isInteger(endIdx)) {
     if (
       endIdx < equallySizedDwellBtns.length - 1 &&
       numFreePositions > 0 &&
       getNextBtn
     ) {
-      hasNextBtn = true;
-      numFreePositions--;
+      hasNextBtn = true
+      numFreePositions--
     }
     if (
       endIdx - numFreePositions > 0 &&
       numFreePositions > 0 &&
       getPrevBtn
     ) {
-      hasPrevBtn = true;
-      numFreePositions--;
+      hasPrevBtn = true
+      numFreePositions--
     }
-    startIdx = endIdx - numFreePositions + 1;
-    if (startIdx < 0) startIdx = 0;
+    startIdx = endIdx - numFreePositions + 1
+    if (startIdx < 0) startIdx = 0
   }
 
-  const arrangedDwellBtns = [];
-  let availablePositionsIdx = 0;
+  const arrangedDwellBtns = []
+  let availablePositionsIdx = 0
 
   if (hasPrevBtn) {
-    const prevBtn = getPrevBtn(startIdx - 1);
-    checkDwellBtn(prevBtn, 'getPrevBtn return');
-    checkDwellBtnCorrectSized(prevBtn, 'getPrevBtn return');
+    const prevBtn = getPrevBtn(startIdx - 1)
+    checkDwellBtn(prevBtn, 'getPrevBtn return')
+    checkDwellBtnCorrectSized(prevBtn, 'getPrevBtn return')
     arrangedDwellBtns.push(createDwellBtnFromDwellBtnAndCenter(
       prevBtn,
       availablePositions[0]
-    ));
-    availablePositionsIdx++;
+    ))
+    availablePositionsIdx++
   }
 
   for (let menuBtnIdx = startIdx; menuBtnIdx <= endIdx; menuBtnIdx++) {
     arrangedDwellBtns.push(createDwellBtnFromDwellBtnAndCenter(
       equallySizedDwellBtns[menuBtnIdx],
-      availablePositions[availablePositionsIdx],
-    ));
-    availablePositionsIdx++;
+      availablePositions[availablePositionsIdx]
+    ))
+    availablePositionsIdx++
   }
-  
+
   if (hasNextBtn) {
-    const nextBtn = getNextBtn(endIdx + 1);
-    checkDwellBtn(nextBtn, 'getNextBtn return');
-    checkDwellBtnCorrectSized(nextBtn, 'getNextBtn return');
+    const nextBtn = getNextBtn(endIdx + 1)
+    checkDwellBtn(nextBtn, 'getNextBtn return')
+    checkDwellBtnCorrectSized(nextBtn, 'getNextBtn return')
     arrangedDwellBtns.push(createDwellBtnFromDwellBtnAndCenter(
       nextBtn,
       availablePositions[availablePositions.length - 1]
-    ));
+    ))
   }
 
-  return {arrangedDwellBtns, hasNextBtn, hasPrevBtn};
-};
+  return { arrangedDwellBtns, hasNextBtn, hasPrevBtn }
+}
 
-const getAvailableCoordsPerAxis = ({
+function getAvailableCoordsPerAxis ({
   axisBtnRadii, axisDistToNeighbor, axisMinDistToEdge, axisViewport
-}) => {
-  let current = axisMinDistToEdge + axisBtnRadii;
+}) {
+  let current = axisMinDistToEdge + axisBtnRadii
   const available = []
   while ((current + axisBtnRadii) <= axisViewport - axisMinDistToEdge) {
-    available.push(current);
-    current += (2 * axisBtnRadii) + axisDistToNeighbor;
+    available.push(current)
+    current += (2 * axisBtnRadii) + axisDistToNeighbor
   }
   // Now center the given values
   const distFromLastToEdge =
-    axisViewport - (available[available.length -1] + axisBtnRadii);
-  const shiftValue = (distFromLastToEdge - axisMinDistToEdge)  / 2;
-  const availableCentered = available.map(el => el + shiftValue);
-  return availableCentered;
-};
+    axisViewport - (available[available.length - 1] + axisBtnRadii)
+  const shiftValue = (distFromLastToEdge - axisMinDistToEdge) / 2
+  const availableCentered = available.map(el => el + shiftValue)
+  return availableCentered
+}
 
-const arrangeOneBtnToLowerRight = ({
+function arrangeOneBtnToLowerRight ({
   dwellBtn,
   minDistToEdge,
   viewport
-}) => {
-  checkDwellBtn(dwellBtn, 'dwellBtn');
-  checkPositiveNumericPos(minDistToEdge, 'minDistToEdge');
-  checkPositiveNumericPos(viewport, 'viewport');
+}) {
+  checkDwellBtn(dwellBtn, 'dwellBtn')
+  checkPositiveNumericPos(minDistToEdge, 'minDistToEdge')
+  checkPositiveNumericPos(viewport, 'viewport')
 
   return createDwellBtnFromDwellBtnAndCenter(
     dwellBtn,
-    posSubtract(posSubtract(viewport, minDistToEdge), dwellBtn.ellipse.radii)
-  );
-};
+    subPositions(subPositions(viewport, minDistToEdge), dwellBtn.ellipse.radii)
+  )
+}
 
 export {
   arrangeEquallySizedDwellBtnsToParallelMenu,
   arrangeOneBtnToLowerRight
-};
+}

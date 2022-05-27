@@ -1,5 +1,6 @@
-import {createGazeAtTargetData, createPos} from '../data_types';
-import {popRandomItem} from '../util/main.js';
+import { createGazeAtTargetData } from './data_types/gaze_at_target_data.js'
+import { createPos } from 'Src/data_types/pos.js'
+import { popRandomItem } from 'Src/util/main.js'
 
 /*
  * Draws the current target for the user to look at.
@@ -22,11 +23,11 @@ import {popRandomItem} from '../util/main.js';
  * @param {function} onFinsh - Callback that is executed when the calibration
  * is done.
  */
-const clickCalibration = ({ 
+function clickCalibration ({
   webgazer,
-  gazeTargetsCoords = [{x: 25, y: 25}, {x: 50, y: 50}, {x: 75, y: 75}],
-  drawGazeTarget = pos => {},
-} = {}) => {
+  gazeTargetsCoords = [{ x: 25, y: 25 }, { x: 50, y: 50 }, { x: 75, y: 75 }],
+  drawGazeTarget = pos => {}
+} = {}) {
   return new Promise(resolve => {
     drawGazeTargets({
       targetsCoords: gazeTargetsCoords,
@@ -34,17 +35,17 @@ const clickCalibration = ({
       onFinish: () => resolve(),
       onTargetActive: (currentTarget, drawNextTarget) => {
         currentTarget.addEventListener('click', () => {
-          drawNextTarget();
-        });
+          drawNextTarget()
+        })
       }
-    });
-  });
-};
+    })
+  })
+}
 
 /*
  * Webgazer Calibration Process that displays a new target after a given time.
  * Captures click data, without users need to click on the target.
- * 
+ *
  * @param {object} webgazer - The webgazer object.
  * @param {object[]} gazeTargetsCoords - Coordinates for each target the user
  * should look at. Order doesn't matter.
@@ -60,15 +61,15 @@ const clickCalibration = ({
  * @param {function} onFinsh - Callback that is executed when the calibration
  * is done.
  */
-const gazeCalibration = ({
+function gazeCalibration ({
   webgazer,
-  gazeTargetsCoords = [{x: 25, y: 25}, {x: 50, y: 50}, {x: 75, y: 75}],
+  gazeTargetsCoords = [{ x: 25, y: 25 }, { x: 50, y: 50 }, { x: 75, y: 75 }],
   timeTillRecord = 800,
   recordDuration = 1000,
   recordIntervalDuration = 100,
   afterRecordBufferDuration = 500,
-  drawGazeTarget = pos => {},
-} = {}) => {
+  drawGazeTarget = pos => {}
+} = {}) {
   return new Promise(resolve => {
     drawGazeTargets({
       targetsCoords: gazeTargetsCoords,
@@ -83,21 +84,21 @@ const gazeCalibration = ({
           recordIntervalDuration,
           afterRecordBufferDuration,
           onFinish: drawNextTarget
-        });
+        })
       }
-    });
-  });
-};
+    })
+  })
+}
 
-const validation = ({
+function validation ({
   webgazer,
-  gazeTargetsCoords = [createPos({x: 0, y: 0})],
+  gazeTargetsCoords = [createPos({ x: 0, y: 0 })],
   timeTillCapture = 1000,
-  captureDuration=1000,
+  captureDuration = 1000,
   drawGazeTarget = pos => {}
-}) => {
+}) {
   return new Promise(resolve => {
-    const validationData = [];
+    const validationData = []
     drawGazeTargets({
       targetsCoords: gazeTargetsCoords,
       drawTarget: drawGazeTarget,
@@ -110,27 +111,27 @@ const validation = ({
           timeTillCapture,
           captureDuration,
           onFinish: drawNextTarget
-        });
+        })
       }
-    });
-  });
+    })
+  })
 }
 
-const drawGazeTargets = ({
+function drawGazeTargets ({
   targetsCoords, drawTarget, onFinish, onTargetActive
-} = {}) => {
+} = {}) {
   if (targetsCoords.length > 0) {
-    const currentTarget = drawTarget(popRandomItem(targetsCoords));
+    const currentTarget = drawTarget(popRandomItem(targetsCoords))
     onTargetActive(currentTarget, () => {
-      currentTarget.remove();
-      drawGazeTargets({targetsCoords, drawTarget, onFinish, onTargetActive});
-    });
+      currentTarget.remove()
+      drawGazeTargets({ targetsCoords, drawTarget, onFinish, onTargetActive })
+    })
   } else {
-    onFinish();
+    onFinish()
   }
 }
 
-const recordGazeAtTarget = ({
+function recordGazeAtTarget ({
   webgazer,
   target,
   timeTillRecord,
@@ -138,59 +139,57 @@ const recordGazeAtTarget = ({
   recordIntervalDuration,
   afterRecordBufferDuration,
   onFinish
-}) => {
-  const targetPos = getElementsCenter(target);
-  const startTime = Date.now();
+}) {
+  const targetPos = getElementsCenter(target)
   setTimeout(() => {
     const recordGazeAtTargetInterval = setInterval(() => {
-      webgazer.recordScreenPosition(targetPos.x, targetPos.y, 'click');
-    }, recordIntervalDuration);
+      webgazer.recordScreenPosition(targetPos.x, targetPos.y, 'click')
+    }, recordIntervalDuration)
     setTimeout(() => {
-      clearInterval(recordGazeAtTargetInterval);
-      onFinish();
-    }, recordDuration);
-  }, timeTillRecord);
+      clearInterval(recordGazeAtTargetInterval)
+      onFinish()
+    }, recordDuration)
+  }, timeTillRecord)
 }
 
-const getElementsCenter = element => {
-  const boundingRect = element.getBoundingClientRect();
+function getElementsCenter (element) {
+  const boundingRect = element.getBoundingClientRect()
   return createPos({
     x: Math.round(boundingRect.x + (boundingRect.width / 2)),
     y: Math.round(boundingRect.y + (boundingRect.height / 2))
-  });
+  })
 }
 
-const captureValidationDataForTarget = ({
+function captureValidationDataForTarget ({
   webgazer,
   validationData,
   target,
   timeTillCapture,
   captureDuration,
   onFinish
-}) => {
-  const targetPos = getElementsCenter(target);
+}) {
+  const targetPos = getElementsCenter(target)
   setTimeout(() => {
-    const gazeEstimations = [];
-    const gazeEstimationCaptureStartTime = Date.now();
+    const gazeEstimations = []
+    const gazeEstimationCaptureStartTime = Date.now()
     webgazer.setGazeListener((estimatedGazePoint, elapsedTime) => {
       if (estimatedGazePoint &&
         (Date.now() - gazeEstimationCaptureStartTime) < captureDuration
-      ){
+      ) {
         gazeEstimations.push(createPos({
           x: Math.round(estimatedGazePoint.x),
           y: Math.round(estimatedGazePoint.y)
-        }));
+        }))
       } else {
         validationData.push(createGazeAtTargetData({
           targetPos,
           gazeEstimations
-        }));
-        webgazer.clearGazeListener();
-        onFinish();
+        }))
+        webgazer.clearGazeListener()
+        onFinish()
       }
-    });
-  }, timeTillCapture);
+    })
+  }, timeTillCapture)
 }
 
-export {clickCalibration, gazeCalibration, validation};
-
+export { clickCalibration, gazeCalibration, validation }

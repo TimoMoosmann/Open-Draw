@@ -1,6 +1,6 @@
-import {getSetupInstructionsPage} from './view.js';
-import {createPos} from '../data_types.js';
-import {attachWebgazerVideo, detachWebgazerVideo, initWebgazer} from '../webgazer_extensions/setup.js';
+import { getSetupInstructionsPage } from 'Src/setup_webgazer/view.js'
+import { createPos } from 'Src/data_types/pos.js'
+import { attachWebgazerVideo, initWebgazer } from 'Src/webgazer_extensions/setup/main.js'
 
 const setupWebgazer = ({
   webgazer,
@@ -11,39 +11,40 @@ const setupWebgazer = ({
   showPredictionPoints = false,
   title = 'Open Draw'
 } = {}) => {
-  return new Promise(resolve => { 
-    const videoSize = createPos({x: 320, y: 240});
+  return new Promise(resolve => {
+    const videoSize = createPos({ x: 320, y: 240 })
     const page = getSetupInstructionsPage({
       bigTitle,
       language,
       title,
       videoSize
-    });
-    root.appendChild(page);
-    webgazer.clearData();
+    })
+    root.appendChild(page)
+    webgazer.clearData()
     initWebgazer({
       webgazer,
       mouseModeOn,
       onFaceDetectionStatusChanged: faceDetected => {
-        document.body.onclick = faceDetected ? () => {
-          document.body.appendChild(
-            document.getElementById('webgazerVideoContainer')
-          );
-          page.remove();
-          resolve();
-        } : () => {};
+        document.body.onclick = faceDetected
+          ? () => {
+              document.body.appendChild(
+                document.getElementById('webgazerVideoContainer')
+              )
+              page.remove()
+              resolve()
+            }
+          : () => {}
       },
       onVideoAvailable: videoContainer => {
         attachWebgazerVideo({
           videoContainer,
           parentNode: document.getElementById('videoFrame')
-        });
+        })
       },
       showPredictionPoints: true,
-      videoSize,
-    });
-  });
-};
+      videoSize
+    })
+  })
+}
 
-export {setupWebgazer}
-
+export { setupWebgazer }

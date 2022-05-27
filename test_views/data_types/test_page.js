@@ -4,6 +4,8 @@ const createTestPage = ({
 }) => ({
   name,
   drawPage
-});
+})
 
-export { createTestPage }
+export {
+  createTestPage
+}

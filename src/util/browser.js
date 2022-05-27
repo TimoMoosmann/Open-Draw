@@ -1,57 +1,49 @@
-import {createPos} from '../data_types.js';
+import { createPos } from 'Src/data_types/pos.js'
 
-const vw = () => {
-  return Math.max(document.documentElement.clientWidth
-    || 0, window.innerWidth || 0);
-};
+import { oneLineTrim } from 'common-tags'
 
-const vh = () => {
-  return Math.max(document.documentElement.clientHeight
-    || 0, window.innerHeight || 0);
-};
-
-function createElement(elemName, id="", classList = [], attributes = []) {
-  let elem = document.createElement(elemName);
-  elem.id = id;
-  elem.classList.add(...classList);
-  attributes.forEach((attr) => elem.setAttribute(attr[name], attr[value]));
-  return elem;
+function vw () {
+  return Math.max(document.documentElement.clientWidth ||
+    0, window.innerWidth || 0)
 }
 
-function createElementFromHTML(html, parentEl) {
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  const el = div.firstChild;
+function vh () {
+  return Math.max(document.documentElement.clientHeight ||
+    0, window.innerHeight || 0)
+}
+
+function getViewport () {
+  return createPos({ x: vw(), y: vh() })
+}
+
+function createElementFromHTML (html, parentEl) {
+  const div = document.createElement('div')
+  div.innerHTML = html
+  const el = div.firstChild
   if (parentEl) {
-    parentEl.appendChild(el);
+    parentEl.appendChild(el)
   }
-  return el;
+  return el
 }
 
-function getWholeWindowContainer(id, extraClasses=[], attributes=[]) {
-  return createElement('div', id, ['wholeWindowContainer', ...extraClasses],
-    attributes);
-}
-
-const getElementCenter = element => {
-  const boundingRect = element.getBoundingClientRect();
+function getElementCenter (element) {
+  const boundingRect = element.getBoundingClientRect()
   return createPos({
     x: Math.round(boundingRect.x + (boundingRect.width / 2)),
     y: Math.round(boundingRect.y + (boundingRect.height / 2))
-  });
-};
+  })
+}
 
-const getElementRadii = el => {
-  const boundingRect = el.getBoundingClientRect();
+function getElementRadii (el) {
+  const boundingRect = el.getBoundingClientRect()
   return createPos({
     x: Math.round(boundingRect.width / 2),
     y: Math.round(boundingRect.height / 2)
-  });
-};
+  })
+}
 
-import {oneLineTrim} from 'common-tags';
 // For debug purposes
-const drawDotOnScreen = pos => {
+function drawDotOnScreen (pos) {
   const dot = createElementFromHTML(oneLineTrim`
     <div id="dot" style="
       position:absolute;
@@ -62,21 +54,26 @@ const drawDotOnScreen = pos => {
       background-color: green;
       transform: translate(-50%, -50%)">
     </div>
-  `);
-  document.body.appendChild(dot);
-};
+  `)
+  document.body.appendChild(dot)
+}
 
-function encodeFormAsURI(form) {
-  const encodedDataPairs = [];
+function encodeFormAsURI (form) {
+  const encodedDataPairs = []
   form.querySelectorAll('input').forEach((input) => {
-    encodedDataPairs.push(encodeURIComponent(input.name) + '='
-      + encodeURIComponent(input.value));
-  });
-  return encodedDataPairs.join('&').replace(/%20/g, '+');
+    encodedDataPairs.push(encodeURIComponent(input.name) + '=' +
+      encodeURIComponent(input.value))
+  })
+  return encodedDataPairs.join('&').replace(/%20/g, '+')
 }
 
 export {
-  createElementFromHTML, drawDotOnScreen, getElementCenter, getElementRadii,
-  vh, vw
-};
-
+  createElementFromHTML,
+  encodeFormAsURI,
+  drawDotOnScreen,
+  getElementCenter,
+  getElementRadii,
+  getViewport,
+  vh,
+  vw
+}

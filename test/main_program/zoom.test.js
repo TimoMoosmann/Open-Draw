@@ -1,4 +1,5 @@
-import {createZoom, createZoomLevels} from '../../src/data_types.js';
+import { createZoom } from 'Src/main_program/data_types/zoom.js'
+import { createZoomLevels } from 'Src/main_program/data_types/zoom_levels.js';
 import {canMoveLeft, canMoveRight, canMoveUp, canMoveDown, canZoomIn,
   canZoomOut, moveLeft, moveRight, moveUp, moveDown, zoomIn, zoomOut
 } from '../../src/main_program/zoom.js'

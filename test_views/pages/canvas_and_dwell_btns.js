@@ -1,20 +1,20 @@
-import { createTestPage } from './data_types.js'
-import { drawLines } from '../src/main_program/main.js'
+import { createTestPage } from 'TestViews/data_types/test_page.js'
 import {
   getDwellBtnContainer, getDwellBtnDomEl, getDrawingCanvasInContainer,
   getMainProgramContainer
-} from '../src/main_program/view.js'
-import {
-  createDwellBtn, createLine, createPos, createStrokeProperties
-} from '../src/data_types.js'
-import { vh, vw } from '../src/util/browser.js'
+} from 'Src/main_program/view.js'
+import { createPos, scalePos } from 'Src/data_types/pos.js'
+import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
+import { createLine } from 'Src/main_program/data_types/line.js'
+import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+import { getViewport, vw } from 'Src/util/browser.js'
 
-const drawCanvasAndDwellBtnsPage = () => {
+function drawCanvasAndDwellBtnsPage () {
   const mainProgramContainer = getMainProgramContainer()
 
   const dwellBtnContainer = getDwellBtnContainer()
   const centeredDwellBtn = createDwellBtn({
-    center: createPos({ x: vw() / 2, y: vh() / 2 }),
+    center: scalePos(getViewport(), 1 / 2),
     domId: 'centeredDwellBtn',
     size: createPos({ x: 150, y: 100 }),
     timeTillActivation: 1000,
@@ -63,9 +63,11 @@ const drawCanvasAndDwellBtnsPage = () => {
   drawingCanvas.drawLines(testLines)
 }
 
-const dwellBtnAndDrawingCanvasTestPage = createTestPage({
+const dwellBtnsAndDrawingCanvasTest = createTestPage({
   name: 'DwellBtn & DrawingCanvas',
   drawPage: drawCanvasAndDwellBtnsPage
 })
 
-export { dwellBtnAndDrawingCanvasTestPage }
+export {
+  dwellBtnsAndDrawingCanvasTest
+}
