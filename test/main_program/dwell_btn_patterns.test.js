@@ -1,5 +1,5 @@
 /* global expect, test */
-import { createPos } from 'Src/data_types.js'
+import { createPos } from 'Src/data_types/pos.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import {
   arrangeEquallySizedDwellBtnsToParallelMenu,

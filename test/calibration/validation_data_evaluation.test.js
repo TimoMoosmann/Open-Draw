@@ -10,20 +10,24 @@ import { round } from 'Src/util/math.js'
 
 test('Invalid validation data should throw an error', () => {
   expect(() => getWorstRelAccAndPrec(42)).toThrow(
-    'ValidationData object needs to be an array.'
+    'validationData: ' +
+    'ValidationData object needs to be an array of at least one element.'
   )
   expect(() => getWorstRelAccAndPrec([])).toThrow(
-    'ValidationData object needs at least one element in it.'
+    'validationData: ' +
+    'ValidationData object needs to be an array of at least one element.'
   )
   expect(() => getWorstRelAccAndPrec([42])).toThrow(
-    'Invalid GazeEstimations object given.'
+    'validationData[0].targetPos: Invalid PositiveNumericPos.'
   )
   expect(() => getWorstRelAccAndPrec([{
     targetPos: createPos({ x: 32, y: 32 }),
     gazeEstimations: [],
     viewport: createPos({ x: 100, y: 200 })
   }])).toThrow(
-    'gazeEstimations needs at least two estimations to be valid.'
+    'validationData[0].gazeEstimations: ' +
+    'GazeEstimations needs to be an array of at least two GazeEstimation ' +
+    'objects.'
   )
 })
 
@@ -48,8 +52,8 @@ test(
     })
     // Higest Standard deviations devided by viewport.
     const worstRelPrecExpect = createPos({
-      x: round(0.70710678118655 / 100, 3),
-      y: round(2.1213203435596 / 100, 3)
+      x: 0.70710678118655 / 100,
+      y: 2.1213203435596 / 100
     })
 
     expect(worstRelAcc.x).toBeCloseTo(worstRelAccExpect.x, 5)

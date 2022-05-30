@@ -80,10 +80,10 @@ module.exports = {
     "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/__mocks__/fileMock.js",
     "\\.(css|less)$": "identity-obj-proxy",
 
-    OtherModules: path.resolve(__dirname, 'other_modules',
-    Src: path.resolve(__dirname, 'src'),
+    "^OtherModules(.*)$": "<rootDir>/other_modules$1",
+    "^Settings$": "<rootDir>/settings.js",
+    "^Src(.*)$": "<rootDir>/src$1"
   },
-
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -116,7 +116,7 @@ module.exports = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+  rootDir: '.',
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [

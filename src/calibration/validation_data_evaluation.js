@@ -1,12 +1,12 @@
+import { createEvaluatedGazeAtTargetData } from 'Src/calibration/data_types/evaluated_gaze_at_target_data.js'
 import { createPos, scalePos } from 'Src/data_types/pos.js'
-import { getPosRelativeToViewport } from 'Src/util/main.js'
 import { calcSampleStandardDeviation, meanOffset } from 'Src/util/math.js'
 import {
   checkValidationData
 } from 'Src/webgazer_extensions/calibration/data_types/validation_data.js'
 
 function getWorstRelAccAndPrec (validationData) {
-  checkValidationData(validationData)
+  checkValidationData(validationData, 'validationData')
   let worstRelAcc, worstRelPrec
   for (const gazeAtTargetData of validationData) {
     const { relAcc, relPrec } =
@@ -47,22 +47,6 @@ function getRelTargetPosName (targetPosRel) {
     name += 'right'
   }
   return name
-}
-
-function createEvaluatedGazeAtTargetData (gazeAtTargetData) {
-  const targetPos = gazeAtTargetData.targetPos
-  const gazeEstimations = gazeAtTargetData.gazeEstimations
-  const viewportPos = gazeAtTargetData.viewport
-  return {
-    relAcc: getPosRelativeToViewport({
-      pos: getGazeAtTargetAccuracy({ targetPos, gazeEstimations }),
-      viewportPos
-    }),
-    relPrec: getPosRelativeToViewport({
-      pos: getGazePrecision(gazeEstimations),
-      viewportPos
-    })
-  }
 }
 
 function getGazeAtTargetAccuracy ({

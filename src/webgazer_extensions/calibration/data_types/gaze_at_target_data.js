@@ -1,4 +1,4 @@
-import { checkNumericPos, checkPositiveNumericPos } from 'Src/data_types/pos.js'
+import { checkPositiveNumericPos, isPosLowerThanOrEqual } from 'Src/data_types/pos.js'
 import {
   checkGazeEstimations
 } from 'Src/webgazer_extensions/calibration/data_types/gaze_estimations.js'
@@ -8,21 +8,22 @@ function createGazeAtTargetData ({
   gazeEstimations,
   viewport
 }) {
-  const gazeAtTargetData = {
-    targetPos,
-    gazeEstimations,
-    viewport
-  }
-  checkGazeAtTargetData(arguments[0], 'createGazeAtTargetData-given')
+  const gazeAtTargetData = arguments[0]
+
+  checkGazeAtTargetData(gazeAtTargetData, 'createGazeAtTargetData-given')
   return gazeAtTargetData
 }
 
 function checkGazeAtTargetData (gazeAtTargetData, argName) {
   const { targetPos, viewport, gazeEstimations } = gazeAtTargetData
 
-  checkNumericPos(targetPos, argName + '.targetPos')
-  checkPositiveNumericPos(viewport, argName + '.viewport')
+  checkPositiveNumericPos(targetPos, argName + '.targetPos')
   checkGazeEstimations(gazeEstimations, argName + '.gazeEstimations')
+  checkPositiveNumericPos(viewport, argName + '.viewport')
+  
+  if (!isPosLowerThanOrEqual(targetPos, viewport)) {
+    throw new TypeError(argName + ': targetPos is outside viewport.')
+  }
 }
 
 export {

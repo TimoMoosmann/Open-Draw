@@ -1,5 +1,5 @@
 import { createPos } from 'Src/data_types/pos.js'
-import { createZoomLevels } from 'Src/main_program/zoom_levels.js'
+import { createZoomLevels } from 'Src/main_program/data_types/zoom_levels.js'
 
 function createZoom ({ offsetFactorShiftAmount, zoomFactors }) {
   return {

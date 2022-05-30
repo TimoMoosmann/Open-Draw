@@ -22,7 +22,6 @@ function startDrawLineMode ({
   startPointColor = 'orange',
   webgazer
 }) {
-
   // TODO fix drawing
   const { drawingCanvas, drawingCanvasContainer } =
     getDrawingCanvasInContainer()

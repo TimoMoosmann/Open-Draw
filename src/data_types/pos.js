@@ -9,26 +9,33 @@ function createPos ({
   }
 }
 
-function checkPos (pos, argName) {
-  if (!(
+function isPos (pos) {
+  return (
+    pos &&
     Object.prototype.hasOwnProperty.call(pos, 'x') &&
     Object.prototype.hasOwnProperty.call(pos, 'y')
-  )) {
-    throw new TypeError(argName + ': Invalid pos.')
+  )
+}
+
+function checkPos (pos, argName) {
+  if (!isPos(pos)) {
+    throw new TypeError(argName + ': Invalid Pos.')
   }
 }
 
+function isNumericPos (pos) {
+  return isPos(pos) && !isNaN(pos.x) && !isNaN(pos.y)
+}
+
 function checkNumericPos (pos, argName) {
-  checkPos(pos, argName)
-  if (isNaN(pos.x) || isNaN(pos.y)) {
-    throw new TypeError(argName + ': Invalid numericPos.')
+  if (!isNumericPos(pos)) {
+    throw new TypeError(argName + ': Invalid NumericPos.')
   }
 }
 
 function checkPositiveNumericPos (pos, argName) {
-  checkNumericPos(pos, argName)
-  if (pos.x <= 0 || pos.y <= 0) {
-    throw new TypeError(argName + ': Invalid positiveNumericPos.')
+  if (!isNumericPos(pos) || pos.x <= 0 || pos.y <= 0) {
+    throw new TypeError(argName + ': Invalid PositiveNumericPos.')
   }
 }
 
