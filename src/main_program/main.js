@@ -1,21 +1,18 @@
-import { createEllipse, inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 import {
   arrangeEquallySizedDwellBtnsToParallelMenu, arrangeOneBtnToLowerRight
 } from 'Src/main_program/dwell_btn_patterns.js'
-import { startDrawLineMode } from 'Src/main_program/draw_line_mode.js'
 import { getMinDistToEdge, getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 import {
   getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl,
-  getMainMenuPage, getMainProgramContainer
+  getMainProgramContainer
 } from 'Src/main_program/view.js'
 import { createPos } from 'Src/data_types/pos.js'
 import {
-  getElementCenter, getElementRadii, getViewport, vh, vw
+  getViewport, vh, vw
 } from 'Src/util/browser.js'
-import { runWebgazerFixationDetection } from 'Src/webgazer_extensions/fixation_detection/main.js'
 
 import { standardDwellBtnActivationTime } from 'Settings'
 
@@ -34,6 +31,7 @@ function startMainProgram ({
   minTargetSize
 }) {
   const mainProgramContainer = getMainProgramContainer()
+  document.body.appendChild(mainProgramContainer)
 
   const testLines = [
     createLine({
@@ -46,11 +44,9 @@ function startMainProgram ({
     })
   ]
 
-  document.body.appendChild(mainProgramContainer)
-
   startMainMenuClosedScreen({
     lines: testLines,
-    minTargetSize,
+    minDwellBtnSize: minTargetSize,
     root: mainProgramContainer
   })
 }
@@ -67,16 +63,16 @@ function startMainMenu ({
   ]
 
   const mainMenuDwellBtnsArranged = arrangeEquallySizedDwellBtnsToParallelMenu({
-    distToNeighbor: getSmallDistToNeighborTarget(),
+    distToNeighbor: getSmallDistToNeighborTarget(minDwellBtnSize),
     equallySizedDwellBtns: mainMenuDwellBtns,
     minDistToEdge: getMinDistToEdge(),
-    getNextBtn: createDwellBtn({
-      action: () => alert('next'),
+    getNextBtn: () => createDwellBtn({
+      action: () => window.alert('next'),
       domId: 'nextBtn',
       size: minDwellBtnSize
     }),
-    getPrevBtn: createDwellBtn({
-      action: () => alert('prev'),
+    getPrevBtn: () => createDwellBtn({
+      action: () => window.alert('prev'),
       domId: 'prevBtn',
       size: minDwellBtnSize
     }),
@@ -86,7 +82,10 @@ function startMainMenu ({
   const { drawingCanvas, drawingCanvasContainer } =
     getDrawingCanvasInContainer()
 
-  root.appendChild(mainMenuDwellBtnsArranged)
+  for (const mainMenuDwellBtn of mainMenuDwellBtnsArranged) {
+    root.appendChild(getDwellBtnDomEl(mainMenuDwellBtn))
+  }
+
   root.appendChild(drawingCanvasContainer)
 
   drawingCanvas.drawLines(lines)
@@ -99,7 +98,7 @@ function startMainMenu ({
 
 function getStartDrawLineModeDwellBtn (minDwellBtnSize) {
   return createDwellBtn({
-    action: document.alert('Start Draw Line Mode'),
+    action: () => window.alert('Start Draw Line Mode'),
     domId: 'startDrawLineModeDwellBtn',
     icon: startDrawLineModeIcon,
     size: minDwellBtnSize,
@@ -109,7 +108,7 @@ function getStartDrawLineModeDwellBtn (minDwellBtnSize) {
 
 function getStartEditModeDwellBtn (minDwellBtnSize) {
   return createDwellBtn({
-    action: document.alert('Start Edit Mode'),
+    action: () => window.alert('Start Edit Mode'),
     domId: 'startEditModeDwellBtn',
     size: minDwellBtnSize,
     tite: 'Edit'
@@ -118,9 +117,8 @@ function getStartEditModeDwellBtn (minDwellBtnSize) {
 
 function getStartColorChooserDwellBtn (minDwellBtnSize) {
   return createDwellBtn({
-    action: document.alert('Start Color Chooser'),
+    action: () => window.alert('Start Color Chooser'),
     domId: 'startColorChooserDwellBtn',
-    icon: startColorChooserIcon,
     size: minDwellBtnSize,
     tite: 'Choose Color'
   })
@@ -128,14 +126,16 @@ function getStartColorChooserDwellBtn (minDwellBtnSize) {
 
 function startMainMenuClosedScreen ({
   lines,
-  minTargetSize,
+  minDwellBtnSize,
   root
 }) {
   const openMainMenuDwellBtn = createDwellBtn({
-    action: () => alert('open Main menu now.'),
+    action: () => startMainMenu(
+      arguments[0]
+    ),
     domId: 'openMainMenuBtn',
     icon: openMenuIcon,
-    size: minTargetSize,
+    size: minDwellBtnSize,
     timeTillActivation: standardDwellBtnActivationTime,
     title: 'Open Menu'
   })
@@ -246,93 +246,6 @@ function drawLine ({ ctx, line }) {
   ctx.moveTo(line.startPoint.x, line.startPoint.y)
   ctx.lineTo(line.endPoint.x, line.endPoint.y)
   ctx.stroke()
-}
-
-function mainMenuPage ({
-  actionOnDwellFixedThreshold,
-  dwellDurationThreshold,
-  lines,
-  minTargetRadii,
-  runFixationDetectionFixedThresholds,
-  webgazer
-}) {
-  const mainMenuPage = getMainMenuPage()
-  document.body.append(mainMenuPage)
-  const dwellBtnList = Array.from(mainMenuPage.querySelectorAll('button')).map(
-    btn => {
-      // TODO: Reset from btn.id to btn.name
-      const btnAction = getDwellBtnAction({
-        dwellBtnId: btn.id,
-        dwellDurationThreshold,
-        lines,
-        mainMenuPage,
-        minTargetRadii,
-        runFixationDetectionFixedThresholds,
-        webgazer
-      })
-      btn.addEventListener('click', btnAction)
-      const btnEllipse = createEllipse({
-        center: getElementCenter(btn),
-        radii: getElementRadii(btn)
-      })
-      return { action: btnAction, ellipse: btnEllipse }
-    }
-  )
-  runFixationDetectionFixedThresholds(fixation => actionOnDwellFixedThreshold({
-    btnList: dwellBtnList, fixation
-  }))
-}
-
-function actionOnDwell ({ btnList, fixation, dwellDurationThreshold }) {
-  if (fixation.duration >= dwellDurationThreshold) {
-    for (const btn of btnList) {
-      if (inEllipse({ ellipse: btn.ellipse, pos: fixation.center })) {
-        btn.action()
-        break
-      }
-    }
-  }
-}
-
-// const createDwellBtn = ({action, ellipse}) => ({action, ellipse})
-
-// Dwell Button Specs
-// Width, Height
-// (Position)
-// Action
-// activationTime
-// (Symbol / Icon)
-
-function getDwellBtnAction ({
-  dwellBtnId,
-  dwellDurationThreshold,
-  lines,
-  mainMenuPage,
-  minTargetRadii,
-  runFixationDetectionFixedThresholds,
-  webgazer
-}) {
-  switch (dwellBtnId) {
-    case 'drawBtn':
-      return () => {
-        mainMenuPage.remove()
-        startDrawLineMode({
-          dwellDurationThreshold,
-          lines,
-          minTargetRadii,
-          runFixationDetectionFixedThresholds,
-          webgazer
-        })
-      }
-    case 'moveBtn':
-      return () => alert('Move Button')
-    case 'editBtn':
-      return () => alert('Edit Button')
-    case 'colorBtn':
-      return () => alert('Color Button')
-    default:
-      throw new Error('No Action defined for button with ID: ' + dwellBtnId)
-  }
 }
 
 export { drawLine, drawLines, startMainProgram }

@@ -2,6 +2,8 @@ import { dwellBtnsMenuTest } from 'TestViews/pages/menu.js'
 import { dwellBtnArrangedLowerRightTest } from 'TestViews/pages/lower_right_btn.js'
 import { dwellBtnsTest } from 'TestViews/pages/dwell_btns.js'
 import { dwellBtnsAndDrawingCanvasTest } from 'TestViews/pages/canvas_and_dwell_btns.js'
+import { dwellBtnsWithColorDotTest } from 'TestViews/pages/dwell_btns_with_color_dot.js'
+import { colorMenuTest } from 'TestViews/pages/color_menu.js'
 
 import 'Assets/css/test_views.css'
 
@@ -9,7 +11,9 @@ const testPages = [
   dwellBtnsMenuTest,
   dwellBtnArrangedLowerRightTest,
   dwellBtnsTest,
-  dwellBtnsAndDrawingCanvasTest
+  dwellBtnsAndDrawingCanvasTest,
+  dwellBtnsWithColorDotTest,
+  colorMenuTest
 ]
 
 function main () {

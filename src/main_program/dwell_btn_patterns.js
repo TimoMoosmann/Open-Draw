@@ -7,16 +7,18 @@ import {
   checkPositiveNumericPos, createPos, isPosEqual, subPositions
 } from 'Src/data_types/pos.js'
 import { checkUnsignedInteger } from 'Src/data_types/numbers.js'
+import { getViewport } from 'Src/util/browser.js'
+import { getMinDistToEdgeFromSettings } from 'Src/util/main.js'
 
 function arrangeEquallySizedDwellBtnsToParallelMenu ({
   distToNeighbor,
   endIdx = false,
   equallySizedDwellBtns,
-  minDistToEdge,
+  minDistToEdge = getMinDistToEdgeFromSettings(),
   getNextBtn,
   getPrevBtn,
   startIdx = 0,
-  viewport
+  viewport = getViewport()
 }) {
   checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns')
   checkPositiveNumericPos(distToNeighbor, 'distToNeighbor')
@@ -151,7 +153,7 @@ function arrangeEquallySizedDwellBtnsToParallelMenu ({
     ))
   }
 
-  return { arrangedDwellBtns, hasNextBtn, hasPrevBtn }
+  return arrangedDwellBtns
 }
 
 function getAvailableCoordsPerAxis ({
@@ -188,5 +190,6 @@ function arrangeOneBtnToLowerRight ({
 
 export {
   arrangeEquallySizedDwellBtnsToParallelMenu,
-  arrangeOneBtnToLowerRight
+  arrangeOneBtnToLowerRight,
+  getMinDistToEdgeFromSettings
 }

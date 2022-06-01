@@ -3,7 +3,7 @@ import {
   getDwellBtnContainer, getDwellBtnDomEl, getDrawingCanvasInContainer,
   getMainProgramContainer
 } from 'Src/main_program/view.js'
-import { createPos, scalePos } from 'Src/data_types/pos.js'
+import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
@@ -14,7 +14,7 @@ function drawCanvasAndDwellBtnsPage () {
 
   const dwellBtnContainer = getDwellBtnContainer()
   const centeredDwellBtn = createDwellBtn({
-    center: scalePos(getViewport(), 1 / 2),
+    center: scalePosByVal(getViewport(), 1 / 2),
     domId: 'centeredDwellBtn',
     size: createPos({ x: 150, y: 100 }),
     timeTillActivation: 1000,

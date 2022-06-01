@@ -8,7 +8,7 @@ import { arrangeOneBtnToLowerRight } from 'Src/main_program/dwell_btn_patterns.j
 function drawDwellBtnToLowerRight () {
   const domId = 'btn'
   const dwellBtn = createStandardDwellBtn({
-    action: () => alert(domId),
+    action: () => window.alert(domId),
     domId,
     title: domId
   })

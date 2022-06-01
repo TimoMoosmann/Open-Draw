@@ -1,5 +1,5 @@
 import { createEvaluatedGazeAtTargetData } from 'Src/calibration/data_types/evaluated_gaze_at_target_data.js'
-import { createPos, scalePos } from 'Src/data_types/pos.js'
+import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { calcSampleStandardDeviation, meanOffset } from 'Src/util/math.js'
 import {
   checkValidationData
@@ -67,7 +67,7 @@ function getGazePrecision (gazeEstimations) {
 }
 
 function getMinGazeTargetSize (accuracy) {
-  return scalePos(accuracy, 2)
+  return scalePosByVal(accuracy, 2)
 }
 
 /*
@@ -77,7 +77,7 @@ function getMinGazeTargetSize (accuracy) {
  * Choose a bigger factor than 2 if success rate over 95% is necassary.
  */
 function getRecommendedFixationSize (precision, sigma = 2) {
-  return scalePos(precision, sigma)
+  return scalePosByVal(precision, sigma)
 }
 
 export {

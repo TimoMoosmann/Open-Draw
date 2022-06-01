@@ -50,9 +50,28 @@ function getDwellBtnDomEl (dwellBtn) {
     </div>
   `)
   const btnEl = btnContainer.querySelector('.dwellBtnSingle')
-  btnEl.style.backgroundImage = `url(${dwellBtn.icon})`
+
+  console.log(dwellBtn)
+
+  if (dwellBtn.colorDot) {
+    btnEl.appendChild(getColorDotEl(dwellBtn.colorDot))
+  }
+
+  if (dwellBtn.icon) {
+    btnEl.style.backgroundImage = `url(${dwellBtn.icon})`
+  }
+
   btnEl.addEventListener('click', dwellBtn.action)
   return btnContainer
+}
+
+function getColorDotEl (color) {
+  const colorDot = createElementFromHTML(html`
+    <div class="colorDot">
+    </div>
+  `)
+  colorDot.style.backgroundColor = color
+  return colorDot
 }
 
 function getMainMenuPage () {

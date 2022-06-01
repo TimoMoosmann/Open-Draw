@@ -36,7 +36,7 @@ function drawMenu ({
     }
   })
 
-  const { arrangedDwellBtns } =
+  const arrangedDwellBtns =
     arrangeEquallySizedDwellBtnsToParallelMenu({
       distToNeighbor,
       endIdx,
@@ -62,7 +62,7 @@ function drawDwellBtnsMenu () {
   for (let i = 0; i < numTestDwellBtns; i++) {
     const domId = 'btn' + i
     testDwellBtns.push(createStandardDwellBtn({
-      action: () => alert(domId),
+      action: () => window.alert(domId),
       domId
     }))
   }

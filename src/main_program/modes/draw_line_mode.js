@@ -1,7 +1,6 @@
 import { createEllipse, inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { drawLine, drawLines } from 'Src/main_program/main.js'
-import { getDrawingCanvasInContainer } from 'Src/main_program/view.js'
 import { createPos } from 'Src/data_types/pos.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
@@ -23,8 +22,6 @@ function startDrawLineMode ({
   webgazer
 }) {
   // TODO fix drawing
-  const { drawingCanvas, drawingCanvasContainer } =
-    getDrawingCanvasInContainer()
   const canvas = document.getElementById('drawingCanvas')
   const canvasCtx = canvas.getContext('2d')
   const drawState = {
@@ -127,7 +124,7 @@ function onFixationDuringDrawingState ({
         endPoint: drawState.endPoint,
         properties: newLineProperties
       }))
-      alert('done with drawing')
+      window.alert('done with drawing')
       // returning back to main mainu
       // drawLinePage.remove()
       // remove webgazer gazeListener

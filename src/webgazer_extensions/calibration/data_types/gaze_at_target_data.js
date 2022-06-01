@@ -20,7 +20,7 @@ function checkGazeAtTargetData (gazeAtTargetData, argName) {
   checkPositiveNumericPos(targetPos, argName + '.targetPos')
   checkGazeEstimations(gazeEstimations, argName + '.gazeEstimations')
   checkPositiveNumericPos(viewport, argName + '.viewport')
-  
+
   if (!isPosLowerThanOrEqual(targetPos, viewport)) {
     throw new TypeError(argName + ': targetPos is outside viewport.')
   }

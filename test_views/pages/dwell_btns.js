@@ -1,5 +1,5 @@
 import { createTestPage } from 'TestViews/data_types/test_page.js'
-import { createPos, scalePos } from 'Src/data_types/pos.js'
+import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { getViewport } from 'Src/util/browser.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { getDwellBtnContainer, getDwellBtnDomEl } from 'Src/main_program/view.js'
@@ -12,7 +12,7 @@ function drawDwellBtnsPage () {
     domId: 'dwelBtn1',
     size: createPos({ x: 100, y: 100 }),
     timeTillActivation: 1000,
-    action: () => alert('moin')
+    action: () => window.alert('moin')
   })
 
   const dwellBtnUpperLeftLeft = createDwellBtn({
@@ -20,18 +20,18 @@ function drawDwellBtnsPage () {
     domId: 'dwelBtn2',
     size: createPos({ x: 100, y: 100 }),
     timeTillActivation: 1000,
-    action: () => alert('moin')
+    action: () => window.alert('moin')
   })
   const upperLeftBtnEl = getDwellBtnDomEl(dwellBtnUpperLeft)
   const upperLeftLeftBtnEl = getDwellBtnDomEl(dwellBtnUpperLeftLeft)
 
   const dwellBtnCenter = createDwellBtn({
-    center: scalePos(getViewport(), 1 / 2),
+    center: scalePosByVal(getViewport(), 1 / 2),
     domId: 'dwelBtn3',
     size: createPos({ x: 150, y: 100 }),
     timeTillActivation: 1000,
     title: 'Dalai Lama',
-    action: () => alert('moin')
+    action: () => window.alert('moin')
   })
   const centerBtnEl = getDwellBtnDomEl(dwellBtnCenter)
 

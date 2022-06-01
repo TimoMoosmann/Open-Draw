@@ -1,4 +1,5 @@
-import { runClickCalibration, runGazeCalibration, runValidation } from './calibration/main.js'
+/* global webgazer */
+import { runClickCalibration, runValidation } from './calibration/main.js'
 import { createPos } from './data_types/pos.js'
 import { startMainProgram } from './main_program/main.js'
 import { setupWebgazer } from './setup_webgazer/main.js'
@@ -9,7 +10,28 @@ import { getWorstRelAccAndPrec } from './calibration/validation_data_evaluation.
 import { getCalibrationScorePage } from './calibration/view.js'
 
 const main = async () => {
+  const webgazer = await makeWebgazerReady()
+
+  const { minTargetSize, maxFixationDispersion } =
+    await getAccAndPrecScoresFromCalibration(webgazer)
+
+  // Timed Thresholds
   /*
+  const fixationDurationThreshold = 200
+  const dwellDurationThreshold = 1000
+  const webgazerBufferDuration = 500
+  const maxFixationDuration =
+    2 * dwellDurationThreshold + webgazerBufferDuration
+    */
+
+  const testMinTargetSize = createPos({ x: 200, y: 200 })
+
+  startMainProgram({
+    minTargetSize: testMinTargetSize
+  })
+}
+
+async function makeWebgazerReady () {
   const webgazerLocal = webgazer
   await setupWebgazer({
     webgazer: webgazerLocal,
@@ -18,11 +40,16 @@ const main = async () => {
     showPredictionPoints: false
   })
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal)
+}
 
-  await runClickCalibration({ numTargets: 13, webgazer: webgazerLocal })
-  const validationData = await runValidation({ webgazer: webgazerLocal })
+async function runCalibrationProcess (webgazer) {
+  await runClickCalibration({ numTargets: 13, webgazer })
+  const validationData = await runValidation({ webgazer })
+  return getWorstRelAccAndPrec(validationData)
+}
 
-  const { worstRelAcc, worstRelPrec } = getWorstRelAccAndPrec(validationData)
+async function getAccAndPrecScoresFromCalibration (webgazer) {
+  const { worstRelAcc, worstRelPrec } = await runCalibrationProcess(webgazer)
 
   // Determined after evaluating the calibration study.
   const borderAcc = createPos({ x: 0.06, y: 0.12 })
@@ -47,33 +74,7 @@ const main = async () => {
 
   const minTargetSize = worstRelAcc * 2.5
   const maxFixationDispersion = worstRelPrec * 2.5
-
-  // Sized Thresholds in html px
-  const testMaxFixationDispersion = createPos({ x: 150, y: 150 })
-
-  // Timed Thresholds
-  const fixationDurationThreshold = 200
-  const dwellDurationThreshold = 1000
-  const webgazerBufferDuration = 500
-  const maxFixationDuration =
-    2 * dwellDurationThreshold + webgazerBufferDuration
-  */
-
-  const testMinTargetSize = createPos({ x: 200, y: 200 })
-
-  startMainProgram({
-    minTargetSize: testMinTargetSize
-  })
-  /*
-  startMainProgram({
-    dwellDurationThreshold,
-    fixationDispersionThreshold: maxFixationDispersion,
-    fixationDurationThreshold,
-    maxFixationDuration,
-    minTargetSize,
-    webgazer: webgazerLocal
-  })
-  */
+  return { maxFixationDispersion, minTargetSize }
 }
 
 main()

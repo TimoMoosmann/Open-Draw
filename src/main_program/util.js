@@ -1,4 +1,4 @@
-import { createPos, scalePos } from 'Src/data_types/pos.js'
+import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { vh, vw } from 'Src/util/browser.js'
 
 import { minDistToEdgeInPct } from 'Settings'
@@ -11,7 +11,7 @@ function getMinDistToEdge () {
 }
 
 function getSmallDistToNeighborTarget (minTargetSize) {
-  return scalePos(minTargetSize, 1 / 2)
+  return scalePosByVal(minTargetSize, 1 / 2)
 }
 
 export { getMinDistToEdge, getSmallDistToNeighborTarget }

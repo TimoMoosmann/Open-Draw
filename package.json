@@ -6,9 +6,10 @@
   "private": true,
   "scripts": {
     "test": "jest ./test/",
-    "build": "webpack",
+    "build": "webpack && npm run checkstyle",
     "serve": "nodemon ./bin/www",
-    "stylecheck": "npx standard"
+    "checkstyle": "npx standard src/ test/ test_views/",
+    "fixstyle": "npx standard --fix src/ test/ test_views/"
   },
   "author": "",
   "license": "ISC",

@@ -1,7 +1,6 @@
 /* global expect, test */
 import { createPos } from 'Src/data_types/pos.js'
 import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluation.js'
-import { round } from 'Src/util/math.js'
 
 /*
  * Take the validation data and give back only the lowest x and y values for,

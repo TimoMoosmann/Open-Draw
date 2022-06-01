@@ -46,10 +46,17 @@ function dividePositions (numeratorPos, denominatorPos) {
   })
 }
 
-function scalePos (pos, scaleFactor) {
+function scalePosByVal (pos, scaleFactor) {
   return createPos({
     x: pos.x * scaleFactor,
     y: pos.y * scaleFactor
+  })
+}
+
+function scalePosByPos (pos1, pos2) {
+  return createPos({
+    x: pos1.x * pos2.x,
+    y: pos1.y * pos2.y
   })
 }
 
@@ -75,6 +82,7 @@ export {
   dividePositions,
   isPosEqual,
   isPosLowerThanOrEqual,
-  scalePos,
+  scalePosByPos,
+  scalePosByVal,
   subPositions
 }

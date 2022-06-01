@@ -248,17 +248,11 @@ test(
       ]
     ])
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: false,
-      hasPrevBtn: false
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(fiveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(fiveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(fiveTestBtnsArranged).toEqual(expected)
+    expect(fiveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -289,17 +283,11 @@ test(
       center: createPos({ x: 1150, y: 675 })
     }))
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: true,
-      hasPrevBtn: false
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(twelveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(twelveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(twelveTestBtnsArranged).toEqual(expected)
+    expect(twelveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -337,17 +325,11 @@ test(
       center: createPos({ x: 1150, y: 675 })
     }))
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: true,
-      hasPrevBtn: true
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(twelveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(twelveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(twelveTestBtnsArranged).toEqual(expected)
+    expect(twelveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -379,17 +361,11 @@ test(
       center: createPos({ x: 1150, y: 675 })
     }))
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: true,
-      hasPrevBtn: false
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(twelveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(twelveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(twelveTestBtnsArranged).toEqual(expected)
+    expect(twelveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -421,17 +397,11 @@ test(
       center: createPos({ x: 450, y: 325 })
     }))
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: false,
-      hasPrevBtn: true
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(twelveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(twelveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(twelveTestBtnsArranged).toEqual(expected)
+    expect(twelveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -462,17 +432,11 @@ test(
       center: createPos({ x: 450, y: 325 })
     }))
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: false,
-      hasPrevBtn: true
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(twelveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(twelveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(twelveTestBtnsArranged).toEqual(expected)
+    expect(twelveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -490,13 +454,7 @@ test(
       ]
     })
 
-    const expected = {
-      arrangedDwellBtns: [],
-      hasNextBtn: false,
-      hasPrevBtn: false
-    }
-
-    expect(bigBtnArranged).toEqual(expected)
+    expect(bigBtnArranged).toEqual([])
   }
 )
 
@@ -524,17 +482,11 @@ test(
       center: createPos({ x: 1150, y: 675 })
     }))
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: true,
-      hasPrevBtn: false
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(fiveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(fiveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(fiveTestBtnsArranged).toEqual(expected)
+    expect(fiveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -568,17 +520,11 @@ test(
       center: createPos({ x: 1150, y: 675 })
     }))
 
-    const expected = {
-      arrangedDwellBtns: expectedArrangedDwellBtns,
-      hasNextBtn: true,
-      hasPrevBtn: true
-    }
-
     // Necassary because functions can't be compared properly.
-    deleteActionsFromDwellBtns(twelveTestBtnsArranged.arrangedDwellBtns)
-    deleteActionsFromDwellBtns(expected.arrangedDwellBtns)
+    deleteActionsFromDwellBtns(twelveTestBtnsArranged)
+    deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
 
-    expect(twelveTestBtnsArranged).toEqual(expected)
+    expect(twelveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
   }
 )
 
@@ -590,13 +536,7 @@ test('When the viewport is to little, no buttons should be displayed.', () => {
     viewport: createPos({ x: 1200, y: 400 })
   })
 
-  const expected = {
-    arrangedDwellBtns: [],
-    hasNextBtn: false,
-    hasPrevBtn: false
-  }
-
-  expect(arrangedWithToSmallViewport).toEqual(expected)
+  expect(arrangedWithToSmallViewport).toEqual([])
 })
 
 // Test arrangeOneBtnToLowerRight

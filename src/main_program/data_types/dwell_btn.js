@@ -1,9 +1,12 @@
-import { createPos, scalePos } from 'Src/data_types/pos.js'
+/* global Option */
+import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { checkEllipse, createEllipse } from 'Src/main_program/data_types/ellipse.js'
 
 import { standardDwellBtnActivationTime } from 'Settings'
 
 import eyeIcon from 'Assets/img/eye-scanner.png'
+import nextBtnIcon from 'Assets/img/right_arrow.png'
+import prevBtnIcon from 'Assets/img/left_arrow.png'
 
 function createDwellBtn ({
   action = () => {},
@@ -27,15 +30,62 @@ function createDwellBtn ({
   }
 }
 
-function createDwellBtnFromDwellBtnAndCenter (dwellBtn, center) {
+function createDwellBtnWithColorDot ({
+  colorDot,
+  ...dwellBtnArgs
+}) {
+  checkColor(colorDot)
+  const dwellBtnWithDotColor = createDwellBtn(dwellBtnArgs)
+  dwellBtnWithDotColor.colorDot = colorDot
+  return dwellBtnWithDotColor
+}
+
+// From Stackoverflow:
+// https://stackoverflow.com/questions/48484767/javascript-check-if-string-is-valid-css-color
+function isColor (colorStr) {
+  const s = new Option().style
+  s.color = colorStr
+  return s.color !== ''
+}
+
+function checkColor (colorStr) {
+  if (!isColor(colorStr)) {
+    throw new TypeError('No valid color string given.')
+  }
+}
+
+function createNextBtn ({ action, size }) {
   return createDwellBtn({
-    center,
-    domId: dwellBtn.domId,
-    icon: dwellBtn.icon,
-    size: scalePos(dwellBtn.ellipse.radii, 2),
-    timeTillActivation: dwellBtn.timeTillActivation,
-    action: dwellBtn.action
+    action,
+    domId: 'nextBtn',
+    icon: nextBtnIcon,
+    size
   })
+}
+
+function createPrevBtn ({ action, size }) {
+  return createDwellBtn({
+    action,
+    domId: 'prevBtn',
+    icon: prevBtnIcon,
+    size
+  })
+}
+
+function createDwellBtnFromDwellBtnAndCenter (dwellBtn, center) {
+  const domId = dwellBtn.domId
+  const icon = dwellBtn.icon
+  const size = scalePosByVal(dwellBtn.ellipse.radii, 2)
+  const timeTillActivation = dwellBtn.timeTillActivation
+  const action = dwellBtn.action
+  const dwellBtnArgs = { action, center, domId, icon, size, timeTillActivation }
+
+  if (dwellBtn.colorDot) {
+    return createDwellBtnWithColorDot({
+      ...dwellBtnArgs, colorDot: dwellBtn.colorDot
+    })
+  }
+  return createDwellBtn(dwellBtnArgs)
 }
 
 function checkDwellBtn (dwellBtn, argName) {
@@ -47,7 +97,7 @@ function checkDwellBtn (dwellBtn, argName) {
       preText + 'domId needs to be a string.'
     )
   }
-  if (!(typeof icon === 'string')) {
+  if (icon && !(typeof icon === 'string')) {
     throw new TypeError(preText + 'icon needs to be a string.')
   }
   if (!(Number.isInteger(timeTillActivation) && timeTillActivation > 0)) {
@@ -66,5 +116,8 @@ function checkDwellBtn (dwellBtn, argName) {
 export {
   checkDwellBtn,
   createDwellBtn,
-  createDwellBtnFromDwellBtnAndCenter
+  createDwellBtnWithColorDot,
+  createDwellBtnFromDwellBtnAndCenter,
+  createNextBtn,
+  createPrevBtn
 }
