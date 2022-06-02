@@ -28,6 +28,9 @@ function startChooseColorMode (app) {
   const dwellBtnContainer = getDwellBtnContainer()
   app.rootDomEl.appendChild(dwellBtnContainer)
 
+  app.gazeAtDwellBtnListener.reset()
+  app.gazeAtDwellBtnListener.start()
+
   drawAndActivateParallelMenu({
     app,
     btnSize,

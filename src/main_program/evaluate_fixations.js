@@ -10,10 +10,11 @@ class GazeAtDwellBtnListner {
   registeredBtns = []
 
   constructor (app) {
-    this.dispersionThreshold = app.constants.dispersionThreshold
+    this.dwellBtnContainer = app.rootDomEl
+    this.dispersionThreshold = app.maxFixationDispersion
     this.durationThreshold = minFixationDuration
     this.maxFixationDuration = maxFixationDuration
-    this.webgazer = app.constants.webgazer
+    this.webgazer = app.webgazer
   }
 
   start () {
@@ -32,15 +33,15 @@ class GazeAtDwellBtnListner {
         dwellBtns: this.registeredBtns,
         fixation,
         displayCurrentBtnProgress: currentDwellBtnProgress => {
-          // Make DwellBtn darker when the user focuses on it.
-          const dwellBtnDomEl = this.appContainer.querySelector(
-            currentDwellBtnProgress.currentDwellBtn.domId
-          )
-          // 1.0 when not focused, 0.5 when focused till activation.
-          const btnBrightness =
-            (100 - currentDwellBtnProgress.progressInPct) + 100 /
-            200
-          dwellBtnDomEl.style.filter = `brightness(${btnBrightness})`
+          if (currentDwellBtnProgress.dwellBtn) {
+            // Make DwellBtn darker when the user focuses on it.
+            const dwellBtnDomEl = this.dwellBtnContainer.querySelector(
+              '#' + currentDwellBtnProgress.dwellBtn.domId
+            )
+            console.log(currentDwellBtnProgress)
+            // 1.0 when not focused, 0.5 when focused till activation.
+            shadeBtn(dwellBtnDomEl, currentDwellBtnProgress.progressInPct)
+          }
         }
       })
     })
@@ -59,6 +60,12 @@ class GazeAtDwellBtnListner {
   }
 }
 
+function shadeBtn (btnDomEl, progressInPct) {
+  // 1.0 when not focused, 0.5 when focused till activation.
+  const brightness = ((100 - progressInPct) + 100) / 200
+  btnDomEl.style.filter = `brightness(${brightness})`
+}
+
 function getGazeAtDwellBtnListener (app) {
   return new GazeAtDwellBtnListner(app)
 }
@@ -67,14 +74,14 @@ function evaluateEyeFixationsAtDwellBtns ({
   currentBtnProgress,
   dwellBtns,
   fixation,
-  onGazeAtBtn
+  displayCurrentBtnProgress
 }) {
   for (const dwellBtn of dwellBtns) {
     if (fixation && inEllipse({
       ellipse: dwellBtn.ellipse,
       pos: fixation.center
     })) {
-      currentBtnProgress.currentDwellBtn = dwellBtn
+      currentBtnProgress.dwellBtn = dwellBtn
       if (fixation.duration >= dwellBtn.timeTillActivation) {
         if (currentBtnProgress.progressInPct < 100) {
           currentBtnProgress.progressInPct = 100
@@ -85,12 +92,12 @@ function evaluateEyeFixationsAtDwellBtns ({
           (fixation.duration / dwellBtn.timeTillActivation) * 100
         )
       }
-      onGazeAtBtn(currentBtnProgress)
+      displayCurrentBtnProgress(currentBtnProgress)
     } else {
-      if (currentBtnProgress.currentDwellBtn !== false) {
+      if (currentBtnProgress.dwellBtn !== false) {
         currentBtnProgress.progressInPct = 0
-        onGazeAtBtn(currentBtnProgress)
-        currentBtnProgress.currentDwellBtn = false
+        displayCurrentBtnProgress(currentBtnProgress)
+        currentBtnProgress.dwellBtn = false
       }
     }
   }
@@ -98,5 +105,6 @@ function evaluateEyeFixationsAtDwellBtns ({
 
 export {
   evaluateEyeFixationsAtDwellBtns,
-  getGazeAtDwellBtnListener
+  getGazeAtDwellBtnListener,
+  shadeBtn
 }

@@ -1,9 +1,9 @@
 function createCurrentDwellBtnProgress ({
-  currentDwellBtn = false,
+  dwellBtn = false,
   progressInPct = 0
 }) {
   return {
-    currentDwellBtn,
+    dwellBtn,
     progressInPct
   }
 }

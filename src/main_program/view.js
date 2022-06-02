@@ -51,8 +51,6 @@ function getDwellBtnDomEl (dwellBtn) {
   `)
   const btnEl = btnContainer.querySelector('.dwellBtnSingle')
 
-  console.log(dwellBtn)
-
   if (dwellBtn.colorDot) {
     btnEl.appendChild(getColorDotEl(dwellBtn.colorDot))
   }

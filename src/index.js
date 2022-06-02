@@ -1,6 +1,6 @@
 /* global webgazer */
 import { runClickCalibration, runGazeCalibration, runValidation } from 'Src/calibration/main.js'
-import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
+import { createPos, scalePosByVal, getMinXAndY } from 'Src/data_types/pos.js'
 import { startMainProgram } from 'Src/main_program/main.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
@@ -16,14 +16,12 @@ import {
 
 async function main () {
   const app = {
-    eyeModeOn,
-    constants: {},
-    state: {}
+    eyeModeOn
   }
   app.rootDomEl = document.body
 
   if (eyeModeOn) {
-    const webgazer = await makeWebgazerReady()
+    app.webgazer = await makeWebgazerReady()
 
     const { minTargetSize, maxFixationDispersion } =
       await getCalibrationResults(webgazer, app.rootDomEl)
@@ -74,11 +72,15 @@ function getCalibrationResults (webgazer, rootDomEl) {
         trys
       })
 
+      // If worst Acc or Prec is lower than border Acc or Prec, targets are
+      // too big. So in that case use border Acc or Prec.
+      const worstAccOrBorderAccRel = getMinXAndY(worstRelAcc, borderAcc)
+      const worstPrecOrBorderPrecRel = getMinXAndY(worstRelPrec, borderPrec)
       const minTargetSize = scalePosByVal(
-        getAbsPosFromPosRelativeToViewport(worstRelAcc), 2.5
+        getAbsPosFromPosRelativeToViewport(worstAccOrBorderAccRel), 2.5
       )
       const maxFixationDispersion = scalePosByVal(
-        getAbsPosFromPosRelativeToViewport(worstRelPrec), 2.5
+        getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel), 2.5
       )
 
       const calibrationScorePage = getCalibrationScorePage({
