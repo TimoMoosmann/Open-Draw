@@ -1,14 +1,17 @@
+import { checkGazeEstimations } from 'Src/webgazer_extensions/calibration/data_types/gaze_estimations.js'
 import { checkPositiveNumericPos, isPosLowerThanOrEqual } from 'Src/data_types/pos.js'
-import {
-  checkGazeEstimations
-} from 'Src/webgazer_extensions/calibration/data_types/gaze_estimations.js'
+import { getViewport } from 'Src/util/browser.js'
 
 function createGazeAtTargetData ({
   targetPos,
   gazeEstimations,
-  viewport
+  viewport = getViewport()
 }) {
-  const gazeAtTargetData = arguments[0]
+  const gazeAtTargetData = {
+    targetPos,
+    gazeEstimations,
+    viewport
+  }
 
   checkGazeAtTargetData(gazeAtTargetData, 'createGazeAtTargetData-given')
   return gazeAtTargetData

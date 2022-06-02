@@ -12,6 +12,12 @@ function getPosRelativeToViewport ({
   return dividePositions(pos, viewport)
 }
 
+function getAbsPosFromPosRelativeToViewport (
+  relPos, viewport = getViewport()
+) {
+  return scalePosByPos(relPos, viewport)
+}
+
 function getMinDistToEdgeFromSettings () {
   return scalePosByPos(
     getViewport(),
@@ -20,6 +26,7 @@ function getMinDistToEdgeFromSettings () {
 }
 
 export {
+  getAbsPosFromPosRelativeToViewport,
   getMinDistToEdgeFromSettings,
   getPosRelativeToViewport,
   popRandomItem

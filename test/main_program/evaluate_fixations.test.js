@@ -1,12 +1,12 @@
 /* global expect, test */
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
-import { createDwellBtnProgress } from 'Src/main_program/data_types/dwell_btn_progress.js'
+import { createCurrentDwellBtnProgress } from 'Src/main_program/data_types/current_dwell_btn_progress.js'
 import { evaluateEyeFixationsAtDwellBtns } from 'Src/main_program/evaluate_fixations.js'
 import { createPos } from 'Src/data_types/pos.js'
 import { createFixation } from 'Src/webgazer_extensions/fixation_detection/data_types/fixation.js'
 
-function getNoCurrentBtn () {
-  return createDwellBtnProgress({
+function getNoCurrentBtnProgress () {
+  return createCurrentDwellBtnProgress({
     btnId: false, progressInPct: 0
   })
 }
@@ -15,12 +15,9 @@ test(
   'Fixation outside of button should not trigger an action.\n' +
   'Current button should be redrawn with 0% progress.',
   done => {
-    const currentBtn = createDwellBtnProgress({
-      btnId: 'testBtn', progressInPct: 30
-    })
     let onGazeAtBtnTriggered = false
 
-    const testDwellBtnCenterd = createDwellBtn({
+    const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 350, y: 300 }),
       domId: 'testBtn',
       size: createPos({ x: 300, y: 200 }),
@@ -28,9 +25,13 @@ test(
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
+    const currentBtnProgress = createCurrentDwellBtnProgress({
+      currentDwellBtn: testDwellBtnCentered,
+      progressInPct: 30
+    })
 
-    const btnProgress0 = createDwellBtnProgress({
-      btnId: 'testBtn',
+    const btnProgress0 = createCurrentDwellBtnProgress({
+      currentDwellBtn: testDwellBtnCentered,
       progressInPct: 0
     })
     const shortFixationUpperLeft = createFixation({
@@ -43,24 +44,24 @@ test(
     })
 
     evaluateEyeFixationsAtDwellBtns({
-      dwellBtns: [testDwellBtnCenterd],
+      dwellBtns: [testDwellBtnCentered],
       fixation: shortFixationUpperLeft,
-      currentBtn,
+      currentBtnProgress,
       onGazeAtBtn: targetBtn => {
         onGazeAtBtnTriggered = true
         expect(targetBtn).toEqual(btnProgress0)
       }
     })
-    expect(currentBtn).toEqual(getNoCurrentBtn())
+    expect(currentBtnProgress).toEqual(getNoCurrentBtnProgress())
 
     evaluateEyeFixationsAtDwellBtns({
-      dwellBtns: [testDwellBtnCenterd],
+      dwellBtns: [testDwellBtnCentered],
       fixation: longFixationLowerRight,
-      currentBtn,
+      currentBtnProgress,
       // if callback is triggered the test fails
       onGazeAtBtn: target => expect(true).toBe(false)
     })
-    expect(currentBtn).toEqual(getNoCurrentBtn())
+    expect(currentBtnProgress).toEqual(getNoCurrentBtnProgress())
 
     // Give buffer for callbacks to finish.
     setTimeout(() => {
@@ -72,14 +73,11 @@ test(
 
 test(
   'A false fixation (is triggerd at the end of a fixation), ' +
-  'should not trigger an action, but reset currentBtn to null' +
+  'should not trigger an action, but reset currentBtnProgress to null' +
   'and redraw current button with 0 progress',
   done => {
-    const currentBtn = createDwellBtnProgress({
-      btnId: 'testBtn2', progressInPct: 50
-    })
     let onGazeAtBtnTriggered = false
-    const testDwellBtnCenterd = createDwellBtn({
+    const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 700, y: 500 }),
       domId: 'testBtn2',
       size: createPos({ x: 300, y: 200 }),
@@ -87,23 +85,26 @@ test(
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
+    const currentBtnProgress = createCurrentDwellBtnProgress({
+      currentDwellBtn: testDwellBtnCentered, progressInPct: 50
+    })
 
     const falseFixation = false
-    const btnProgress0 = createDwellBtnProgress({
-      btnId: 'testBtn2',
+    const btnProgress0 = createCurrentDwellBtnProgress({
+      currentDwellBtn: testDwellBtnCentered,
       progressInPct: 0
     })
 
     evaluateEyeFixationsAtDwellBtns({
-      dwellBtns: [testDwellBtnCenterd],
+      dwellBtns: [testDwellBtnCentered],
       fixation: falseFixation,
-      currentBtn,
+      currentBtnProgress,
       onGazeAtBtn: targetBtn => {
         onGazeAtBtnTriggered = true
         expect(targetBtn).toEqual(btnProgress0)
       }
     })
-    expect(currentBtn).toEqual(getNoCurrentBtn())
+    expect(currentBtnProgress).toEqual(getNoCurrentBtnProgress())
     // Give buffer for callbacks to finish.
     setTimeout(() => {
       expect(onGazeAtBtnTriggered).toBe(true)
@@ -116,9 +117,8 @@ test(
   'Fixation inside a dwell button where time is less than the activation time,' +
   'should trigger a redraw with the progress of the button.',
   done => {
-    const currentBtn = getNoCurrentBtn()
     let onGazeAtBtnTriggered = false
-    const testDwellBtnCenterd = createDwellBtn({
+    const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 600, y: 450 }),
       domId: 'testBtn3',
       size: createPos({ x: 300, y: 200 }),
@@ -126,26 +126,27 @@ test(
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
+    const currentBtnProgress = getNoCurrentBtnProgress()
 
     const shortFixationCenter = createFixation({
       center: createPos({ x: 700, y: 400 }),
       duration: 400
     })
-    const btnProgress40 = createDwellBtnProgress({
-      btnId: 'testBtn3',
+    const btnProgress40 = createCurrentDwellBtnProgress({
+      currentDwellBtn: testDwellBtnCentered,
       progressInPct: 40
     })
 
     evaluateEyeFixationsAtDwellBtns({
-      dwellBtns: [testDwellBtnCenterd],
+      dwellBtns: [testDwellBtnCentered],
       fixation: shortFixationCenter,
-      currentBtn,
+      currentBtnProgress,
       onGazeAtBtn: targetBtn => {
         onGazeAtBtnTriggered = true
-        expect(currentBtn).toEqual(btnProgress40)
+        expect(currentBtnProgress).toEqual(btnProgress40)
       }
     })
-    expect(currentBtn).toEqual(btnProgress40)
+    expect(currentBtnProgress).toEqual(btnProgress40)
     // Give buffer for possible callback calls to finish.
     setTimeout(() => {
       expect(onGazeAtBtnTriggered).toBe(true)
@@ -161,11 +162,11 @@ test(
   'But if an action was already triggerd it should be blocked for the ' +
   'follwing even longer fixations.',
   done => {
-    const currentBtn = getNoCurrentBtn()
+    const currentBtnProgress = getNoCurrentBtnProgress()
     let btnActionTriggeredCount = 0
     let onGazeAtBtnTriggeredFirst = false
     let onGazeAtBtnTriggeredSecond = false
-    const testDwellBtnCenterd = createDwellBtn({
+    const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 700, y: 400 }),
       domId: 'testBtn4',
       size: createPos({ x: 300, y: 200 }),
@@ -182,32 +183,32 @@ test(
       center: createPos({ x: 850, y: 400 }),
       duration: 1400
     })
-    const btnProgress100 = createDwellBtnProgress({
-      btnId: 'testBtn4',
+    const btnProgress100 = createCurrentDwellBtnProgress({
+      currentDwellBtn: testDwellBtnCentered,
       progressInPct: 100
     })
 
     evaluateEyeFixationsAtDwellBtns({
-      dwellBtns: [testDwellBtnCenterd],
+      dwellBtns: [testDwellBtnCentered],
       fixation: longFixationAtCenter,
-      currentBtn,
+      currentBtnProgress,
       onGazeAtBtn: targetBtn => {
         onGazeAtBtnTriggeredFirst = true
         expect(targetBtn).toEqual(btnProgress100)
       }
     })
-    expect(currentBtn).toEqual(btnProgress100)
+    expect(currentBtnProgress).toEqual(btnProgress100)
 
     evaluateEyeFixationsAtDwellBtns({
-      dwellBtns: [testDwellBtnCenterd],
+      dwellBtns: [testDwellBtnCentered],
       fixation: evenLongerFixationAtCenter,
-      currentBtn,
+      currentBtnProgress,
       onGazeAtBtn: targetBtn => {
         onGazeAtBtnTriggeredSecond = true
         expect(targetBtn).toEqual(btnProgress100)
       }
     })
-    expect(currentBtn).toEqual(btnProgress100)
+    expect(currentBtnProgress).toEqual(btnProgress100)
 
     // Give buffer for callbacks to finish.
     setTimeout(

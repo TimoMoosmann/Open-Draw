@@ -33,7 +33,11 @@ function getGazeTargetsContainer (id = '') {
   `)
 }
 
-function getCalibrationScorePage (calibrationScore) {
+function getCalibrationScorePage ({
+  calibrationScore,
+  onContinue,
+  onRecalibrate
+}) {
   const continueBtnState =
     calibrationScore.proceedBtnActive ? 'enabled' : 'disabled'
 
@@ -49,10 +53,10 @@ function getCalibrationScorePage (calibrationScore) {
           <p id="message">${calibrationScore.message}</p>
       </div>
       <div id="calibrationScoreButtonsContainer">
-          <button ${continueBtnState}>
+          <button id="continueBtn" ${continueBtnState}>
             Continue
           </button>
-          <button>Recalibrate</button>
+          <button id="recalibrateBtn">Recalibrate</button>
       </div>
     </div>
   `)
@@ -63,6 +67,13 @@ function getCalibrationScorePage (calibrationScore) {
     calibrationScore.accScoreColor.y
   calibrationScorePage.querySelector('#precStatus').style.color =
     calibrationScore.precStatusColor
+
+  calibrationScorePage.querySelector('#continueBtn').addEventListener(
+    'click', onContinue
+  )
+  calibrationScorePage.querySelector('#recalibrateBtn').addEventListener(
+    'click', onRecalibrate
+  )
 
   return calibrationScorePage
 }

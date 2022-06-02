@@ -1,13 +1,14 @@
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
-import { createLine } from 'Src/main_program/data_types/line.js'
-import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+// import { createLine } from 'Src/main_program/data_types/line.js'
+// import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 import {
   arrangeEquallySizedDwellBtnsToParallelMenu, arrangeOneBtnToLowerRight
 } from 'Src/main_program/dwell_btn_patterns.js'
+import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
+import { startChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { getMinDistToEdge, getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 import {
-  getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl,
-  getMainProgramContainer
+  getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl
 } from 'Src/main_program/view.js'
 import { createPos } from 'Src/data_types/pos.js'
 import {
@@ -19,17 +20,14 @@ import { standardDwellBtnActivationTime } from 'Settings'
 import openMenuIcon from 'Assets/img/open_menu.png'
 import startDrawLineModeIcon from 'Assets/img/start_draw_line_mode.png'
 
-/*
-const getMainMenuDwellBtns () => {
-  return [
-    getStartDrawModeDwellBtn(), getStartZoomModeDwellBtn(),
-    getStartColorChooserDwellBtn(),
-}
-*/
-
 function startMainProgram ({
-  minTargetSize
+  app
 }) {
+  if (app.eyeModeOn) {
+    app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
+  }
+  startChooseColorMode(app)
+  /*
   const mainProgramContainer = getMainProgramContainer()
   document.body.appendChild(mainProgramContainer)
 
@@ -49,6 +47,7 @@ function startMainProgram ({
     minDwellBtnSize: minTargetSize,
     root: mainProgramContainer
   })
+  */
 }
 
 function startMainMenu ({

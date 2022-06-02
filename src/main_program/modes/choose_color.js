@@ -1,27 +1,22 @@
+import { scalePosByVal } from 'Src/data_types/pos.js'
 import { createDwellBtnWithColorDot, createNextBtn, createPrevBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { arrangeEquallySizedDwellBtnsToParallelMenu } from 'Src/main_program/dwell_btn_patterns.js'
 import { getDwellBtnContainer, getDwellBtnDomEl } from 'Src/main_program/view.js'
 import { colors } from 'Settings'
 
-function startChooseColorMode () {
-  // draw Lines ?
-  /*
-  const colors = []
-  for (const colorCode of colors) {
+function startChooseColorMode (app) {
+  const onColorChoosenAction = color => {
+    if (app.eyeModeOn) {
+      app.gazeAtDwellBtnListener.stop()
+      app.gazeAtDwellBtnListener.reset()
+    }
+    window.alert(color)
   }
-  */
-}
 
-function getChooseColorMenuPage ({
-  appContainer,
-  btnSize,
-  distToNeighborBtn,
-  onColorChoosenAction = color => {}
-}) {
-  const chooseColorDwellBtns = []
+  const btnSize = app.minTargetSize
+  const colorDwellBtns = []
   for (let i = 1; i < colors.length; i++) {
-    console.log(colors[i])
-    chooseColorDwellBtns.push(createDwellBtnWithColorDot({
+    colorDwellBtns.push(createDwellBtnWithColorDot({
       action: () => onColorChoosenAction(colors[i]),
       colorDot: colors[i],
       domId: 'colorBtn' + i,
@@ -31,70 +26,67 @@ function getChooseColorMenuPage ({
   }
 
   const dwellBtnContainer = getDwellBtnContainer()
-  appContainer.appendChild(dwellBtnContainer)
+  app.rootDomEl.appendChild(dwellBtnContainer)
 
-  const createCorrectSizedBtn = (createFunction, args) => createFunction({
-    size: btnSize,
-    ...args
-  })
-  const getNextBtnFromAction = action => createCorrectSizedBtn(
-    createNextBtn, { action }
-  )
-  const getPrevBtnFromAction = action => createCorrectSizedBtn(
-    createPrevBtn, { action }
-  )
-
-  drawParallelMenu({
-    distToNeighborBtn,
+  drawAndActivateParallelMenu({
+    app,
+    btnSize,
     dwellBtnContainer,
-    equallySizedDwellBtns: chooseColorDwellBtns,
-    getNextBtnFromAction,
-    getPrevBtnFromAction
+    equallySizedDwellBtns: colorDwellBtns
   })
 }
 
-function drawParallelMenu ({
-  distToNeighborBtn,
+function drawAndActivateParallelMenu ({
+  app,
+  btnSize,
+  distToNeighborBtn = false,
   dwellBtnContainer,
   endIdx = false,
   equallySizedDwellBtns,
-  getNextBtnFromAction,
-  getPrevBtnFromAction,
   startIdx = 0
 }) {
-  const drawParallelMenuFixed = ({ endIdx, startIdx }) => drawParallelMenu({
-    distToNeighborBtn,
-    dwellBtnContainer,
-    endIdx,
-    equallySizedDwellBtns,
-    getNextBtnFromAction,
-    getPrevBtnFromAction,
-    startIdx
-  })
+  if (!distToNeighborBtn) {
+    distToNeighborBtn = scalePosByVal(btnSize, 0.5)
+  }
   dwellBtnContainer.innerHTML = ''
 
-  const getNextBtnAction = startIdx => () => drawParallelMenuFixed({
-    startIdx, endIdx: false
+  const drawAndActivateParallelMenuWithFixedParams = ({ endIdx, startIdx }) => {
+    return drawAndActivateParallelMenu({
+      app, btnSize, dwellBtnContainer, endIdx, equallySizedDwellBtns, startIdx
+    })
+  }
+
+  const getNextBtn = startIdx => createNextBtn({
+    action: () => drawAndActivateParallelMenuWithFixedParams({
+      startIdx, endIdx: false
+    }),
+    size: btnSize
   })
-  const getPrevBtnAction = endIdx => () => drawParallelMenuFixed({
-    endIdx, startIdx: false
+  const getPrevBtn = endIdx => createPrevBtn({
+    action: () => drawAndActivateParallelMenuWithFixedParams({
+      endIdx, startIdx: false
+    }),
+    size: btnSize
   })
 
   const arrangedDwellBtns = arrangeEquallySizedDwellBtnsToParallelMenu({
     distToNeighbor: distToNeighborBtn,
     endIdx,
     equallySizedDwellBtns,
-    getNextBtn: startIdx => getNextBtnFromAction(getNextBtnAction(startIdx)),
-    getPrevBtn: endIdx => getPrevBtnFromAction(getPrevBtnAction(endIdx)),
+    getNextBtn,
+    getPrevBtn,
     startIdx
   })
 
   for (const arrangedBtn of arrangedDwellBtns) {
     dwellBtnContainer.appendChild(getDwellBtnDomEl(arrangedBtn))
   }
+
+  if (app.eyeModeOn) {
+    app.gazeAtDwellBtnListener.register(arrangedDwellBtns)
+  }
 }
 
 export {
-  getChooseColorMenuPage,
   startChooseColorMode
 }
