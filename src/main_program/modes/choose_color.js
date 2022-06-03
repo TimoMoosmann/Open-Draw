@@ -6,10 +6,12 @@ import { colors } from 'Settings'
 
 function startChooseColorMode (app) {
   const onColorChoosenAction = color => {
+    /*
     if (app.eyeModeOn) {
       app.gazeAtDwellBtnListener.stop()
       app.gazeAtDwellBtnListener.reset()
     }
+    */
     window.alert(color)
   }
 

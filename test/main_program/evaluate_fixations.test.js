@@ -15,7 +15,7 @@ test(
   'Fixation outside of button should not trigger an action.\n' +
   'Current button should be redrawn with 0% progress.',
   done => {
-    let onGazeAtBtnTriggered = false
+    let displayCurrentBtnProgressTriggered = false
 
     const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 350, y: 300 }),
@@ -26,12 +26,12 @@ test(
       action: () => expect(true).toBe(false)
     })
     const currentBtnProgress = createCurrentDwellBtnProgress({
-      currentDwellBtn: testDwellBtnCentered,
+      dwellBtn: testDwellBtnCentered,
       progressInPct: 30
     })
 
     const btnProgress0 = createCurrentDwellBtnProgress({
-      currentDwellBtn: testDwellBtnCentered,
+      dwellBtn: testDwellBtnCentered,
       progressInPct: 0
     })
     const shortFixationUpperLeft = createFixation({
@@ -47,8 +47,8 @@ test(
       dwellBtns: [testDwellBtnCentered],
       fixation: shortFixationUpperLeft,
       currentBtnProgress,
-      onGazeAtBtn: targetBtn => {
-        onGazeAtBtnTriggered = true
+      displayCurrentBtnProgress: targetBtn => {
+        displayCurrentBtnProgressTriggered = true
         expect(targetBtn).toEqual(btnProgress0)
       }
     })
@@ -59,13 +59,13 @@ test(
       fixation: longFixationLowerRight,
       currentBtnProgress,
       // if callback is triggered the test fails
-      onGazeAtBtn: target => expect(true).toBe(false)
+      displayCurrentBtnProgress: target => expect(true).toBe(false)
     })
     expect(currentBtnProgress).toEqual(getNoCurrentBtnProgress())
 
     // Give buffer for callbacks to finish.
     setTimeout(() => {
-      expect(onGazeAtBtnTriggered).toBe(true)
+      expect(displayCurrentBtnProgressTriggered).toBe(true)
       done()
     }, 200)
   }
@@ -76,7 +76,7 @@ test(
   'should not trigger an action, but reset currentBtnProgress to null' +
   'and redraw current button with 0 progress',
   done => {
-    let onGazeAtBtnTriggered = false
+    let displayCurrentBtnProgressTriggered = false
     const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 700, y: 500 }),
       domId: 'testBtn2',
@@ -86,12 +86,12 @@ test(
       action: () => expect(true).toBe(false)
     })
     const currentBtnProgress = createCurrentDwellBtnProgress({
-      currentDwellBtn: testDwellBtnCentered, progressInPct: 50
+      dwellBtn: testDwellBtnCentered, progressInPct: 50
     })
 
     const falseFixation = false
     const btnProgress0 = createCurrentDwellBtnProgress({
-      currentDwellBtn: testDwellBtnCentered,
+      dwellBtn: testDwellBtnCentered,
       progressInPct: 0
     })
 
@@ -99,15 +99,15 @@ test(
       dwellBtns: [testDwellBtnCentered],
       fixation: falseFixation,
       currentBtnProgress,
-      onGazeAtBtn: targetBtn => {
-        onGazeAtBtnTriggered = true
+      displayCurrentBtnProgress: targetBtn => {
+        displayCurrentBtnProgressTriggered = true
         expect(targetBtn).toEqual(btnProgress0)
       }
     })
     expect(currentBtnProgress).toEqual(getNoCurrentBtnProgress())
     // Give buffer for callbacks to finish.
     setTimeout(() => {
-      expect(onGazeAtBtnTriggered).toBe(true)
+      expect(displayCurrentBtnProgressTriggered).toBe(true)
       done()
     }, 200)
   }
@@ -117,7 +117,7 @@ test(
   'Fixation inside a dwell button where time is less than the activation time,' +
   'should trigger a redraw with the progress of the button.',
   done => {
-    let onGazeAtBtnTriggered = false
+    let displayCurrentBtnProgressTriggered = false
     const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 600, y: 450 }),
       domId: 'testBtn3',
@@ -133,7 +133,7 @@ test(
       duration: 400
     })
     const btnProgress40 = createCurrentDwellBtnProgress({
-      currentDwellBtn: testDwellBtnCentered,
+      dwellBtn: testDwellBtnCentered,
       progressInPct: 40
     })
 
@@ -141,15 +141,15 @@ test(
       dwellBtns: [testDwellBtnCentered],
       fixation: shortFixationCenter,
       currentBtnProgress,
-      onGazeAtBtn: targetBtn => {
-        onGazeAtBtnTriggered = true
+      displayCurrentBtnProgress: targetBtn => {
+        displayCurrentBtnProgressTriggered = true
         expect(currentBtnProgress).toEqual(btnProgress40)
       }
     })
     expect(currentBtnProgress).toEqual(btnProgress40)
     // Give buffer for possible callback calls to finish.
     setTimeout(() => {
-      expect(onGazeAtBtnTriggered).toBe(true)
+      expect(displayCurrentBtnProgressTriggered).toBe(true)
       done()
     }, 200
     )
@@ -164,8 +164,8 @@ test(
   done => {
     const currentBtnProgress = getNoCurrentBtnProgress()
     let btnActionTriggeredCount = 0
-    let onGazeAtBtnTriggeredFirst = false
-    let onGazeAtBtnTriggeredSecond = false
+    let displayCurrentBtnProgressTriggeredFirst = false
+    let displayCurrentBtnProgressTriggeredSecond = false
     const testDwellBtnCentered = createDwellBtn({
       center: createPos({ x: 700, y: 400 }),
       domId: 'testBtn4',
@@ -184,7 +184,7 @@ test(
       duration: 1400
     })
     const btnProgress100 = createCurrentDwellBtnProgress({
-      currentDwellBtn: testDwellBtnCentered,
+      dwellBtn: testDwellBtnCentered,
       progressInPct: 100
     })
 
@@ -192,8 +192,8 @@ test(
       dwellBtns: [testDwellBtnCentered],
       fixation: longFixationAtCenter,
       currentBtnProgress,
-      onGazeAtBtn: targetBtn => {
-        onGazeAtBtnTriggeredFirst = true
+      displayCurrentBtnProgress: targetBtn => {
+        displayCurrentBtnProgressTriggeredFirst = true
         expect(targetBtn).toEqual(btnProgress100)
       }
     })
@@ -203,8 +203,8 @@ test(
       dwellBtns: [testDwellBtnCentered],
       fixation: evenLongerFixationAtCenter,
       currentBtnProgress,
-      onGazeAtBtn: targetBtn => {
-        onGazeAtBtnTriggeredSecond = true
+      displayCurrentBtnProgress: targetBtn => {
+        displayCurrentBtnProgressTriggeredSecond = true
         expect(targetBtn).toEqual(btnProgress100)
       }
     })
@@ -213,11 +213,67 @@ test(
     // Give buffer for callbacks to finish.
     setTimeout(
       () => {
-        expect(onGazeAtBtnTriggeredFirst).toBe(true)
-        expect(onGazeAtBtnTriggeredSecond).toBe(true)
+        expect(displayCurrentBtnProgressTriggeredFirst).toBe(true)
+        expect(displayCurrentBtnProgressTriggeredSecond).toBe(true)
         expect(btnActionTriggeredCount).toBe(1)
         done()
       }, 200
     )
+  }
+)
+
+test(
+  'displayCurrentBtnProgress should only be triggered one time, when there ' +
+  'is more than one Button',
+  done => {
+    let timesDisplayCurrentBtnProgressTriggered = 0
+
+    const testDwellBtnCentered = createDwellBtn({
+      center: createPos({ x: 350, y: 300 }),
+      domId: 'testBtn',
+      size: createPos({ x: 300, y: 200 }),
+      timeTillActivation: 1000,
+      // if action is triggered the test fails
+      action: () => expect(true).toBe(false)
+    })
+    const testDwellBtnUpperLeft = createDwellBtn({
+      center: createPos({ x: 100, y: 100 }),
+      domId: 'testBtn2',
+      size: createPos({ x: 100, y: 100 }),
+      timeTillActivation: 1000,
+      // if action is triggered the test fails
+      action: () => expect(true).toBe(false)
+    })
+    const currentBtnProgress = createCurrentDwellBtnProgress({
+      dwellBtn: false,
+      progressInPct: 0
+    })
+
+    const btnProgress30 = createCurrentDwellBtnProgress({
+      dwellBtn: testDwellBtnCentered,
+      progressInPct: 30
+    })
+
+    const shortFixationUpperLeft = createFixation({
+      center: createPos({ x: 300, y: 300 }),
+      duration: 300
+    })
+
+    evaluateEyeFixationsAtDwellBtns({
+      dwellBtns: [testDwellBtnCentered, testDwellBtnUpperLeft],
+      fixation: shortFixationUpperLeft,
+      currentBtnProgress,
+      displayCurrentBtnProgress: targetBtn => {
+        timesDisplayCurrentBtnProgressTriggered++
+        expect(targetBtn).toEqual(btnProgress30)
+      }
+    })
+    expect(currentBtnProgress).toEqual(btnProgress30)
+
+    // Give buffer for callbacks to finish.
+    setTimeout(() => {
+      expect(timesDisplayCurrentBtnProgressTriggered).toBe(1)
+      done()
+    }, 200)
   }
 )

@@ -38,7 +38,6 @@ class GazeAtDwellBtnListner {
             const dwellBtnDomEl = this.dwellBtnContainer.querySelector(
               '#' + currentDwellBtnProgress.dwellBtn.domId
             )
-            console.log(currentDwellBtnProgress)
             // 1.0 when not focused, 0.5 when focused till activation.
             shadeBtn(dwellBtnDomEl, currentDwellBtnProgress.progressInPct)
           }
@@ -93,13 +92,13 @@ function evaluateEyeFixationsAtDwellBtns ({
         )
       }
       displayCurrentBtnProgress(currentBtnProgress)
-    } else {
-      if (currentBtnProgress.dwellBtn !== false) {
-        currentBtnProgress.progressInPct = 0
-        displayCurrentBtnProgress(currentBtnProgress)
-        currentBtnProgress.dwellBtn = false
-      }
+      return
     }
+  }
+  if (currentBtnProgress.dwellBtn !== false) {
+    currentBtnProgress.progressInPct = 0
+    displayCurrentBtnProgress(currentBtnProgress)
+    currentBtnProgress.dwellBtn = false
   }
 }
 
