@@ -1,6 +1,9 @@
 /* global webgazer */
 import { runClickCalibration, runGazeCalibration, runValidation } from 'Src/calibration/main.js'
 import { createPos, scalePosByVal, getMinXAndY } from 'Src/data_types/pos.js'
+import { createLine } from 'Src/main_program/data_types/line.js'
+import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
 import { startMainProgram } from 'Src/main_program/main.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
@@ -16,19 +19,36 @@ import {
 
 async function main () {
   const app = {
-    eyeModeOn
+    eyeModeOn,
+    state: {
+      lines: [
+        createLine({
+          startPoint: createPos({ x: 100, y: 200 }),
+          endPoint: createPos({ x: 400, xy: 300 }),
+          strokeProperties: createStrokeProperties({
+            color: 'blue',
+            lineWidth: 5
+          })
+        })
+      ]
+    }
   }
   app.rootDomEl = document.body
 
   if (eyeModeOn) {
     app.webgazer = await makeWebgazerReady()
 
-    const { minTargetSize, maxFixationDispersion } =
+    const { minGazeTargetSize, maxFixationDispersion } =
       await getCalibrationResults(webgazer, app.rootDomEl)
-    app.minTargetSize = minTargetSize
+    app.minGazeTargetSize = minGazeTargetSize
     app.maxFixationDispersion = maxFixationDispersion
+  } else {
+    app.minGazeTargetSize = createPos({ x: 200, y: 200 })
   }
-  startMainProgram({ app })
+
+  app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
+
+  startMainProgram(app)
 }
 
 async function makeWebgazerReady () {
@@ -76,7 +96,7 @@ function getCalibrationResults (webgazer, rootDomEl) {
       // too big. So in that case use border Acc or Prec.
       const worstAccOrBorderAccRel = getMinXAndY(worstRelAcc, borderAcc)
       const worstPrecOrBorderPrecRel = getMinXAndY(worstRelPrec, borderPrec)
-      const minTargetSize = scalePosByVal(
+      const minGazeTargetSize = scalePosByVal(
         getAbsPosFromPosRelativeToViewport(worstAccOrBorderAccRel), 2.5
       )
       const maxFixationDispersion = scalePosByVal(
@@ -87,7 +107,7 @@ function getCalibrationResults (webgazer, rootDomEl) {
         calibrationScore,
         onContinue: () => {
           calibrationScorePage.remove()
-          resolve({ maxFixationDispersion, minTargetSize })
+          resolve({ maxFixationDispersion, minGazeTargetSize })
         },
         onRecalibrate: () => {
           calibrationScorePage.remove()

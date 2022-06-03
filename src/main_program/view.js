@@ -1,12 +1,12 @@
 /* global MutationObserver */
-import { drawLines } from './main.js'
-import { createElementFromHTML } from '../util/browser.js'
+import { drawLines } from 'Src/main_program/draw.js'
+import { createElementFromHTML } from 'Src/util/browser.js'
 
 import { html } from 'common-tags'
 
-import '../../assets/css/style.css'
-import '../../assets/css/main_program.css'
-import '../../assets/css/main_menu.css'
+import 'Assets/css/style.css'
+import 'Assets/css/main_program.css'
+import 'Assets/css/main_menu.css'
 
 function getMainProgramContainer () {
   return createElementFromHTML(html`
@@ -16,7 +16,7 @@ function getMainProgramContainer () {
 
 function getDwellBtnContainer () {
   return createElementFromHTML(html`
-    <div class="dwellBtnContainer">
+    <div id="dwellBtnContainer">
     </div>
   `)
 }
@@ -42,14 +42,14 @@ function getDwellBtnDomEl (dwellBtn) {
   const btnContainer = createElementFromHTML(html`
     <div>
       ${dwellBtnTitleHTML}
-      <button id="${dwellBtn.domId}" class="dwellBtnSingle"
+      <button id="${dwellBtn.domId}" class="dwellBtn"
         style="width:${btnWidth}px; height:${btnHeight}px;
           left:${left}px; top:${top}px"
       >
       </button>
     </div>
   `)
-  const btnEl = btnContainer.querySelector('.dwellBtnSingle')
+  const btnEl = btnContainer.querySelector('.dwellBtn')
 
   if (dwellBtn.colorDot) {
     btnEl.appendChild(getColorDotEl(dwellBtn.colorDot))
@@ -72,25 +72,6 @@ function getColorDotEl (color) {
   return colorDot
 }
 
-function getMainMenuPage () {
-  return createElementFromHTML(html`
-    <div id="mainMenuContainer">
-      <button id="drawBtn" class="dwellBtn">
-        <h2>Draw</h2>
-      </button>
-      <button id="moveBtn" class="dwellBtn">
-        <h2>Move & Zoom</h2>
-      </button>
-      <button id="editBtn" class="dwellBtn">
-        <h2>Edit</h2>
-      </button>
-      <button id="colorBtn" class="dwellBtn">
-        <h2>Color</h2>
-      </button>
-    </div>
-  `)
-}
-
 function getDrawingCanvasInContainer () {
   const drawingCanvasContainer = createElementFromHTML(html`
     <div id="canvasContainer">
@@ -99,16 +80,19 @@ function getDrawingCanvasInContainer () {
     </div>
   `)
   const drawingCanvas = drawingCanvasContainer.querySelector('#drawingCanvas')
+  console.log(drawingCanvas)
   let canvasReady = false
-  let stack = []
+  let linesStack = []
+  // Stack lines they should be drawn, but the canvas is not ready.
   drawingCanvas.drawLines = lines => {
     if (canvasReady) {
-      drawLines({ drawingCanvas, lines })
+      drawLines(lines, drawingCanvas)
     } else {
-      stack = stack.concat(lines)
+      linesStack = linesStack.concat(lines)
     }
   }
 
+  // Draw all stacked lines when the canvas is ready.
   const drawingCanvasAddedToDocumentObserver = new MutationObserver(
     (mutations, observer) => {
       for (const mutation of mutations) {
@@ -117,7 +101,7 @@ function getDrawingCanvasInContainer () {
             fitCanvasToContainer(drawingCanvas)
             observer.disconnect()
             canvasReady = true
-            drawingCanvas.drawLines(stack)
+            drawingCanvas.drawLines(linesStack)
           }
         }
       }
@@ -138,6 +122,8 @@ function fitCanvasToContainer (canvas) {
 }
 
 export {
-  getDrawingCanvasInContainer, getMainMenuPage, getDwellBtnDomEl,
-  getDwellBtnContainer, getMainProgramContainer
+  getDrawingCanvasInContainer,
+  getDwellBtnDomEl,
+  getDwellBtnContainer,
+  getMainProgramContainer
 }

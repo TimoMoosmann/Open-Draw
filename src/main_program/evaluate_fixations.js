@@ -50,11 +50,17 @@ class GazeAtDwellBtnListner {
     this.webgazer.clearGazeListener()
   }
 
-  register (dwellBtns) {
-    this.registeredBtns = dwellBtns
+  reset () {
+    this.registeredBtns = []
   }
 
-  reset () {
+  register (dwellBtns) {
+    this.registeredBtns = dwellBtns
+    this.start()
+  }
+
+  unregister () {
+    this.stop()
     this.registeredBtns = []
   }
 }

@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "jest ./test/",
-    "build": "webpack && npm run checkstyle",
+    "build": "webpack",
     "serve": "nodemon ./bin/www",
     "checkstyle": "npx standard src/ test/ test_views/ settings.js",
     "fixstyle": "npx standard --fix src/ test/ test_views/ settings.js"

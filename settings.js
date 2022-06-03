@@ -1,6 +1,6 @@
 import { createPos } from 'Src/data_types/pos.js'
 
-export const eyeModeOn = true
+export const eyeModeOn = false
 
 // 'click' or 'gaze'
 export const calibrationType = 'click'
