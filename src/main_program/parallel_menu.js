@@ -1,7 +1,7 @@
 import { scalePosByVal } from 'Src/data_types/pos.js'
 import { createNextBtn, createPrevBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { arrangeEquallySizedDwellBtnsToParallelMenu } from 'Src/main_program/dwell_btn_patterns.js'
-import { closeDwellBtnScreen, showAndActivateDwellBtns } from 'Src/main_program/util.js'
+import { removeDwellBtnsAndGazeListener, showAndActivateDwellBtns } from 'Src/main_program/util.js'
 
 function drawAndActivateParallelMenu ({
   app,
@@ -22,14 +22,14 @@ function drawAndActivateParallelMenu ({
 
   const getNextBtn = startIdx => createNextBtn({
     action: () => {
-      closeDwellBtnScreen(app)
+      removeDwellBtnsAndGazeListener(app)
       drawAndActivateParallelMenuWithFixedParams({ startIdx, endIdx: false })
     },
     size: btnSize
   })
   const getPrevBtn = endIdx => createPrevBtn({
     action: () => {
-      closeDwellBtnScreen(app)
+      removeDwellBtnsAndGazeListener(app)
       drawAndActivateParallelMenuWithFixedParams({ endIdx, startIdx: false })
     },
     size: btnSize

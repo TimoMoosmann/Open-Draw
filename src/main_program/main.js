@@ -5,7 +5,8 @@ import { arrangeOneBtnToLowerRight } from 'Src/main_program/dwell_btn_patterns.j
 import { startChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { drawAndActivateParallelMenu } from 'Src/main_program/parallel_menu.js'
 import {
-  addCanvasToRootAndDrawLines, closeDwellBtnScreen, showAndActivateDwellBtns
+  removeDwellBtnsAndGazeListener,
+  showAndActivateDwellBtns
 } from 'Src/main_program/util.js'
 
 import { standardDwellBtnActivationTime } from 'Settings'
@@ -22,7 +23,8 @@ function startMainMenu (app) {
 
   const startChooseColorModeDwellBtn = createDwellBtn({
     action: () => {
-      closeDwellBtnScreen(app)
+      removeDwellBtnsAndGazeListener(app)
+      app.drawingCanvas.clear()
       startChooseColorMode(app)
     },
     domId: 'startColorChooserDwellBtn',
@@ -30,6 +32,7 @@ function startMainMenu (app) {
     tite: 'Choose Color'
   })
 
+  app.drawingCanvas.drawLines(app.state.lines)
   drawAndActivateParallelMenu({
     app,
     btnSize,
@@ -40,7 +43,8 @@ function startMainMenu (app) {
 function startMainMenuClosedMode (app) {
   const openMainMenuDwellBtn = createDwellBtn({
     action: () => {
-      closeDwellBtnScreen(app)
+      removeDwellBtnsAndGazeListener(app)
+      app.drawingCanvas.clear()
       startMainMenu(app)
     },
     domId: 'openMainMenuBtn',
@@ -53,8 +57,10 @@ function startMainMenuClosedMode (app) {
   const arrangedOpenMainMenuDwellBtn = arrangeOneBtnToLowerRight({
     dwellBtn: openMainMenuDwellBtn
   })
-  addCanvasToRootAndDrawLines(app)
   showAndActivateDwellBtns([arrangedOpenMainMenuDwellBtn], app)
+  console.log(app.state.lines)
+  console.log(app.drawingCanvas)
+  app.drawingCanvas.drawLines(app.state.lines)
 }
 
 export {

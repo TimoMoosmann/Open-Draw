@@ -12,6 +12,17 @@ export const minFixationDuration = 200
 export const maxFixationDuration =
   2 * standardDwellBtnActivationTime + minFixationDuration
 
+// During line drawing there are two modes, "looking" and "drawing",
+// each indicated by the color of a gazeDot.
+export const drawStateGazeDotColors = {
+  drawing: 'orange',
+  looking: 'green'
+}
+
+export const lookModeDwellDuration = 700
+// Normaly keep them equal.
+export const drawModeDwellDuration = lookModeDwellDuration
+
 export const colors = [
   '#0036FA', // Blue
   '#FA000C', // Red

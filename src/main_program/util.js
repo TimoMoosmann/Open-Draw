@@ -30,7 +30,7 @@ function clearDwellBtns () {
   document.getElementById('dwellBtnContainer').remove()
 }
 
-function closeDwellBtnScreen (app) {
+function removeDwellBtnsAndGazeListener (app) {
   endGazeBtnListenerIfNeeded(app)
   clearDwellBtns()
 }
@@ -62,9 +62,9 @@ function showAndActivateDwellBtns (dwellBtns, app) {
 
 export {
   addCanvasToRootAndDrawLines,
-  closeDwellBtnScreen,
   endGazeBtnListenerIfNeeded,
   getMinDistToEdgeFromSettings,
   getSmallDistToNeighborTarget,
+  removeDwellBtnsAndGazeListener,
   showAndActivateDwellBtns
 }

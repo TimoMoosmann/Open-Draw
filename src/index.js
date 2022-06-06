@@ -3,8 +3,10 @@ import { runClickCalibration, runGazeCalibration, runValidation } from 'Src/cali
 import { createPos, scalePosByVal, getMinXAndY } from 'Src/data_types/pos.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+import { getDrawingCanvas } from 'Src/main_program/drawing_canvas.js'
 import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
 import { startMainProgram } from 'Src/main_program/main.js'
+import { getDrawingCanvasInContainer } from 'Src/main_program/view.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
@@ -20,6 +22,7 @@ import {
 async function main () {
   const app = {
     eyeModeOn,
+    rootDomEl: document.body,
     state: {
       lines: [
         createLine({
@@ -33,7 +36,11 @@ async function main () {
       ]
     }
   }
-  app.rootDomEl = document.body
+
+  const { drawingCanvasDomEl, drawingCanvasContainer } =
+    getDrawingCanvasInContainer()
+  app.rootDomEl.appendChild(drawingCanvasContainer)
+  app.drawingCanvas = getDrawingCanvas(drawingCanvasDomEl)
 
   if (eyeModeOn) {
     app.webgazer = await makeWebgazerReady()

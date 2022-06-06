@@ -3,12 +3,15 @@ import { createLine } from 'Src/main_program/data_types/line.js'
 import { drawLine, drawLines } from 'Src/main_program/main.js'
 import { createPos } from 'Src/data_types/pos.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+import { addCanvasToRootAndDrawLines } from 'Src/main_program/util.js'
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
 
+import {
+  drawModeDwellDuration, drawStateGazeDotColors, lookModeDwellDuration
+} from 'Settings'
+
 function startDrawLineMode ({
-  drawStateGazeDotColors = createDrawStateGazeDotColors({
-    drawing: 'red', looking: 'green'
-  }),
+  app,
   dwellDurationThreshold,
   lines,
   newLineProperties = createStrokeProperties({ color: 'gray', lineWidth: 4 }),
@@ -22,14 +25,16 @@ function startDrawLineMode ({
   webgazer
 }) {
   // TODO fix drawing
-  const canvas = document.getElementById('drawingCanvas')
-  const canvasCtx = canvas.getContext('2d')
+
+  const canvas = addCanvasToRootAndDrawLines(app)
+
   const drawState = {
-    name: 'looking',
-    safetyEllipse: null,
-    startPoint: null,
-    endPoint: null
+    mode: 'looking',
+    safetyEllipse: false,
+    startPoint: false,
+    endPoint: false
   }
+
   const drawDrawStateFixedArguments = () => {
     drawDrawState({
       canvas,
@@ -74,40 +79,33 @@ function startDrawLineMode ({
           'drawState.name needs to be either "looking", or "drawing".'
         )
     }
+    // draw drawState
   })
 
   // Show gaze dot
   // Go back to the main menu.
 }
 
-function onFixationDuringLookingState ({
-  canvasCtx,
-  drawDrawStateFixedArguments,
-  drawState,
-  drawStateGazeDotColors,
-  dwellDurationThreshold,
-  fixation
-}) {
-  if (fixation.duration >= dwellDurationThreshold) {
-    drawState.name = 'drawing'
-    if (drawState.startPoint && drawState.safetyEllipse) {
+function onFixationDuringLookingState (drawState, fixation) {
+  if (fixation.duration >= lookModeDwellDuration) {
+    drawState.mode = 'drawing'
+    if (drawState.safetyEllipse) {
       if (
-        fixation.duration >= dwellDurationThreshold &&
-        !inEllipse({ ellipse: drawState.safetyEllipse, pos: fixation.center })
+        // The second point of a line needs to be outside of the safetyEllipse
+        // because only then it is clear that the user is actually looking
+        // at another point on the screen.
+        !inEllipse(fixation.center, drawState.safetyEllipse)
       ) {
         drawState.endPoint = fixation.center
-        drawDrawStateFixedArguments()
       }
     } else {
       drawState.startPoint = fixation.center
-      drawDrawStateFixedArguments()
     }
   }
 }
 
 function onFixationDuringDrawingState ({
-  canvasCtx,
-  drawDrawStateFixedArguments,
+  app,
   drawLinePage,
   drawState,
   dwellDurationThreshold,
@@ -117,17 +115,16 @@ function onFixationDuringDrawingState ({
   newLineProperties,
   webgazer
 }) {
-  if (fixation.duration >= 2 * dwellDurationThreshold) {
+  if (fixation.duration >= lookModeDwellDuration + drawModeDwellDuration) {
     if (drawState.endPoint) {
-      lines.push(createLine({
+      app.state.lines.push(createLine({
         startPoint: drawState.startPoint,
         endPoint: drawState.endPoint,
-        properties: newLineProperties
+        strokeProperties: createStrokeProperties({
+          color: app.state.color,
+          lineWidth: app.state.lineWidth
+        })
       }))
-      window.alert('done with drawing')
-      // returning back to main mainu
-      // drawLinePage.remove()
-      // remove webgazer gazeListener
     } else {
       drawState.safetyEllipse = createEllipse({
         center: drawState.startPoint, radii: minTargetRadii
@@ -153,6 +150,7 @@ const drawDrawState = ({
   startPointColor,
   startPointRadii
 }) => {
+  // clearCanvas
   drawLines({ canvas, canvasCtx, lines })
   if (drawState.startPoint) {
     fillEllipse({

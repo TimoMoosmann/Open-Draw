@@ -1,4 +1,4 @@
-function drawLines (lines, canvas) {
+function drawLinesOnCanvas (lines, canvas) {
   clearCanvas(canvas)
   const canvasCtx = canvas.getContext('2d')
   for (const line of lines) {
@@ -39,4 +39,7 @@ const drawLinesZoomed = ({lines, zoom}) => {
 }
 */
 
-export { drawLines }
+export {
+  clearCanvas,
+  drawLinesOnCanvas
+}

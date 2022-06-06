@@ -1,5 +1,3 @@
-/* global MutationObserver */
-import { drawLines } from 'Src/main_program/draw.js'
 import { createElementFromHTML } from 'Src/util/browser.js'
 
 import { html } from 'common-tags'
@@ -79,46 +77,11 @@ function getDrawingCanvasInContainer () {
       </canvas>
     </div>
   `)
-  const drawingCanvas = drawingCanvasContainer.querySelector('#drawingCanvas')
-  console.log(drawingCanvas)
-  let canvasReady = false
-  let linesStack = []
-  // Stack lines they should be drawn, but the canvas is not ready.
-  drawingCanvas.drawLines = lines => {
-    if (canvasReady) {
-      drawLines(lines, drawingCanvas)
-    } else {
-      linesStack = linesStack.concat(lines)
-    }
+  const drawingCanvasDomEl =
+    drawingCanvasContainer.querySelector('#drawingCanvas')
+  return {
+    drawingCanvasDomEl, drawingCanvasContainer
   }
-
-  // Draw all stacked lines when the canvas is ready.
-  const drawingCanvasAddedToDocumentObserver = new MutationObserver(
-    (mutations, observer) => {
-      for (const mutation of mutations) {
-        for (const addedNode of mutation.addedNodes) {
-          if (addedNode.contains(drawingCanvas)) {
-            fitCanvasToContainer(drawingCanvas)
-            observer.disconnect()
-            canvasReady = true
-            drawingCanvas.drawLines(linesStack)
-          }
-        }
-      }
-    }
-  )
-  drawingCanvasAddedToDocumentObserver.observe(document, {
-    subtree: true, childList: true
-  })
-
-  return { drawingCanvas, drawingCanvasContainer }
-}
-
-function fitCanvasToContainer (canvas) {
-  canvas.style.width = '100%'
-  canvas.style.height = '100%'
-  canvas.width = canvas.offsetWidth
-  canvas.height = canvas.offsetHeight
 }
 
 export {

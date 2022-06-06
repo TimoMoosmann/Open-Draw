@@ -9,7 +9,7 @@ function checkEllipse (ellipse, argName) {
   checkPositiveNumericPos(ellipse.radii, argName + '.radii')
 }
 
-function inEllipse ({ ellipse, pos }) {
+function inEllipse (pos, ellipse) {
   return ((
     (Math.pow(pos.x - ellipse.center.x, 2) / Math.pow(ellipse.radii.x, 2)) +
     (Math.pow(pos.y - ellipse.center.y, 2) / Math.pow(ellipse.radii.y, 2))

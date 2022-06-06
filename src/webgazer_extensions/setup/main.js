@@ -100,13 +100,14 @@ function showWebgazerVideoWhenFaceIsNotDetected (webgazer) {
   webgazer.faceDetector.start()
 }
 
-function setWebgazerGazeDotColor (cssColorCode) {
+function setWebgazerGazeDotColor (color) {
   const gazeDot = document.getElementById('webgazerGazeDot')
   if (gazeDot) {
-    gazeDot.style.backgroundColor = cssColorCode
+    gazeDot.style.backgroundColor = color
   } else {
-    throw new Error('Webgazer GazeDot is not available, probably this means' +
-      ' Webgazer is not available.'
+    throw new Error(
+      'Webgazer GazeDot is not available, which probably this means that ' +
+      'Webgazer is not available.'
     )
   }
 }

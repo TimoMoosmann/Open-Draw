@@ -82,10 +82,7 @@ function evaluateEyeFixationsAtDwellBtns ({
   displayCurrentBtnProgress
 }) {
   for (const dwellBtn of dwellBtns) {
-    if (fixation && inEllipse({
-      ellipse: dwellBtn.ellipse,
-      pos: fixation.center
-    })) {
+    if (fixation && inEllipse(fixation.center, dwellBtn.ellipse)) {
       currentBtnProgress.dwellBtn = dwellBtn
       if (fixation.duration >= dwellBtn.timeTillActivation) {
         if (currentBtnProgress.progressInPct < 100) {
