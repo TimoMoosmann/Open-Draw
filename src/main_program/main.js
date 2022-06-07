@@ -4,6 +4,7 @@ import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { redraw } from 'Src/main_program/draw.js'
 import { arrangeOneBtnToLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import { startChooseColorMode } from 'Src/main_program/modes/choose_color.js'
+import { startMoveMode } from 'Src/main_program/modes/move.js'
 import { startZoomMode } from 'Src/main_program/modes/zoom.js'
 import { drawAndActivateParallelMenu } from 'Src/main_program/parallel_menu.js'
 import {
@@ -45,12 +46,21 @@ function startMainMenu (app) {
     domId: 'startZoomDwellBtn',
     title: 'Zoom'
   })
+  const startMoveModeDwellBtn = getStartModeDwellBtn({
+    startMode: startMoveMode,
+    domId: 'startMoveDwellBtn',
+    title: 'Move'
+  })
 
   redraw(app)
   drawAndActivateParallelMenu({
     app,
     btnSize,
-    equallySizedDwellBtns: [startZoomModeDwellBtn, startChooseColorModeDwellBtn]
+    equallySizedDwellBtns: [
+      startZoomModeDwellBtn,
+      startChooseColorModeDwellBtn,
+      startMoveModeDwellBtn
+    ]
   })
 }
 

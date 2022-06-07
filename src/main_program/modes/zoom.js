@@ -4,7 +4,7 @@ import { createDwellBtn, createDwellBtnFromDwellBtnAndCenter } from 'Src/main_pr
 import { redraw } from 'Src/main_program/draw.js'
 import { startMainMenuClosedMode } from 'Src/main_program/main.js'
 import {
-  getMinDistToEdgeFromSettings, getSmallDistToNeighborTarget,
+  getMinDistToEdgeFromSettings, getQuitBtn, getSmallDistToNeighborTarget,
   removeDwellBtnsAndGazeListener, showAndActivateDwellBtns
 } from 'Src/main_program/util.js'
 import { zoomIn, zoomOut } from 'Src/main_program/zoom.js'
@@ -12,16 +12,7 @@ import { zoomIn, zoomOut } from 'Src/main_program/zoom.js'
 // Upper Left Zoom in zoomOut
 
 function startZoomMode (app) {
-  const quitBtn = createDwellBtn({
-    action: () => {
-      app.drawingCanvas.clear()
-      removeDwellBtnsAndGazeListener(app)
-      startMainMenuClosedMode(app)
-    },
-    domId: 'quitBtn',
-    size: app.minGazeTargetSize,
-    title: 'Quit Mode'
-  })
+  const quitBtn = getQuitBtn(app)
 
   const zoomInBtn = createDwellBtn({
     action: () => {

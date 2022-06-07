@@ -1,4 +1,6 @@
 import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
+import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
+import { startMainMenuClosedMode } from 'Src/main_program/main.js'
 import {
   getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl
 } from 'Src/main_program/view.js'
@@ -60,11 +62,34 @@ function showAndActivateDwellBtns (dwellBtns, app) {
   registerDwellBtnsForGazeListenerIfNeeded(dwellBtns, app)
 }
 
+function executeQuitRoutine (app, startMode = startMainMenuClosedMode) {
+  app.drawingCanvas.clear()
+  removeDwellBtnsAndGazeListener(app)
+  startMode(app)
+}
+
+function getQuitBtn (
+  app,
+  startMode = startMainMenuClosedMode,
+  size = false
+) {
+  if (!size) size = app.minGazeTargetSize
+  return createDwellBtn({
+    action: () => {
+      executeQuitRoutine(app, startMode)
+    },
+    domId: 'quitBtn',
+    size,
+    title: 'Quit Mode'
+  })
+}
+
 export {
   addCanvasToRootAndDrawLines,
   endGazeBtnListenerIfNeeded,
   getMinDistToEdgeFromSettings,
   getSmallDistToNeighborTarget,
+  getQuitBtn,
   removeDwellBtnsAndGazeListener,
   showAndActivateDwellBtns
 }
