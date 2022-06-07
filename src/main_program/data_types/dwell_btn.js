@@ -17,7 +17,6 @@ function createDwellBtn ({
   timeTillActivation = standardDwellBtnActivationTime,
   title = false
 }) {
-  console.log(title)
   return {
     action,
     ellipse: createEllipse({

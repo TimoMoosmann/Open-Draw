@@ -4,6 +4,7 @@ import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { redraw } from 'Src/main_program/draw.js'
 import { arrangeOneBtnToLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import { startChooseColorMode } from 'Src/main_program/modes/choose_color.js'
+import { startDrawLineMode } from 'Src/main_program/modes/draw_line.js'
 import { startMoveMode } from 'Src/main_program/modes/move.js'
 import { startZoomMode } from 'Src/main_program/modes/zoom.js'
 import { drawAndActivateParallelMenu } from 'Src/main_program/parallel_menu.js'
@@ -36,10 +37,10 @@ function startMainMenu (app) {
     title
   })
 
-  const startChooseColorModeDwellBtn = getStartModeDwellBtn({
-    startMode: startChooseColorMode,
-    domId: 'startColorChooserDwellBtn',
-    title: 'Choose Color'
+  const startDrawLineModeDwellBtn = getStartModeDwellBtn({
+    startMode: startDrawLineMode,
+    domId: 'startDrawlineModeDwellBtn',
+    title: 'Draw Line'
   })
   const startZoomModeDwellBtn = getStartModeDwellBtn({
     startMode: startZoomMode,
@@ -51,15 +52,21 @@ function startMainMenu (app) {
     domId: 'startMoveDwellBtn',
     title: 'Move'
   })
+  const startChooseColorModeDwellBtn = getStartModeDwellBtn({
+    startMode: startChooseColorMode,
+    domId: 'startColorChooserDwellBtn',
+    title: 'Choose Color'
+  })
 
   redraw(app)
   drawAndActivateParallelMenu({
     app,
     btnSize,
     equallySizedDwellBtns: [
+      startDrawLineModeDwellBtn,
       startZoomModeDwellBtn,
-      startChooseColorModeDwellBtn,
-      startMoveModeDwellBtn
+      startMoveModeDwellBtn,
+      startChooseColorModeDwellBtn
     ]
   })
 }

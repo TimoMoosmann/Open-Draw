@@ -2,10 +2,9 @@ import { addPositions, createPos, subPositions } from 'Src/data_types/pos.js'
 import { getViewport } from 'Src/util/browser.js'
 import { createDwellBtn, createDwellBtnFromDwellBtnAndCenter } from 'Src/main_program/data_types/dwell_btn.js'
 import { redraw } from 'Src/main_program/draw.js'
-import { startMainMenuClosedMode } from 'Src/main_program/main.js'
 import {
   getMinDistToEdgeFromSettings, getQuitBtn, getSmallDistToNeighborTarget,
-  removeDwellBtnsAndGazeListener, showAndActivateDwellBtns
+  showAndActivateDwellBtns
 } from 'Src/main_program/util.js'
 import { zoomIn, zoomOut } from 'Src/main_program/zoom.js'
 // Lower Right: End Mode Btns

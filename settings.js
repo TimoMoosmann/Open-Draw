@@ -1,6 +1,7 @@
 import { createPos } from 'Src/data_types/pos.js'
+import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 
-export const eyeModeOn = false
+export const eyeModeOn = true
 
 // 'click' or 'gaze'
 export const calibrationType = 'click'
@@ -18,6 +19,17 @@ export const drawStateGazeDotColors = {
   drawing: 'orange',
   looking: 'green'
 }
+export const markPointHalfSize = createPos({ x: 20, y: 20 })
+export const markPointStrokeProperties = createStrokeProperties({
+  color: 'black',
+  lineWidth: 2
+})
+// 5px line, 3px space
+export const safetyEllipseLineDash = [5, 3]
+export const safetyEllipseStrokeProperties = createStrokeProperties({
+  color: 'black',
+  lineWidth: 2
+})
 
 export const lookModeDwellDuration = 700
 // Normaly keep them equal.

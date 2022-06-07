@@ -51,6 +51,10 @@ async function main () {
           })
         })
       ],
+      newLineProperties: createStrokeProperties({
+        color: 'blue',
+        lineWidth: 2
+      }),
       zoom: createZoom()
     }
   }
