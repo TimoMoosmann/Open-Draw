@@ -3,6 +3,7 @@ import { runClickCalibration, runGazeCalibration, runValidation } from 'Src/cali
 import { createPos, scalePosByVal, getMinXAndY } from 'Src/data_types/pos.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+import { createZoom } from 'Src/main_program/data_types/zoom.js'
 import { getDrawingCanvas } from 'Src/main_program/drawing_canvas.js'
 import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
 import { startMainProgram } from 'Src/main_program/main.js'
@@ -32,8 +33,25 @@ async function main () {
             color: 'blue',
             lineWidth: 5
           })
+        }),
+        createLine({
+          startPoint: createPos({ x: 150, y: 50 }),
+          endPoint: createPos({ x: 2200, y: 1300 }),
+          strokeProperties: createStrokeProperties({
+            color: 'red',
+            lineWidth: 2
+          })
+        }),
+        createLine({
+          startPoint: createPos({ x: 700, y: 10 }),
+          endPoint: createPos({ x: 2, y: 423 }),
+          strokeProperties: createStrokeProperties({
+            color: 'red',
+            lineWidth: 2
+          })
         })
-      ]
+      ],
+      zoom: createZoom()
     }
   }
 

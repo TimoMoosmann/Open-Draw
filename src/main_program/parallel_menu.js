@@ -11,8 +11,8 @@ function drawAndActivateParallelMenu ({
   equallySizedDwellBtns,
   startIdx = 0
 }) {
-  if (!distToNeighbor) distToNeighbor = scalePosByVal(btnSize, 0.5)
   if (!btnSize) btnSize = app.minGazeTargetSize
+  if (!distToNeighbor) distToNeighbor = scalePosByVal(btnSize, 0.5)
 
   const drawAndActivateParallelMenuWithFixedParams = ({ endIdx, startIdx }) => {
     drawAndActivateParallelMenu({

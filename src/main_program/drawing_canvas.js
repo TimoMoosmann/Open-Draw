@@ -37,10 +37,10 @@ class DrawingCanvas {
     }
   }
 
-  drawLines (lines) {
+  drawLines (lines, zoom = false) {
     if (this.canvasReady) {
       fitCanvasToContainer(this.canvasDomEl)
-      drawLinesOnCanvas(lines, this.canvasDomEl)
+      drawLinesOnCanvas(lines, this.canvasDomEl, zoom)
     } else {
       // Stack lines when the canvas is not ready.
       this.linesStack = lines.concat(lines)

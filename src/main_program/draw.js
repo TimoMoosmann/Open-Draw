@@ -1,7 +1,19 @@
-function drawLinesOnCanvas (lines, canvas) {
+import { scalePosByPos, scalePosByVal, subPositions } from 'Src/data_types/pos.js'
+import { getViewport } from 'Src/util/browser.js'
+import { createLine } from 'Src/main_program/data_types/line.js'
+import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+
+function redraw (app) {
+  app.drawingCanvas.drawLines(app.state.lines, app.state.zoom)
+}
+
+function drawLinesOnCanvas (lines, canvas, zoom = false) {
   clearCanvas(canvas)
   const canvasCtx = canvas.getContext('2d')
-  for (const line of lines) {
+  for (let line of lines) {
+    if (zoom) {
+      line = getZoomedLine(line, zoom)
+    }
     drawLine(line, canvasCtx)
   }
 }
@@ -20,26 +32,26 @@ function drawLine (line, canvasCtx) {
   canvasCtx.stroke()
 }
 
-/*
-const createZoomedLine = ({line, viewport, zoom}) => {
-  drawLine(canvasCtx, createLine({
-   startPoint: createPos{
-     x: line.startPoint.x * zoom.level.factor - zoom.canvasOffsetFactor *
+function zoomPos (pos, zoom) {
+  return subPositions(
+    scalePosByVal(pos, zoom.level.factor),
+    scalePosByPos(zoom.canvasOffsetFactor, getViewport())
+  )
 }
 
-const createUnzoomedLine = ({line, viewport, zoom}) => {
+function getZoomedLine (line, zoom) {
+  const newStrokeProperties = createStrokeProperties(line.strokeProperties)
+  newStrokeProperties.lineWidth =
+    line.strokeProperties.lineWidth * zoom.level.factor
+  return createLine({
+    startPoint: zoomPos(line.startPoint, zoom),
+    endPoint: zoomPos(line.endPoint, zoom),
+    strokeProperties: newStrokeProperties
+  })
 }
-
-const drawLinesZoomed = ({lines, zoom}) => {
-  clearCanvas({canvas, canvsCtx})
-  for (const line of lines) {
-    drawLine(canvasCtx, createLine({
-      startPoint: createPos{
-        x:
-}
-*/
 
 export {
   clearCanvas,
-  drawLinesOnCanvas
+  drawLinesOnCanvas,
+  redraw
 }

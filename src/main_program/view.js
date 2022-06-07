@@ -26,6 +26,7 @@ function getDwellBtnDomEl (dwellBtn) {
   const top = dwellBtn.ellipse.center.y
   const titleTop = top - dwellBtn.ellipse.radii.y
 
+  console.log(dwellBtn.title)
   const dwellBtnTitleHTML = dwellBtn.title
     ? html`
       <div class="dwellBtnTitleHolder"

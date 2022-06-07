@@ -1,12 +1,13 @@
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 // import { createLine } from 'Src/main_program/data_types/line.js'
 // import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+import { redraw } from 'Src/main_program/draw.js'
 import { arrangeOneBtnToLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import { startChooseColorMode } from 'Src/main_program/modes/choose_color.js'
+import { startZoomMode } from 'Src/main_program/modes/zoom.js'
 import { drawAndActivateParallelMenu } from 'Src/main_program/parallel_menu.js'
 import {
-  removeDwellBtnsAndGazeListener,
-  showAndActivateDwellBtns
+  removeDwellBtnsAndGazeListener, showAndActivateDwellBtns
 } from 'Src/main_program/util.js'
 
 import { standardDwellBtnActivationTime } from 'Settings'
@@ -21,22 +22,35 @@ function startMainProgram (app) {
 function startMainMenu (app) {
   const btnSize = app.minGazeTargetSize
 
-  const startChooseColorModeDwellBtn = createDwellBtn({
+  const getStartModeDwellBtn = ({
+    domId, icon = false, startMode, title
+  }) => createDwellBtn({
     action: () => {
       removeDwellBtnsAndGazeListener(app)
       app.drawingCanvas.clear()
-      startChooseColorMode(app)
+      startMode(app)
     },
-    domId: 'startColorChooserDwellBtn',
+    domId,
     size: app.minGazeTargetSize,
-    tite: 'Choose Color'
+    title
   })
 
-  app.drawingCanvas.drawLines(app.state.lines)
+  const startChooseColorModeDwellBtn = getStartModeDwellBtn({
+    startMode: startChooseColorMode,
+    domId: 'startColorChooserDwellBtn',
+    title: 'Choose Color'
+  })
+  const startZoomModeDwellBtn = getStartModeDwellBtn({
+    startMode: startZoomMode,
+    domId: 'startZoomDwellBtn',
+    title: 'Zoom'
+  })
+
+  redraw(app)
   drawAndActivateParallelMenu({
     app,
     btnSize,
-    equallySizedDwellBtns: [startChooseColorModeDwellBtn]
+    equallySizedDwellBtns: [startZoomModeDwellBtn, startChooseColorModeDwellBtn]
   })
 }
 
@@ -58,9 +72,7 @@ function startMainMenuClosedMode (app) {
     dwellBtn: openMainMenuDwellBtn
   })
   showAndActivateDwellBtns([arrangedOpenMainMenuDwellBtn], app)
-  console.log(app.state.lines)
-  console.log(app.drawingCanvas)
-  app.drawingCanvas.drawLines(app.state.lines)
+  redraw(app)
 }
 
 export {

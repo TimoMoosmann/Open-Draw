@@ -17,6 +17,7 @@ function createDwellBtn ({
   timeTillActivation = standardDwellBtnActivationTime,
   title = false
 }) {
+  console.log(title)
   return {
     action,
     ellipse: createEllipse({
@@ -73,19 +74,26 @@ function createPrevBtn ({ action, size }) {
 }
 
 function createDwellBtnFromDwellBtnAndCenter (dwellBtn, center) {
+  /*
   const domId = dwellBtn.domId
   const icon = dwellBtn.icon
-  const size = scalePosByVal(dwellBtn.ellipse.radii, 2)
+  */
+  /*
   const timeTillActivation = dwellBtn.timeTillActivation
+  const title = dwellBtn.title
   const action = dwellBtn.action
-  const dwellBtnArgs = { action, center, domId, icon, size, timeTillActivation }
+  const dwellBtnArgs = {
+    action, center, domId, icon, size, timeTillActivation, title
+  }
+  */
+  const size = scalePosByVal(dwellBtn.ellipse.radii, 2)
 
   if (dwellBtn.colorDot) {
     return createDwellBtnWithColorDot({
-      ...dwellBtnArgs, colorDot: dwellBtn.colorDot
+      center, size, colorDot: dwellBtn.colorDot, ...dwellBtn
     })
   }
-  return createDwellBtn(dwellBtnArgs)
+  return createDwellBtn({ center, size, ...dwellBtn })
 }
 
 function checkDwellBtn (dwellBtn, argName) {
