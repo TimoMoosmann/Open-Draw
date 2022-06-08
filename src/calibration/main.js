@@ -2,15 +2,19 @@ import { getPatternCoordsInPct } from 'Src/calibration/patterns.js'
 import { getGazeTarget, getGazeTargetsContainer } from 'Src/calibration/view.js'
 import { clickCalibration, gazeCalibration, validation } from 'Src/webgazer_extensions/calibration/main.js'
 
-const defaultTargetRadius = 27
-const recommendedTimeTillCapture = 700
+import {
+  gazeTargetRadius,
+  gazeCalibrationTimeTillRecord, gazeCalibrationRecordDuration,
+  gazeCalibrationRecordIntervalDuration,
+  validationCaptureDuration, validationTimeTillCapture
+} from 'Settings'
 
 async function runGazeCalibration ({
   numTargets,
-  recordDuration = 1300,
-  recordIntervalDuration = 50,
-  targetRadius = defaultTargetRadius,
-  timeTillRecord = recommendedTimeTillCapture,
+  recordDuration = gazeCalibrationRecordDuration,
+  recordIntervalDuration = gazeCalibrationRecordIntervalDuration,
+  targetRadius = gazeTargetRadius,
+  timeTillRecord = gazeCalibrationTimeTillRecord,
   webgazer
 }) {
   const gazeTargetsCoords = getPatternCoordsInPct({
@@ -29,7 +33,7 @@ async function runGazeCalibration ({
 
 async function runClickCalibration ({
   numTargets,
-  targetRadius = defaultTargetRadius,
+  targetRadius = gazeTargetRadius,
   webgazer
 }) {
   const gazeTargetsCoords = getPatternCoordsInPct({
@@ -46,10 +50,10 @@ async function runClickCalibration ({
 }
 
 async function runValidation ({
-  captureDuration = 1000,
+  captureDuration = validationCaptureDuration,
   numTargets = 4,
-  targetRadius = defaultTargetRadius,
-  timeTillCapture = recommendedTimeTillCapture,
+  targetRadius = gazeTargetRadius,
+  timeTillCapture = validationTimeTillCapture,
   webgazer
 }) {
   const gazeTargetsCoords = getPatternCoordsInPct({

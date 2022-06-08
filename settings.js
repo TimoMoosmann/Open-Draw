@@ -3,16 +3,33 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
 
 export const eyeModeOn = true
 
+/*
+ * Calibration Settings
+ */
 // 'click' or 'gaze'
-export const calibrationType = 'click'
-export const numCalibrationTargets = 5
+export const calibrationType = 'gaze'
+// 5, 9, or 13
+export const numCalibrationTargets = 9
+export const gazeTargetRadius = 30
 
+// Gaze Calibration
+export const gazeCalibrationTimeTillRecord = 1200
+export const gazeCalibrationRecordDuration = 1300
+export const gazeCalibrationRecordIntervalDuration = 200
+
+// Validation
+export const validationCaptureDuration = 1000
+export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
+
+/*
+ * Program settings
+ */
 export const minDistToEdgeInPct = createPos({ x: 7, y: 10 })
 export const standardDwellBtnActivationTime = 1000
 export const minFixationDuration = 200
 export const maxFixationDuration =
   // TODO chnge back to 2x
-  5 * standardDwellBtnActivationTime + minFixationDuration
+  2 * standardDwellBtnActivationTime + minFixationDuration
 
 // During line drawing there are two modes, "looking" and "drawing",
 // each indicated by the color of a gazeDot.
@@ -32,7 +49,7 @@ export const safetyEllipseStrokeProperties = createStrokeProperties({
   lineWidth: 2
 })
 
-export const lookModeDwellDuration = 2000
+export const lookModeDwellDuration = 700
 // Normaly keep them equal.
 export const drawModeDwellDuration = lookModeDwellDuration
 
