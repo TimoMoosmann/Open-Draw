@@ -24,6 +24,7 @@ export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
 /*
  * Program settings
  */
+export const standardGazeDotColor = 'blue'
 export const minDistToEdgeInPct = createPos({ x: 7, y: 10 })
 export const standardDwellBtnActivationTime = 1000
 export const minFixationDuration = 200
@@ -31,6 +32,9 @@ export const maxFixationDuration =
   // TODO chnge back to 2x
   2 * standardDwellBtnActivationTime + minFixationDuration
 
+/*
+ * Draw Line Mode
+ */
 // During line drawing there are two modes, "looking" and "drawing",
 // each indicated by the color of a gazeDot.
 export const drawStateGazeDotColors = {

@@ -1,4 +1,5 @@
-import { createPos } from 'Src/data_types/pos.js'
+import { addPositions, createPos, scalePosByPos, scalePosByVal, subPositions } from 'Src/data_types/pos.js'
+import { getViewport } from 'Src/util/browser.js'
 
 // To solve problems with floating arithmetic. Snapping to edges of the
 // canvas when the viewing window is close enough, is activated
@@ -113,7 +114,33 @@ function zoomLevelTransitionOffsetChange ({
   return (higherZoomFactor - lowerZoomFactor) / 2
 }
 
+function zoomPos (pos, zoom) {
+  return subPositions(
+    scalePosByVal(pos, zoom.level.factor),
+    scalePosByPos(zoom.canvasOffsetFactor, getViewport())
+  )
+}
+
+function unzoomPos (pos, zoom) {
+  return addPositions(
+    scalePosByVal(pos, 1 / zoom.level.factor),
+    scalePosByPos(zoom.canvasOffsetFactor, getViewport())
+  )
+}
+
 export {
-  canMoveLeft, canMoveRight, canMoveUp, canMoveDown, canZoomIn,
-  canZoomOut, moveLeft, moveRight, moveUp, moveDown, zoomIn, zoomOut
+  canMoveLeft,
+  canMoveRight,
+  canMoveUp,
+  canMoveDown,
+  canZoomIn,
+  canZoomOut,
+  moveLeft,
+  moveRight,
+  moveUp,
+  moveDown,
+  unzoomPos,
+  zoomIn,
+  zoomOut,
+  zoomPos
 }

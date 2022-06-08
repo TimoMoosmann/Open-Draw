@@ -3,6 +3,7 @@ import { createEllipse, inEllipse } from 'Src/main_program/data_types/ellipse.js
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { startMainMenuClosedMode } from 'Src/main_program/main.js'
+import { unzoomPos } from 'Src/main_program/zoom.js'
 import { runWebgazerFixationDetection } from 'Src/webgazer_extensions/fixation_detection/main.js'
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
 
@@ -10,7 +11,8 @@ import {
   drawModeDwellDuration, drawStateGazeDotColors, lookModeDwellDuration,
   markPointHalfSize, markPointStrokeProperties,
   minFixationDuration, maxFixationDuration,
-  safetyEllipseLineDash, safetyEllipseStrokeProperties
+  safetyEllipseLineDash, safetyEllipseStrokeProperties,
+  standardGazeDotColor
 } from 'Settings'
 
 function startDrawLineMode (app) {
@@ -51,6 +53,7 @@ function startDrawLineMode (app) {
         app.drawingCanvas.clear()
         startMainMenuClosedMode(app)
         app.webgazer.clearGazeListener()
+        setWebgazerGazeDotColor(standardGazeDotColor)
       }
     }
   })
@@ -86,8 +89,17 @@ function onFixationDuringDrawingMode ({
   ) {
     if (drawState.endPoint) {
       app.state.lines.push(createLine({
-        startPoint: drawState.startPoint,
-        endPoint: drawState.endPoint,
+        startPoint: unzoomPos(drawState.startPoint, app.state.zoom),
+        endPoint: unzoomPos(drawState.endPoint, app.state.zoom),
+        strokeProperties: app.state.newLineProperties
+      }))
+    }
+    if (drawState.endPoint) {
+      app.state.lines.push(createLine({
+        startPoint: scalePosByVal(
+          drawState.startPoint, 1 / app.state.zoom.level.factor
+        ),
+        endPoint: scalePosByVal(drawState.endPoint, 1 / app.state.zoom.level.factor),
         strokeProperties: app.state.newLineProperties
       }))
       drawState.done = true
@@ -133,11 +145,17 @@ const drawDrawState = ({
   }
 
   if (drawState.endPoint) {
+    // preview Line
     drawMarkPoint(drawState.endPoint)
+    const newLinePreviewProperties = app.state.newLineProperties
+    newLinePreviewProperties.lineWidth =
+      scalePosByVal(
+        newLinePreviewProperties.lineWidth, app.state.zoom.level.factor
+      )
     drawLine(createLine({
       startPoint: drawState.startPoint,
       endPoint: drawState.endPoint,
-      strokeProperties: app.state.newLineProperties
+      strokeProperties: newLinePreviewProperties
     }), ctx)
   }
 }

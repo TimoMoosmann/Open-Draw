@@ -10,14 +10,13 @@ import { startMainProgram } from 'Src/main_program/main.js'
 import { getDrawingCanvasInContainer } from 'Src/main_program/view.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
-import { showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
-
+import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
 import { getCalibrationScoreEvaluation } from 'Src/calibration/success_score.js'
 import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluation.js'
 import { getCalibrationScorePage } from 'Src/calibration/view.js'
 
 import {
-  calibrationType, eyeModeOn, numCalibrationTargets
+  calibrationType, eyeModeOn, numCalibrationTargets, standardGazeDotColor
 } from 'Settings'
 
 async function main () {
@@ -66,6 +65,7 @@ async function main () {
 
   if (eyeModeOn) {
     app.webgazer = await makeWebgazerReady()
+    setWebgazerGazeDotColor(standardGazeDotColor)
 
     const { minGazeTargetSize, maxFixationDispersion } =
       await getCalibrationResults(webgazer, app.rootDomEl)

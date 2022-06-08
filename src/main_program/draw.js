@@ -1,7 +1,6 @@
-import { scalePosByPos, scalePosByVal, subPositions } from 'Src/data_types/pos.js'
-import { getViewport } from 'Src/util/browser.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
+import { zoomPos } from 'Src/main_program/zoom.js'
 
 function redraw (app) {
   app.drawingCanvas.drawLines(app.state.lines, app.state.zoom)
@@ -30,13 +29,6 @@ function drawLine (line, canvasCtx) {
   canvasCtx.moveTo(line.startPoint.x, line.startPoint.y)
   canvasCtx.lineTo(line.endPoint.x, line.endPoint.y)
   canvasCtx.stroke()
-}
-
-function zoomPos (pos, zoom) {
-  return subPositions(
-    scalePosByVal(pos, zoom.level.factor),
-    scalePosByPos(zoom.canvasOffsetFactor, getViewport())
-  )
 }
 
 function getZoomedLine (line, zoom) {

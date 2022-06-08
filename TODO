@@ -1,1 +1,6 @@
-- settings.js
+- Activate Gaze Dot only where neceassary
+- introduce grid to draw line mode
+- icons
+- Structure settings
+- optimize fixations - especially when they start and end
+- optimize shading of dwellbtns
