@@ -1,6 +1,7 @@
+import { scalePosByVal } from 'Src/data_types/pos.js'
 import { createEllipse, inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
-import { redraw } from 'Src/main_program/draw.js'
+import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { startMainMenuClosedMode } from 'Src/main_program/main.js'
 import { runWebgazerFixationDetection } from 'Src/webgazer_extensions/fixation_detection/main.js'
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
@@ -31,7 +32,7 @@ function startDrawLineMode (app) {
     maxFixationDuration,
     webgazer: app.webgazer,
     onFixation: fixation => {
-      setWebgazerGazeDotColor(drawStateGazeDotColors[drawState.name])
+      setWebgazerGazeDotColor(drawStateGazeDotColors[drawState.mode])
       switch (drawState.mode) {
         case 'looking':
           onFixationDuringLookingMode({ drawState, fixation })
@@ -40,7 +41,7 @@ function startDrawLineMode (app) {
           onFixationDuringDrawingMode({ app, drawState, fixation })
           break
         default:
-          throw new Error(drawState.name + ' is not a valid draw state name.' +
+          throw new Error(drawState.mode + ' is not a valid draw state name.' +
             'drawState.name needs to be either "looking", or "drawing".'
           )
       }
@@ -57,7 +58,6 @@ function startDrawLineMode (app) {
 
 function onFixationDuringLookingMode ({ drawState, fixation }) {
   if (fixation.duration >= lookModeDwellDuration) {
-    drawState.mode = 'drawing'
     if (drawState.safetyEllipse) {
       if (
         // The second point of a line needs to be outside of the safetyEllipse
@@ -65,10 +65,14 @@ function onFixationDuringLookingMode ({ drawState, fixation }) {
         // at another point on the screen.
         !inEllipse(fixation.center, drawState.safetyEllipse)
       ) {
+        console.log(fixation)
+        console.log(drawState.safetyEllipse)
         drawState.endPoint = fixation.center
+        drawState.mode = 'drawing'
       }
     } else {
       drawState.startPoint = fixation.center
+      drawState.mode = 'drawing'
     }
   }
 }
@@ -89,14 +93,17 @@ function onFixationDuringDrawingMode ({
       drawState.done = true
     } else {
       drawState.safetyEllipse = createEllipse({
-        center: drawState.startPoint, radii: app.minGazeTargetSize / 2
+        center: drawState.startPoint,
+        radii: scalePosByVal(app.minGazeTargetSize, 1 / 2)
       })
       drawState.mode = 'looking'
     }
   } else if (fixation.duration < lookModeDwellDuration) {
-    drawState.name = 'looking'
+    drawState.mode = 'looking'
     if (drawState.endPoint) {
       drawState.endPoint = false
+    } else {
+      drawState.startPoint = false
     }
   }
 }
@@ -127,11 +134,11 @@ const drawDrawState = ({
 
   if (drawState.endPoint) {
     drawMarkPoint(drawState.endPoint)
-    app.drawingCanvas.drawLines([createLine({
+    drawLine(createLine({
       startPoint: drawState.startPoint,
       endPoint: drawState.endPoint,
       strokeProperties: app.state.newLineProperties
-    })])
+    }), ctx)
   }
 }
 

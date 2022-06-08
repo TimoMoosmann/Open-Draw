@@ -52,6 +52,7 @@ function getZoomedLine (line, zoom) {
 
 export {
   clearCanvas,
+  drawLine,
   drawLinesOnCanvas,
   redraw
 }

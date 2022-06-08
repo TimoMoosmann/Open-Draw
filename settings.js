@@ -11,7 +11,8 @@ export const minDistToEdgeInPct = createPos({ x: 7, y: 10 })
 export const standardDwellBtnActivationTime = 1000
 export const minFixationDuration = 200
 export const maxFixationDuration =
-  2 * standardDwellBtnActivationTime + minFixationDuration
+  // TODO chnge back to 2x
+  5 * standardDwellBtnActivationTime + minFixationDuration
 
 // During line drawing there are two modes, "looking" and "drawing",
 // each indicated by the color of a gazeDot.
@@ -31,7 +32,7 @@ export const safetyEllipseStrokeProperties = createStrokeProperties({
   lineWidth: 2
 })
 
-export const lookModeDwellDuration = 700
+export const lookModeDwellDuration = 2000
 // Normaly keep them equal.
 export const drawModeDwellDuration = lookModeDwellDuration
 
