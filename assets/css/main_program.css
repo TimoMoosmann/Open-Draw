@@ -72,3 +72,9 @@
   z-index: -1;
 }
 
+#backgroundGrid {
+  height: 100vh;
+  width: 100vw;
+  background-size: 40px 40px;
+  background-image: radial-gradient(circle, #000000 2px, rgba(0, 0, 0, 0) 2px);
+}

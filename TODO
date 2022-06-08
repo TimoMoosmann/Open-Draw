@@ -1,6 +1,4 @@
-- Activate Gaze Dot only where neceassary
-- introduce grid to draw line mode
+- End drawing routine properly, so the program can continue
 - icons
-- Structure settings
 - optimize fixations - especially when they start and end
 - optimize shading of dwellbtns

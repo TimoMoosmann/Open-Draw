@@ -41,7 +41,7 @@ const setupWebgazer = ({
           parentNode: document.getElementById('videoFrame')
         })
       },
-      showPredictionPoints: true,
+      showPredictionPoints,
       videoSize
     })
   })

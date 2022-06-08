@@ -33,6 +33,7 @@ function clearDwellBtns () {
 }
 
 function removeDwellBtnsAndGazeListener (app) {
+  app.webgazer.showPredictionPoints(false)
   endGazeBtnListenerIfNeeded(app)
   clearDwellBtns()
 }
@@ -58,6 +59,7 @@ function registerDwellBtnsForGazeListenerIfNeeded (dwellBtns, app) {
 }
 
 function showAndActivateDwellBtns (dwellBtns, app) {
+  app.webgazer.showPredictionPoints(true)
   addDwellBtnsToRoot(dwellBtns, app.rootDomEl)
   registerDwellBtnsForGazeListenerIfNeeded(dwellBtns, app)
 }
