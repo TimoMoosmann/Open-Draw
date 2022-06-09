@@ -98,6 +98,7 @@ export {
   createPos,
   dividePositions,
   getMinXAndY,
+  isPos,
   isPosEqual,
   isPosLowerThanOrEqual,
   scalePosByPos,

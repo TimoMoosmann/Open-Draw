@@ -83,7 +83,7 @@ function startMainMenuClosedMode (app) {
     domId: 'openMainMenuBtn',
     icon: openMenuIcon,
     size: app.minGazeTargetSize,
-    timeTillActivation: standardDwellBtnActivationTime,
+    activationTime: standardDwellBtnActivationTime,
     title: 'Open Menu'
   })
 

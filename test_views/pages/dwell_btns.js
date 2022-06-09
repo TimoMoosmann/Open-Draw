@@ -11,7 +11,7 @@ function drawDwellBtnsPage () {
     center: createPos({ x: 150, y: 150 }),
     domId: 'dwelBtn1',
     size: createPos({ x: 100, y: 100 }),
-    timeTillActivation: 1000,
+    activationTime: 1000,
     action: () => window.alert('moin')
   })
 
@@ -19,7 +19,7 @@ function drawDwellBtnsPage () {
     center: createPos({ x: 0, y: 0 }),
     domId: 'dwelBtn2',
     size: createPos({ x: 100, y: 100 }),
-    timeTillActivation: 1000,
+    activationTime: 1000,
     action: () => window.alert('moin')
   })
   const upperLeftBtnEl = getDwellBtnDomEl(dwellBtnUpperLeft)
@@ -29,7 +29,7 @@ function drawDwellBtnsPage () {
     center: scalePosByVal(getViewport(), 1 / 2),
     domId: 'dwelBtn3',
     size: createPos({ x: 150, y: 100 }),
-    timeTillActivation: 1000,
+    activationTime: 1000,
     title: 'Dalai Lama',
     action: () => window.alert('moin')
   })

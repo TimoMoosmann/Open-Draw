@@ -17,7 +17,7 @@ function drawCanvasAndDwellBtnsPage () {
     center: scalePosByVal(getViewport(), 1 / 2),
     domId: 'centeredDwellBtn',
     size: createPos({ x: 150, y: 100 }),
-    timeTillActivation: 1000,
+    activationTime: 1000,
     title: 'Dalai Lama',
     action: () => window.alert('Have a great day.')
   })
@@ -25,7 +25,7 @@ function drawCanvasAndDwellBtnsPage () {
     center: createPos({ x: 0, y: 0 }),
     domId: 'centeredDwellBtn',
     size: createPos({ x: 100, y: 100 }),
-    timeTillActivation: 1000,
+    activationTime: 1000,
     title: 'Desmond Tutu',
     action: () => window.alert('Ciao.')
   })

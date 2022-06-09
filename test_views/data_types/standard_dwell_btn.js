@@ -5,7 +5,7 @@ function createStandardDwellBtn ({ domId, action }) {
   return createDwellBtn({
     domId,
     size: createPos({ x: 200, y: 100 }),
-    timeTillActivation: 1000,
+    activationTime: 1000,
     action
   })
 }

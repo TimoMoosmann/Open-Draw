@@ -20,6 +20,10 @@ import {
 } from 'Settings'
 
 async function main () {
+  /*
+  const ll = new List()
+  ll.append(new Item())
+  */
   const app = {
     eyeModeOn,
     rootDomEl: document.body,

@@ -21,7 +21,7 @@ test(
       center: createPos({ x: 350, y: 300 }),
       domId: 'testBtn',
       size: createPos({ x: 300, y: 200 }),
-      timeTillActivation: 1000,
+      activationTime: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
@@ -81,7 +81,7 @@ test(
       center: createPos({ x: 700, y: 500 }),
       domId: 'testBtn2',
       size: createPos({ x: 300, y: 200 }),
-      timeTillActivation: 1000,
+      activationTime: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
@@ -122,7 +122,7 @@ test(
       center: createPos({ x: 600, y: 450 }),
       domId: 'testBtn3',
       size: createPos({ x: 300, y: 200 }),
-      timeTillActivation: 1000,
+      activationTime: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
@@ -170,7 +170,7 @@ test(
       center: createPos({ x: 700, y: 400 }),
       domId: 'testBtn4',
       size: createPos({ x: 300, y: 200 }),
-      timeTillActivation: 1000,
+      activationTime: 1000,
       // if action is triggered the test fails
       action: () => btnActionTriggeredCount++
     })
@@ -232,7 +232,7 @@ test(
       center: createPos({ x: 350, y: 300 }),
       domId: 'testBtn',
       size: createPos({ x: 300, y: 200 }),
-      timeTillActivation: 1000,
+      activationTime: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
@@ -240,7 +240,7 @@ test(
       center: createPos({ x: 100, y: 100 }),
       domId: 'testBtn2',
       size: createPos({ x: 100, y: 100 }),
-      timeTillActivation: 1000,
+      activationTime: 1000,
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })

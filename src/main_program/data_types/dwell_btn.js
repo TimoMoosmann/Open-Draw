@@ -14,7 +14,7 @@ function createDwellBtn ({
   domId,
   icon = eyeIcon,
   size,
-  timeTillActivation = standardDwellBtnActivationTime,
+  activationTime = standardDwellBtnActivationTime,
   title = false
 }) {
   return {
@@ -25,7 +25,7 @@ function createDwellBtn ({
     }),
     domId,
     icon,
-    timeTillActivation,
+    activationTime,
     title
   }
 }
@@ -78,11 +78,11 @@ function createDwellBtnFromDwellBtnAndCenter (dwellBtn, center) {
   const icon = dwellBtn.icon
   */
   /*
-  const timeTillActivation = dwellBtn.timeTillActivation
+  const activationTime = dwellBtn.activationTime
   const title = dwellBtn.title
   const action = dwellBtn.action
   const dwellBtnArgs = {
-    action, center, domId, icon, size, timeTillActivation, title
+    action, center, domId, icon, size, activationTime, title
   }
   */
   const size = scalePosByVal(dwellBtn.ellipse.radii, 2)
@@ -97,7 +97,7 @@ function createDwellBtnFromDwellBtnAndCenter (dwellBtn, center) {
 
 function checkDwellBtn (dwellBtn, argName) {
   const preText = argName + ': Illegal DwellBtn Object, '
-  const { ellipse, domId, icon, timeTillActivation, action } = dwellBtn
+  const { ellipse, domId, icon, activationTime, action } = dwellBtn
 
   if (!(typeof domId === 'string')) {
     throw new TypeError(
@@ -107,10 +107,10 @@ function checkDwellBtn (dwellBtn, argName) {
   if (icon && !(typeof icon === 'string')) {
     throw new TypeError(preText + 'icon needs to be a string.')
   }
-  if (!(Number.isInteger(timeTillActivation) && timeTillActivation > 0)) {
+  if (!(Number.isInteger(activationTime) && activationTime > 0)) {
     throw new TypeError(
       preText +
-      'timeTillActivation needs to be a number greater than 0.'
+      'activationTime needs to be a number greater than 0.'
     )
   }
   if (!(typeof action === 'function')) {

@@ -69,12 +69,54 @@ function idtOneIteration ({
   return false
 }
 
+/*
+function idtOneIterationRevised ({
+  carry,
+  dispersionThreshold,
+  durationThreshold,
+  timedGazePositionsWindow
+}) {
+  if (
+    gazePointsWindowCoversDurationThreshold(
+      timedGazePositionsWindow, durationThreshold
+    )
+  ) {
+    if (
+      dispersionOfWindowPointsFitsInDispersionThreshold(
+        timedGazePositionsWindow, dispersionThreshold
+      )
+    ) {
+      carry.lastWasAFixation = true
+    } else {
+      if (lastIterationWasAFixation) {
+        carry.lastWasAFixation = false
+        const fixationDuration =
+          timedGazePositionsWindow.tail.prev.timestamp -
+          timedGazePositionsWindow.head.timestamp
+        const fixationCenter = getCenterPoint(
+          timedGazePositions.toArray().map(it => it.pos)
+        )
+        timedGazePositionsWindow = new List()
+
+        return createFixation({
+          center: fiaxationCenter,
+          duration: fixationDuration
+        })
+      } else {
+        timedGazePositionsWindow.head.detach()
+      }
+    }
+  }
+  return false
+}
+*/
+
 function fitTimedPositionsInMaxFixationDuration ({
   maxFixationDuration, timedGazePositions
 }) {
   let currentTimedPos = (timedGazePositions.size > 1)
     ? timedGazePositions.tail.prev
-    : null
+    : false
   while (currentTimedPos) {
     if (
       (timedGazePositions.tail.timestamp - currentTimedPos.timestamp) >
