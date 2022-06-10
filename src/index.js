@@ -1,6 +1,6 @@
 /* global webgazer */
 import { runClickCalibration, runGazeCalibration, runValidation } from 'Src/calibration/main.js'
-import { createPos, scalePosByVal, getMinXAndY } from 'Src/data_types/pos.js'
+import { addPositions, createPos, scalePosByVal, getMinXAndY } from 'Src/data_types/pos.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 import { createZoom } from 'Src/main_program/data_types/zoom.js'
@@ -108,7 +108,8 @@ function getCalibrationResults (webgazer, rootDomEl) {
       // Determined after evaluating the calibration study.
       const borderAcc = createPos({ x: 0.06, y: 0.12 })
       const perfectAcc = createPos({ x: 0.03, y: 0.06 })
-      const borderPrec = createPos({ x: 0.06, y: 0.1 })
+      // TODO
+      const borderPrec = createPos({ x: 0.03, y: 0.05 })
 
       const { worstRelAcc, worstRelPrec } =
         await evaluateCalibrationAndValidation(webgazer)
@@ -129,12 +130,13 @@ function getCalibrationResults (webgazer, rootDomEl) {
       // too big. So in that case use border Acc or Prec.
       const worstAccOrBorderAccRel = getMinXAndY(worstRelAcc, borderAcc)
       const worstPrecOrBorderPrecRel = getMinXAndY(worstRelPrec, borderPrec)
+      const acc = getAbsPosFromPosRelativeToViewport(worstAccOrBorderAccRel)
+      const prec = getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel)
+
       const minGazeTargetSize = scalePosByVal(
-        getAbsPosFromPosRelativeToViewport(worstAccOrBorderAccRel), 2.5
+        addPositions(acc, scalePosByVal(prec, 2)), 2
       )
-      const maxFixationDispersion = scalePosByVal(
-        getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel), 2.5
-      )
+      const maxFixationDispersion = scalePosByVal(prec, 2.5)
 
       const calibrationScorePage = getCalibrationScorePage({
         calibrationScore,

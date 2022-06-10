@@ -44,7 +44,7 @@ export const gazeCalibrationRecordIntervalDuration = 200
 export const validationCaptureDuration = 1000
 export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
 
-export const minDistToEdgeInPct = createPos({ x: 7, y: 10 })
+export const minDistToEdgeInPct = createPos({ x: 5, y: 5 })
 // Fixations
 export const minFixationDuration = 200
 export const maxFixationDuration =

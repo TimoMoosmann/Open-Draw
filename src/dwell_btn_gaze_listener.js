@@ -26,7 +26,7 @@ function activateBtnsOnDwell (btns, buckets, timedGazePoint, id) {
 function activateDwellBtnGazeListener (dwellBtns, webgazer) {
   const buckets = dwellBtns.map(() => [])
   let id = 0
-  webgazer.setGazeListner((gazePoint, elapsedTime) => {
+  webgazer.setGazeListener((gazePoint, elapsedTime) => {
     const timedGazePoint = createTimedGazePoint({
       pos: gazePoint,
       time: elapsedTime
