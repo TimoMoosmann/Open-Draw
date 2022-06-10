@@ -1,5 +1,6 @@
 import { isPos } from 'Src/data_types/pos.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
+import { shadeBtn } from 'Src/main_program/evaluate_fixations.js'
 
 function activateBtnsOnDwell (btns, buckets, timedGazePoint, id) {
   for (let i = 0; i < btns.length; i++) {
@@ -9,16 +10,23 @@ function activateBtnsOnDwell (btns, buckets, timedGazePoint, id) {
         bucket.push(createBucketItem({
           id, time: timedGazePoint.time
         }))
+        const dwellAtBtnDuration =
+          bucket[bucket.length - 1].time - bucket[0].time
         if (
-          bucket[bucket.length - 1].time - bucket[0].time >=
-          btns[i].activationTime
+          dwellAtBtnDuration >= btns[i].activationTime
         ) {
           btns[i].action()
           buckets[i] = []
+          shadeBtn(btns[i].domId, 0)
+        } else {
+          const activationProgress =
+            dwellAtBtnDuration / btns[i].activationTime
+          shadeBtn(btns[i].domId, activationProgress * 100)
         }
       }
     } else {
       buckets[i] = []
+      shadeBtn(btns[i].domId, 0)
     }
   }
 }

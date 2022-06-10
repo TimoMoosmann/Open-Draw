@@ -1,4 +1,7 @@
-- End drawing routine properly, so the program can continue
+- make dwellBtns Transparent
 - icons
-- optimize fixations - especially when they start and end
-- optimize shading of dwellbtns
+- optimize fixations during drawing mode
+- minimize dist between buttons
+- maybe, make buttons a little bit bigger
+- implement recalibrate
+- show screens before calibration and validation

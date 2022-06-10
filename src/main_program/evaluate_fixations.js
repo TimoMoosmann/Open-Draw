@@ -65,7 +65,8 @@ class GazeAtDwellBtnListner {
   }
 }
 
-function shadeBtn (btnDomEl, progressInPct) {
+function shadeBtn (btnDomId, progressInPct) {
+  const btnDomEl = document.getElementById(btnDomId)
   if (btnDomEl) {
     // 1.0 when not focused, 0.5 when focused till activation.
     const brightness = ((100 - progressInPct) + 100) / 200

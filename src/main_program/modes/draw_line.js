@@ -51,9 +51,9 @@ function startDrawLineMode (app) {
 
       if (drawState.done) {
         app.drawingCanvas.clear()
-        startMainMenuClosedMode(app)
         app.webgazer.clearGazeListener()
         setWebgazerGazeDotColor(standardGazeDotColor)
+        startMainMenuClosedMode(app)
       }
     }
   })
