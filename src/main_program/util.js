@@ -8,6 +8,7 @@ import {
 import { vh, vw } from 'Src/util/browser.js'
 
 import { minDistToEdgeInPct } from 'Settings'
+import quitIcon from 'Assets/icons/close.png'
 
 function getMinDistToEdgeFromSettings () {
   return createPos({
@@ -83,6 +84,7 @@ function getQuitBtn (
       executeQuitRoutine(app, startMode)
     },
     domId: 'quitBtn',
+    icon: quitIcon,
     size,
     title: 'Quit Mode'
   })

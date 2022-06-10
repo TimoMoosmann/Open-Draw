@@ -15,8 +15,11 @@ import {
 
 import { standardDwellBtnActivationTime } from 'Settings'
 
-import openMenuIcon from 'Assets/img/open_menu.png'
-// import startDrawLineModeIcon from 'Assets/img/start_draw_line_mode.png'
+import openMenuIcon from 'Assets/icons/menu.png'
+import chooseColorModeIcon from 'Assets/icons/color-wheel.png'
+import drawLineModeIcon from 'Assets/icons/line.png'
+import moveModeIcon from 'Assets/icons/move.png'
+import zoomModeIcon from 'Assets/icons/magnifying-glass.png'
 
 function startMainProgram (app) {
   startMainMenuClosedMode(app)
@@ -26,7 +29,7 @@ function startMainMenu (app) {
   const btnSize = app.minGazeTargetSize
 
   const getStartModeDwellBtn = ({
-    domId, icon = false, startMode, title
+    domId, icon, startMode, title
   }) => createDwellBtn({
     action: () => {
       removeDwellBtnsAndGazeListener(app)
@@ -34,6 +37,7 @@ function startMainMenu (app) {
       startMode(app)
     },
     domId,
+    icon,
     size: app.minGazeTargetSize,
     title
   })
@@ -41,21 +45,25 @@ function startMainMenu (app) {
   const startDrawLineModeDwellBtn = getStartModeDwellBtn({
     startMode: startDrawLineMode,
     domId: 'startDrawlineModeDwellBtn',
+    icon: drawLineModeIcon,
     title: 'Draw Line'
   })
   const startZoomModeDwellBtn = getStartModeDwellBtn({
     startMode: startZoomMode,
     domId: 'startZoomDwellBtn',
+    icon: zoomModeIcon,
     title: 'Zoom'
   })
   const startMoveModeDwellBtn = getStartModeDwellBtn({
     startMode: startMoveMode,
     domId: 'startMoveDwellBtn',
+    icon: moveModeIcon,
     title: 'Move'
   })
   const startChooseColorModeDwellBtn = getStartModeDwellBtn({
     startMode: startChooseColorMode,
     domId: 'startColorChooserDwellBtn',
+    icon: chooseColorModeIcon,
     title: 'Choose Color'
   })
 

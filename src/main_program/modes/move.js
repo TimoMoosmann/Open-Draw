@@ -6,8 +6,10 @@ import {
   getMinDistToEdgeFromSettings, getQuitBtn, showAndActivateDwellBtns
 } from 'Src/main_program/util.js'
 import { moveLeft, moveRight, moveUp, moveDown } from 'Src/main_program/zoom.js'
-import moveLeftIcon from 'Assets/img/left_arrow.png'
-import moveRightIcon from 'Assets/img/right_arrow.png'
+import moveDownIcon from 'Assets/icons/arrow_down.png'
+import moveLeftIcon from 'Assets/icons/arrow_left.png'
+import moveRightIcon from 'Assets/icons/arrow_right.png'
+import moveUpIcon from 'Assets/icons/arrow_up.png'
 
 function startMoveMode (app) {
   const quitBtn = getQuitBtn(app)
@@ -27,6 +29,7 @@ function startMoveMode (app) {
       redraw(app)
     },
     domId: 'moveUpBtn',
+    icon: moveUpIcon,
     size: app.minGazeTargetSize,
     title: 'Up'
   })
@@ -45,6 +48,7 @@ function startMoveMode (app) {
       redraw(app)
     },
     domId: 'moveDownBtn',
+    icon: moveDownIcon,
     size: app.minGazeTargetSize,
     title: 'Down'
   })

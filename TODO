@@ -1,7 +1,6 @@
-- make dwellBtns Transparent
-- icons
 - optimize fixations during drawing mode
-- minimize dist between buttons
 - maybe, make buttons a little bit bigger
 - implement recalibrate
 - show screens before calibration and validation
+- Edit mode
+- settings? (line-width)

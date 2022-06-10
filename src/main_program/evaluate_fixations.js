@@ -1,7 +1,7 @@
 import { createCurrentDwellBtnProgress } from 'Src/main_program/data_types/current_dwell_btn_progress.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { runWebgazerFixationDetection } from 'Src/webgazer_extensions/fixation_detection/main.js'
-import { maxFixationDuration, minFixationDuration } from 'Settings'
+import { getDwellBtnBackgroundColor, maxFixationDuration, minFixationDuration } from 'Settings'
 
 class GazeAtDwellBtnListner {
   dispersionThreshold
@@ -65,12 +65,12 @@ class GazeAtDwellBtnListner {
   }
 }
 
-function shadeBtn (btnDomId, progressInPct) {
+function shadeBtn (btnDomId, activationProgress) {
   const btnDomEl = document.getElementById(btnDomId)
   if (btnDomEl) {
+    const bgColor = getDwellBtnBackgroundColor(activationProgress / 2 + 0.1)
     // 1.0 when not focused, 0.5 when focused till activation.
-    const brightness = ((100 - progressInPct) + 100) / 200
-    btnDomEl.style.filter = `brightness(${brightness})`
+    btnDomEl.style.backgroundColor = bgColor
   }
 }
 

@@ -7,8 +7,9 @@ import {
   showAndActivateDwellBtns
 } from 'Src/main_program/util.js'
 import { zoomIn, zoomOut } from 'Src/main_program/zoom.js'
-// Lower Right: End Mode Btns
-// Upper Left Zoom in zoomOut
+
+import zoomInIcon from 'Assets/icons/plus.png'
+import zoomOutIcon from 'Assets/icons/minus.png'
 
 function startZoomMode (app) {
   const quitBtn = getQuitBtn(app)
@@ -19,6 +20,7 @@ function startZoomMode (app) {
       redraw(app)
     },
     domId: 'zoomInBtn',
+    icon: zoomInIcon,
     size: app.minGazeTargetSize,
     title: 'Zoom In'
   })
@@ -28,6 +30,7 @@ function startZoomMode (app) {
       redraw(app)
     },
     domId: 'zoomOutBtn',
+    icon: zoomOutIcon,
     size: app.minGazeTargetSize,
     title: 'Zoom Out'
   })

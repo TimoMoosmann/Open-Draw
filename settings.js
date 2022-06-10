@@ -5,7 +5,7 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
  * Main Settings
  */
 // General Settings
-export const eyeModeOn = true
+export const eyeModeOn = false
 
 // Calibration Settings
 // 'click' or 'gaze'
@@ -33,6 +33,9 @@ export const colors = [
   '#909090' // Grey
 ]
 export const defaultColor = colors[0]
+export const getDwellBtnBackgroundColor = alpha => {
+  return `rgba(112, 128, 144, ${alpha})`
+}
 
 // Calibration Settings
 export const gazeTargetRadius = 30
@@ -44,7 +47,7 @@ export const gazeCalibrationRecordIntervalDuration = 200
 export const validationCaptureDuration = 1000
 export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
 
-export const minDistToEdgeInPct = createPos({ x: 5, y: 5 })
+export const minDistToEdgeInPct = createPos({ x: 8, y: 8 })
 // Fixations
 export const minFixationDuration = 200
 export const maxFixationDuration =

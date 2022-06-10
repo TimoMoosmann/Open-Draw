@@ -4,9 +4,9 @@ import { checkEllipse, createEllipse } from 'Src/main_program/data_types/ellipse
 
 import { standardDwellBtnActivationTime } from 'Settings'
 
-import eyeIcon from 'Assets/img/eye-scanner.png'
-import nextBtnIcon from 'Assets/img/right_arrow.png'
-import prevBtnIcon from 'Assets/img/left_arrow.png'
+import eyeIcon from 'Assets/icons/eye.png'
+import nextBtnIcon from 'Assets/icons/arrow_right.png'
+import prevBtnIcon from 'Assets/icons/arrow_left.png'
 
 function createDwellBtn ({
   action = () => {},

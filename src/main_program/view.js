@@ -1,4 +1,5 @@
 import { createElementFromHTML } from 'Src/util/browser.js'
+import { getDwellBtnBackgroundColor } from 'Settings'
 
 import { html } from 'common-tags'
 
@@ -48,6 +49,8 @@ function getDwellBtnDomEl (dwellBtn) {
     </div>
   `)
   const btnEl = btnContainer.querySelector('.dwellBtn')
+  
+  btnEl.style.backgroundColor = getDwellBtnBackgroundColor(0.1)
 
   if (dwellBtn.colorDot) {
     btnEl.appendChild(getColorDotEl(dwellBtn.colorDot))

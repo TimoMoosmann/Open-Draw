@@ -21,7 +21,7 @@ function activateBtnsOnDwell (btns, buckets, timedGazePoint, id) {
         } else {
           const activationProgress =
             dwellAtBtnDuration / btns[i].activationTime
-          shadeBtn(btns[i].domId, activationProgress * 100)
+          shadeBtn(btns[i].domId, activationProgress)
         }
       }
     } else {
