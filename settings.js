@@ -5,7 +5,8 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
  * Main Settings
  */
 // General Settings
-export const eyeModeOn = false
+// Turn eyeMode off to just look around without using eye tracking.
+export const eyeModeOn = true
 
 // Calibration Settings
 // 'click' or 'gaze'

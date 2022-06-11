@@ -4,7 +4,7 @@ import { createLine } from 'Src/main_program/data_types/line.js'
 import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { startMainMenuClosedMode } from 'Src/main_program/main.js'
 import { unzoomPos } from 'Src/main_program/zoom.js'
-import { runWebgazerFixationDetection } from 'Src/webgazer_extensions/fixation_detection/main.js'
+import { runWebgazerFixationDetection } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
 
 import {

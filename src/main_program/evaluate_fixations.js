@@ -1,6 +1,6 @@
 import { createCurrentDwellBtnProgress } from 'Src/main_program/data_types/current_dwell_btn_progress.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
-import { runWebgazerFixationDetection } from 'Src/webgazer_extensions/fixation_detection/main.js'
+import { runWebgazerFixationDetection } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
 import { getDwellBtnBackgroundColor, maxFixationDuration, minFixationDuration } from 'Settings'
 
 class GazeAtDwellBtnListner {

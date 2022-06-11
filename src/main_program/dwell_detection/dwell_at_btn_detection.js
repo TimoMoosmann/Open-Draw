@@ -1,4 +1,4 @@
-import { isPos } from 'Src/data_types/pos.js'
+import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types/timed_gaze_point.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { shadeBtn } from 'Src/main_program/evaluate_fixations.js'
 
@@ -44,16 +44,6 @@ function activateDwellBtnGazeListener (dwellBtns, webgazer) {
   })
 }
 
-function createTimedGazePoint ({ pos, time }) {
-  isTimedGazePoint(arguments[0])
-  return { pos, time }
-}
-
-function isTimedGazePoint (timedGazePoint) {
-  const { pos, time } = timedGazePoint
-  return isPos(pos) && Number.isInteger(time)
-}
-
 function createBucketItem ({ id, time }) {
   isBucketItem(arguments[0])
   return { id, time }
@@ -67,6 +57,5 @@ function isBucketItem (bucketItem) {
 export {
   activateDwellBtnGazeListener,
   activateBtnsOnDwell,
-  createBucketItem,
-  createTimedGazePoint
+  createBucketItem
 }

@@ -1,6 +1,9 @@
+import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types/timed_gaze_point.js'
 import { createFixation } from 'Src/webgazer_extensions/fixation_detection/data_types/fixation.js'
 import { createTimedPosItem } from 'Src/webgazer_extensions/fixation_detection/data_types/timed_pos_item.js'
-import { createPos, isPosLowerThanOrEqual, subPositions } from 'Src/data_types/pos.js'
+import {
+  createPos, getMaxXAndY, getMinXAndY, isPosLowerThanOrEqual, subPositions
+} from 'Src/data_types/pos.js'
 import { mean } from 'Src/util/math.js'
 
 import { List } from 'OtherModules/linked-list.js'
@@ -69,47 +72,90 @@ function idtOneIteration ({
   return false
 }
 
-/*
-function idtOneIterationRevised ({
-  carry,
+function dwellDetectTest (app) {
+  app.webgazer.showPredictionPoints(true)
+  runDwellDetection({
+    dispersionThreshold: app.dispersionThreshold,
+    dwellDurationThreshold: 1000,
+    onDwell: dwellPoint => window.alert(JSON.stringify(dwellPoint)),
+    webgazer: app.webgazer
+  })
+}
+
+function runDwellDetection ({
   dispersionThreshold,
-  durationThreshold,
-  timedGazePositionsWindow
+  dwellDurationThreshold,
+  onDwell,
+  webgazer
 }) {
-  if (
-    gazePointsWindowCoversDurationThreshold(
-      timedGazePositionsWindow, durationThreshold
+  const timedGazePoints = []
+
+  webgazer.setGazeListener((gazePoint, time) => {
+    timedGazePoints.push(createTimedGazePoint({ pos: gazePoint, time }))
+
+    const dwellPoint = getDwellPoint({
+      dispersionThreshold,
+      dwellDurationThreshold,
+      timedGazePoints
+    })
+    if (dwellPoint) onDwell(dwellPoint)
+  })
+}
+
+// Based on IDT algorithm
+function getDwellPoint ({
+  dispersionThreshold,
+  dwellDurationThreshold,
+  timedGazePoints
+}) {
+  while (
+    gazePointsCoverDurationThreshold(
+      timedGazePoints, dwellDurationThreshold
     )
   ) {
     if (
-      dispersionOfWindowPointsFitsInDispersionThreshold(
-        timedGazePositionsWindow, dispersionThreshold
+      gazePointsFitInDispersionThreshold(
+        timedGazePoints.map(it => it.pos), dispersionThreshold
       )
     ) {
-      carry.lastWasAFixation = true
+      const dwellPoint = getCenterPoint(timedGazePoints.map(
+        timedGazePoint => timedGazePoint.pos)
+      )
+      timedGazePoints.length = 0
+      return dwellPoint
     } else {
-      if (lastIterationWasAFixation) {
-        carry.lastWasAFixation = false
-        const fixationDuration =
-          timedGazePositionsWindow.tail.prev.timestamp -
-          timedGazePositionsWindow.head.timestamp
-        const fixationCenter = getCenterPoint(
-          timedGazePositions.toArray().map(it => it.pos)
-        )
-        timedGazePositionsWindow = new List()
-
-        return createFixation({
-          center: fiaxationCenter,
-          duration: fixationDuration
-        })
-      } else {
-        timedGazePositionsWindow.head.detach()
-      }
+      timedGazePoints.shift()
     }
   }
   return false
 }
-*/
+
+function gazePointsCoverDurationThreshold (gazePoints, durationThreshold) {
+  if (gazePoints.length > 1) {
+    return (
+      gazePoints[gazePoints.length - 1].time - gazePoints[0].time >=
+      durationThreshold
+    )
+  }
+  return false
+}
+
+function gazePointsFitInDispersionThreshold (gazePoints, dispersionThreshold) {
+  if (gazePoints.length < 2) {
+    throw new TypeError('Need at least to gazePoints to calculate dispersion')
+  }
+  let minPoint = gazePoints[0]
+  let maxPoint = gazePoints[0]
+  for (let i = 1; i < gazePoints.length; i++) {
+    minPoint = getMinXAndY(minPoint, gazePoints[i])
+    maxPoint = getMaxXAndY(maxPoint, gazePoints[i])
+  }
+  console.log(subPositions(maxPoint, minPoint))
+  return isPosLowerThanOrEqual(
+    subPositions(maxPoint, minPoint),
+    dispersionThreshold
+  )
+}
 
 function fitTimedPositionsInMaxFixationDuration ({
   maxFixationDuration, timedGazePositions
@@ -180,4 +226,8 @@ function getCenterPoint (posArr) {
   })
 }
 
-export { idtOneIteration, runWebgazerFixationDetection }
+export {
+  dwellDetectTest,
+  idtOneIteration,
+  runWebgazerFixationDetection
+}

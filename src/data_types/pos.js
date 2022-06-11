@@ -83,6 +83,13 @@ function isPosLowerThanOrEqual (pos1, pos2) {
   return pos1.x <= pos2.x && pos1.y <= pos2.y
 }
 
+function getMaxXAndY (pos1, pos2) {
+  return createPos({
+    x: pos1.x > pos2.x ? pos1.x : pos2.x,
+    y: pos1.y > pos2.y ? pos1.y : pos2.y
+  })
+}
+
 function getMinXAndY (pos1, pos2) {
   return createPos({
     x: pos1.x < pos2.x ? pos1.x : pos2.x,
@@ -97,6 +104,7 @@ export {
   checkPositiveNumericPos,
   createPos,
   dividePositions,
+  getMaxXAndY,
   getMinXAndY,
   isPos,
   isPosEqual,

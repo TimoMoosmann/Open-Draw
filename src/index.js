@@ -11,6 +11,7 @@ import { getDrawingCanvasInContainer } from 'Src/main_program/view.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
+import { dwellDetectTest } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
 import { getCalibrationScoreEvaluation } from 'Src/calibration/success_score.js'
 import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluation.js'
 import { getCalibrationScorePage } from 'Src/calibration/view.js'
@@ -74,14 +75,15 @@ async function main () {
     const { minGazeTargetSize, maxFixationDispersion } =
       await getCalibrationResults(webgazer, app.rootDomEl)
     app.minGazeTargetSize = minGazeTargetSize
-    app.maxFixationDispersion = maxFixationDispersion
+    app.dispersionThreshold = maxFixationDispersion
   } else {
     app.minGazeTargetSize = createPos({ x: 200, y: 200 })
   }
 
   app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
 
-  startMainProgram(app)
+  dwellDetectTest(app)
+  // startMainProgram(app)
 }
 
 async function makeWebgazerReady () {

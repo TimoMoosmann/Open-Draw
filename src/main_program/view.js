@@ -49,7 +49,7 @@ function getDwellBtnDomEl (dwellBtn) {
     </div>
   `)
   const btnEl = btnContainer.querySelector('.dwellBtn')
-  
+
   btnEl.style.backgroundColor = getDwellBtnBackgroundColor(0.1)
 
   if (dwellBtn.colorDot) {
