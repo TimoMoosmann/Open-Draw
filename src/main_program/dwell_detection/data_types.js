@@ -10,6 +10,13 @@ function isTimedGazePoint (timedGazePoint) {
   return isPos(pos) && Number.isInteger(time)
 }
 
+function checkTimedGazePoint (timedGazePoint, argName) {
+  if (!timedGazePoint || !isTimedGazePoint(timedGazePoint)) {
+    throw new TypeError(argName + ': Invalid TimedGazePoint.')
+  }
+}
+
 export {
+  checkTimedGazePoint,
   createTimedGazePoint
 }

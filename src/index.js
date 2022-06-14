@@ -72,18 +72,18 @@ async function main () {
     app.webgazer = await makeWebgazerReady()
     setWebgazerGazeDotColor(standardGazeDotColor)
 
-    const { minGazeTargetSize, maxFixationDispersion } =
+    const { minGazeTargetSize, dispersionThreshold } =
       await getCalibrationResults(webgazer, app.rootDomEl)
     app.minGazeTargetSize = minGazeTargetSize
-    app.dispersionThreshold = maxFixationDispersion
+    app.dispersionThreshold = dispersionThreshold
   } else {
     app.minGazeTargetSize = createPos({ x: 200, y: 200 })
   }
 
   app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
 
-  dwellDetectTest(app)
-  // startMainProgram(app)
+  // dwellDetectTest(app)
+  startMainProgram(app)
 }
 
 async function makeWebgazerReady () {
@@ -136,15 +136,15 @@ function getCalibrationResults (webgazer, rootDomEl) {
       const prec = getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel)
 
       const minGazeTargetSize = scalePosByVal(
-        addPositions(acc, scalePosByVal(prec, 2)), 2
+        addPositions(acc, scalePosByVal(prec, 2)), 2.3
       )
-      const maxFixationDispersion = scalePosByVal(prec, 2.5)
+      const dispersionThreshold = scalePosByVal(prec, 3)
 
       const calibrationScorePage = getCalibrationScorePage({
         calibrationScore,
         onContinue: () => {
           calibrationScorePage.remove()
-          resolve({ maxFixationDispersion, minGazeTargetSize })
+          resolve({ dispersionThreshold, minGazeTargetSize })
         },
         onRecalibrate: () => {
           calibrationScorePage.remove()

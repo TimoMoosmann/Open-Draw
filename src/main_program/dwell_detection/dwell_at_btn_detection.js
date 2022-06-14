@@ -1,8 +1,9 @@
-import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types/timed_gaze_point.js'
+import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
-import { shadeBtn } from 'Src/main_program/evaluate_fixations.js'
+import { shadeBtnLinear } from 'Src/main_program/view.js'
 
-function activateBtnsOnDwell (btns, buckets, timedGazePoint, id) {
+function activateBtnsOnDwell (
+  btns, buckets, timedGazePoint, id, shadeBtn = shadeBtnLinear) {
   for (let i = 0; i < btns.length; i++) {
     if (inEllipse(timedGazePoint.pos, btns[i].ellipse)) {
       const bucket = buckets[i]

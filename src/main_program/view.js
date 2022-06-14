@@ -64,6 +64,15 @@ function getDwellBtnDomEl (dwellBtn) {
   return btnContainer
 }
 
+function shadeBtnLinear (btnDomId, activationProgress) {
+  const btnDomEl = document.getElementById(btnDomId)
+  if (btnDomEl) {
+    const bgColor = getDwellBtnBackgroundColor(activationProgress / 2 + 0.1)
+    // 1.0 when not focused, 0.5 when focused till activation.
+    btnDomEl.style.backgroundColor = bgColor
+  }
+}
+
 function getColorDotEl (color) {
   const colorDot = createElementFromHTML(html`
     <div class="colorDot">
@@ -91,5 +100,6 @@ export {
   getDrawingCanvasInContainer,
   getDwellBtnDomEl,
   getDwellBtnContainer,
-  getMainProgramContainer
+  getMainProgramContainer,
+  shadeBtnLinear
 }

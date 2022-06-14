@@ -1,7 +1,5 @@
 /* global expect, describe, test */
-import { idtOneIteration } from 'Src/webgazer_extensions/fixation_detection/main.js'
-import { createFixation } from 'Src/webgazer_extensions/fixation_detection/data_types/fixation.js'
-import { createTimedPosItem } from 'Src/webgazer_extensions/fixation_detection/data_types/timed_pos_item.js'
+import { createFixation, createTimedPosItem, idtOneIteration } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
 import { createPos } from 'Src/data_types/pos.js'
 
 import { List } from 'OtherModules/linked-list.js'

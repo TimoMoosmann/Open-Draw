@@ -16,7 +16,8 @@ export const numCalibrationTargets = 9
 
 export const standardDwellBtnActivationTime = 1000
 // Draw Line Mode
-export const lookModeDwellDuration = 700
+export const lookStateDwellDuration = 1000
+export const drawStateDwellDuration = 1000
 
 /*
  * Extended Settings
@@ -48,7 +49,7 @@ export const gazeCalibrationRecordIntervalDuration = 200
 export const validationCaptureDuration = 1000
 export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
 
-export const minDistToEdgeInPct = createPos({ x: 8, y: 8 })
+export const minDistToEdgeInPct = createPos({ x: 5, y: 5 })
 // Fixations
 export const minFixationDuration = 200
 export const maxFixationDuration =
@@ -72,5 +73,3 @@ export const safetyEllipseStrokeProperties = createStrokeProperties({
   color: 'black',
   lineWidth: 2
 })
-// Normaly keep them equal.
-export const drawModeDwellDuration = lookModeDwellDuration

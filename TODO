@@ -1,5 +1,5 @@
-- optimize fixations during drawing mode
-- maybe, make buttons a little bit bigger
+- Integrate new drawlinemode gaze detection
+- Remove legacy detection methods
 - implement recalibrate
 - show screens before calibration and validation
 - Edit mode

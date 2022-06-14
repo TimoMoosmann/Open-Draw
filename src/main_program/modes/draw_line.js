@@ -3,14 +3,13 @@ import { createEllipse, inEllipse } from 'Src/main_program/data_types/ellipse.js
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { startMainMenuClosedMode } from 'Src/main_program/main.js'
-import { unzoomPos } from 'Src/main_program/zoom.js'
-import { runWebgazerFixationDetection } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
+// import { unzoomPos } from 'Src/main_program/zoom.js'
+import { runTwoStepDwellDetection } from 'Src/main_program/dwell_detection/two_step_dwell_detection.js'
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
 
 import {
-  drawModeDwellDuration, drawStateGazeDotColors, lookModeDwellDuration,
+  drawStateDwellDuration, lookStateDwellDuration,
   markPointHalfSize, markPointStrokeProperties,
-  minFixationDuration, maxFixationDuration,
   safetyEllipseLineDash, safetyEllipseStrokeProperties,
   standardGazeDotColor
 } from 'Settings'
@@ -20,6 +19,8 @@ function startDrawLineMode (app) {
     window.alert('Only available when eyeMode is on.')
     startMainMenuClosedMode(app)
   }
+  redraw(app)
+
   const drawState = {
     mode: 'looking',
     safetyEllipse: false,
@@ -28,72 +29,42 @@ function startDrawLineMode (app) {
     done: false
   }
 
-  runWebgazerFixationDetection({
-    dispersionThreshold: app.maxFixationDispersion,
-    durationThreshold: minFixationDuration,
-    maxFixationDuration,
-    webgazer: app.webgazer,
-    onFixation: fixation => {
-      setWebgazerGazeDotColor(drawStateGazeDotColors[drawState.mode])
-      switch (drawState.mode) {
-        case 'looking':
-          onFixationDuringLookingMode({ drawState, fixation })
-          break
-        case 'drawing':
-          onFixationDuringDrawingMode({ app, drawState, fixation })
-          break
-        default:
-          throw new Error(drawState.mode + ' is not a valid draw state name.' +
-            'drawState.name needs to be either "looking", or "drawing".'
-          )
-      }
-      drawDrawState({ app, drawState })
-
-      if (drawState.done) {
-        app.drawingCanvas.clear()
-        app.webgazer.clearGazeListener()
-        setWebgazerGazeDotColor(standardGazeDotColor)
-        startMainMenuClosedMode(app)
-      }
-    }
+  runTwoStepDwellDetection({
+    dispersionThreshold: app.dispersionThreshold,
+    firstStepDurationThreshold: lookStateDwellDuration,
+    secondStepDurationThreshold:
+      lookStateDwellDuration + drawStateDwellDuration,
+    onFirstStep: dwellPoint => onDwellDuringLookState({
+      app, drawState, dwellPoint
+    }),
+    onSecondStep: dwellPoint => onDwellDuringDrawState({
+      app, drawState, dwellPoint
+    }),
+    webgazer: app.webgazer
   })
 }
 
-function onFixationDuringLookingMode ({ drawState, fixation }) {
-  if (fixation.duration >= lookModeDwellDuration) {
-    if (drawState.safetyEllipse) {
-      if (
-        // The second point of a line needs to be outside of the safetyEllipse
-        // because only then it is clear that the user is actually looking
-        // at another point on the screen.
-        !inEllipse(fixation.center, drawState.safetyEllipse)
-      ) {
-        console.log(fixation)
-        console.log(drawState.safetyEllipse)
-        drawState.endPoint = fixation.center
-        drawState.mode = 'drawing'
-      }
-    } else {
-      drawState.startPoint = fixation.center
-      drawState.mode = 'drawing'
+function onDwellDuringLookState ({ app, drawState, dwellPoint }) {
+  console.log('look state')
+  if (drawState.safetyEllipse) {
+    if (
+      // The second point of a line needs to be outside of the safetyEllipse
+      // because only then it is clear that the user is actually looking
+      // at another point on the screen.
+      !inEllipse(dwellPoint, drawState.safetyEllipse)
+    ) {
+      drawState.endPoint = dwellPoint
     }
+  } else {
+    drawState.startPoint = dwellPoint
   }
+  drawDrawState({ app, drawState })
 }
 
-function onFixationDuringDrawingMode ({
-  app, drawState, fixation
+function onDwellDuringDrawState ({
+  app, drawState, dwellPoint
 }) {
-  if (
-    fixation.duration >= lookModeDwellDuration + drawModeDwellDuration &&
-    !drawState.done
-  ) {
-    if (drawState.endPoint) {
-      app.state.lines.push(createLine({
-        startPoint: unzoomPos(drawState.startPoint, app.state.zoom),
-        endPoint: unzoomPos(drawState.endPoint, app.state.zoom),
-        strokeProperties: app.state.newLineProperties
-      }))
-    }
+  if (dwellPoint) {
     if (drawState.endPoint) {
       app.state.lines.push(createLine({
         startPoint: scalePosByVal(
@@ -102,22 +73,29 @@ function onFixationDuringDrawingMode ({
         endPoint: scalePosByVal(drawState.endPoint, 1 / app.state.zoom.level.factor),
         strokeProperties: app.state.newLineProperties
       }))
-      drawState.done = true
+      endDrawLineMode(app)
+      return
     } else {
       drawState.safetyEllipse = createEllipse({
         center: drawState.startPoint,
         radii: scalePosByVal(app.minGazeTargetSize, 1 / 2)
       })
-      drawState.mode = 'looking'
     }
-  } else if (fixation.duration < lookModeDwellDuration) {
-    drawState.mode = 'looking'
+  } else {
     if (drawState.endPoint) {
       drawState.endPoint = false
-    } else {
+    } else if (!drawState.safetyEllipse) {
       drawState.startPoint = false
     }
   }
+  drawDrawState({ app, drawState })
+}
+
+function endDrawLineMode (app) {
+  app.drawingCanvas.clear()
+  app.webgazer.clearGazeListener()
+  setWebgazerGazeDotColor(standardGazeDotColor)
+  startMainMenuClosedMode(app)
 }
 
 const drawDrawState = ({
