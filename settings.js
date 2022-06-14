@@ -4,42 +4,16 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
 /*
  * Main Settings
  */
-// General Settings
 // Turn eyeMode off to just look around without using eye tracking.
-export const eyeModeOn = true
+export const eyeModeOn = false
 
-// Calibration Settings
+/*
+ * Calibration Settings
+ */
 // 'click' or 'gaze'
 export const calibrationType = 'gaze'
 // 5, 9, or 13
 export const numCalibrationTargets = 9
-
-export const standardDwellBtnActivationTime = 1000
-// Draw Line Mode
-export const lookStateDwellDuration = 1000
-export const drawStateDwellDuration = 1000
-
-/*
- * Extended Settings
- */
-// General Settings
-export const standardGazeDotColor = 'blue'
-export const colors = [
-  '#0036FA', // Blue
-  '#FA000C', // Red
-  '#FFFC38', // Yellow
-  '#0CFA00', // Green
-  '#A800BA', // Purple,
-  '#FF6905', // Orange
-  '#000000', // Black
-  '#909090' // Grey
-]
-export const defaultColor = colors[0]
-export const getDwellBtnBackgroundColor = alpha => {
-  return `rgba(112, 128, 144, ${alpha})`
-}
-
-// Calibration Settings
 export const gazeTargetRadius = 30
 // Gaze Calibration
 export const gazeCalibrationTimeTillRecord = 1200
@@ -48,20 +22,26 @@ export const gazeCalibrationRecordIntervalDuration = 200
 // Validation
 export const validationCaptureDuration = 1000
 export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
-
-export const minDistToEdgeInPct = createPos({ x: 5, y: 5 })
-// Fixations
-export const minFixationDuration = 200
-export const maxFixationDuration =
-  2 * standardDwellBtnActivationTime + minFixationDuration
-
-// Draw Line Mode
-// During line drawing there are two modes, "looking" and "drawing",
-// each indicated by the color of a gazeDot.
-export const drawStateGazeDotColors = {
-  drawing: 'orange',
-  looking: 'green'
+// Minimum Relative Accuracy to use the program properly
+export const borderAcc = createPos({ x: 0.06, y: 0.12 })
+// Relative Accuracy to reach a calibrationScore of 100%
+export const perfectAcc = createPos({ x: 0.03, y: 0.06 })
+// Minimum recommended Relative Precision
+export const borderPrec = createPos({ x: 0.03, y: 0.05 })
+/*
+ * DwellBtn Settings
+ */
+export const standardDwellBtnActivationTime = 1000
+export const getDwellBtnBackgroundColor = alpha => {
+  return `rgba(112, 128, 144, ${alpha})`
 }
+export const minDistToEdgeInPct = createPos({ x: 5, y: 5 })
+
+/*
+ * Draw Line Mode Settings
+ */
+export const lookStateDwellDuration = 1000
+export const drawStateDwellDuration = 1000
 export const markPointHalfSize = createPos({ x: 20, y: 20 })
 export const markPointStrokeProperties = createStrokeProperties({
   color: 'black',
@@ -73,3 +53,37 @@ export const safetyEllipseStrokeProperties = createStrokeProperties({
   color: 'black',
   lineWidth: 2
 })
+// Only important when gazeDot is activated during drawLineMode
+export const drawStateGazeDotColors = {
+  drawing: 'orange',
+  looking: 'green'
+}
+
+/*
+ * Line Settings
+ */
+export const colors = [
+  '#0036FA', // Blue
+  '#FA000C', // Red
+  '#FFFC38', // Yellow
+  '#0CFA00', // Green
+  '#A800BA', // Purple,
+  '#FF6905', // Orange
+  '#000000', // Black
+  '#909090' // Grey
+]
+export const defaultColor = colors[0]
+export const defaultLineWidth = 2
+
+/*
+ * Webgazer Settings
+ */
+export const standardGazeDotColor = 'blue'
+
+
+/*
+ * Screenpoint Dwell Detection (not used anymore)
+ */
+export const minFixationDuration = 200
+export const maxFixationDuration =
+  2 * standardDwellBtnActivationTime + minFixationDuration

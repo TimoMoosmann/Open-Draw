@@ -30,7 +30,7 @@ function getDwellBtnDomEl (dwellBtn) {
   const dwellBtnTitleHTML = dwellBtn.title
     ? html`
       <div class="dwellBtnTitleHolder"
-          style="left: ${left}px; top: calc(${titleTop}px - 1.3rem)">
+          style="left: ${left}px; top: calc(${titleTop}px - 1rem)">
         <h2 class="dwellBtnTitle">
           ${dwellBtn.title}
         </h2>

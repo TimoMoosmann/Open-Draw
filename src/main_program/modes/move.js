@@ -31,7 +31,6 @@ function startMoveMode (app) {
     domId: 'moveUpBtn',
     icon: moveUpIcon,
     size: app.minGazeTargetSize,
-    title: 'Up'
   })
   const moveRightBtn = createDwellBtn({
     action: () => {
@@ -50,7 +49,6 @@ function startMoveMode (app) {
     domId: 'moveDownBtn',
     icon: moveDownIcon,
     size: app.minGazeTargetSize,
-    title: 'Down'
   })
 
   const arrangedMoveBtns = arrangeDwellBtnsMoveMode({
@@ -77,12 +75,13 @@ function arrangeDwellBtnsMoveMode ({
     y: moveLeftBtnPos.y
   })
   const moveDownBtnPos = createPos({
-    x: vw() / 2,
+    x: (moveLeftBtnPos.x + moveUpBtnPos.x) / 2,
     y: vh() - minDistToEdge.y - moveDownBtn.ellipse.radii.y
   })
-  const quitBtnPos = subPositions(
-    getViewport(), minDistToEdge, quitBtn.ellipse.radii
-  )
+  const quitBtnPos = createPos({
+    x: (moveUpBtnPos.x + moveRightBtnPos.x) / 2,
+    y: moveDownBtnPos.y
+  })
 
   return [
     createDwellBtnFromDwellBtnAndCenter(

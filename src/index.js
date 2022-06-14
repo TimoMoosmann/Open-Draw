@@ -17,14 +17,12 @@ import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluatio
 import { getCalibrationScorePage } from 'Src/calibration/view.js'
 
 import {
-  calibrationType, eyeModeOn, numCalibrationTargets, standardGazeDotColor
+  borderAcc, perfectAcc, borderPrec,
+  calibrationType, defaultLineWidth, eyeModeOn, numCalibrationTargets,
+  standardGazeDotColor
 } from 'Settings'
 
 async function main () {
-  /*
-  const ll = new List()
-  ll.append(new Item())
-  */
   const app = {
     eyeModeOn,
     rootDomEl: document.body,
@@ -57,7 +55,7 @@ async function main () {
       ],
       newLineProperties: createStrokeProperties({
         color: 'blue',
-        lineWidth: 2
+        lineWidth: defaultLineWidth
       }),
       zoom: createZoom()
     }
@@ -77,7 +75,12 @@ async function main () {
     app.minGazeTargetSize = minGazeTargetSize
     app.dispersionThreshold = dispersionThreshold
   } else {
-    app.minGazeTargetSize = createPos({ x: 200, y: 200 })
+    const acc = getAbsPosFromPosRelativeToViewport(borderAcc)
+    const prec = getAbsPosFromPosRelativeToViewport(borderPrec)
+
+    app.minGazeTargetSize = scalePosByVal(
+      addPositions(acc, scalePosByVal(prec, 2)), 2.2
+    )
   }
 
   app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
@@ -107,11 +110,6 @@ function getCalibrationResults (webgazer, rootDomEl) {
 
   return new Promise(resolve => {
     const calibrate = async (webgazer, trys) => {
-      // Determined after evaluating the calibration study.
-      const borderAcc = createPos({ x: 0.06, y: 0.12 })
-      const perfectAcc = createPos({ x: 0.03, y: 0.06 })
-      // TODO
-      const borderPrec = createPos({ x: 0.03, y: 0.05 })
 
       const { worstRelAcc, worstRelPrec } =
         await evaluateCalibrationAndValidation(webgazer)

@@ -22,7 +22,6 @@ function startZoomMode (app) {
     domId: 'zoomInBtn',
     icon: zoomInIcon,
     size: app.minGazeTargetSize,
-    title: 'Zoom In'
   })
   const zoomOutBtn = createDwellBtn({
     action: () => {
@@ -32,7 +31,6 @@ function startZoomMode (app) {
     domId: 'zoomOutBtn',
     icon: zoomOutIcon,
     size: app.minGazeTargetSize,
-    title: 'Zoom Out'
   })
 
   const arrangedZoomBtns = arrangeDwellBtnsZoomMode({

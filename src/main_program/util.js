@@ -18,7 +18,7 @@ function getMinDistToEdgeFromSettings () {
 }
 
 function getSmallDistToNeighborTarget (minGazeTargetSize) {
-  return scalePosByVal(minGazeTargetSize, 1 / 4)
+  return scalePosByVal(minGazeTargetSize, 1 / 6)
 }
 
 function addDwellBtnsToRoot (dwellBtns, rootEl) {
