@@ -1,6 +1,3 @@
-- modes
-- checkMode implementieren
-- implement recalibrate
 - show screens before calibration and validation
 - Edit mode
 - setLineWidthMode

@@ -26,7 +26,7 @@ function getCalibrationScoreEvaluation ({
   minForOrange = 50,
   relAcc,
   relPrec,
-  trys
+  trys = false
 }) {
   const calibrationScore = calcCalibrationScore({
     acc: relAcc, borderAcc, perfectAcc
@@ -77,7 +77,7 @@ function getCalibrationScoreEvaluation ({
   }
 
   if (minAccScoreColor === 'red' || precStatusColor === 'red') {
-    if (trys.trys > 0) {
+    if (!trys || trys.trys > 0) {
       message = addToStringWithNewLine(
         message, 'Please calibrate again, or proceed with limited quality.'
       )
@@ -91,7 +91,7 @@ function getCalibrationScoreEvaluation ({
     )
   }
 
-  trys.trys++
+  if (trys) trys.trys++
   return createCalibrationScoreEvalOut({
     accScore: calibrationScore,
     accScoreColor,
