@@ -1,7 +1,8 @@
 import { activateDwellBtnGazeListener } from 'Src/main_program/dwell_detection/dwell_at_btn_detection.js'
 import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
-import { startMainMenuClosedMode } from 'Src/main_program/main.js'
+import { activateMode } from 'Src/main_program/modes/main.js'
+import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import {
   getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl
 } from 'Src/main_program/view.js'
@@ -22,6 +23,7 @@ function getSmallDistToNeighborTarget (minGazeTargetSize) {
 }
 
 function addDwellBtnsToRoot (dwellBtns, rootEl) {
+  clearDwellBtns()
   const dwellBtnContainer = getDwellBtnContainer()
   for (const dwellBtn of dwellBtns) {
     dwellBtnContainer.appendChild(getDwellBtnDomEl(dwellBtn))
@@ -31,7 +33,8 @@ function addDwellBtnsToRoot (dwellBtns, rootEl) {
 }
 
 function clearDwellBtns () {
-  document.getElementById('dwellBtnContainer').remove()
+  const dwellBtnContainer = document.getElementById('dwellBtnContainer')
+  if (dwellBtnContainer) dwellBtnContainer.remove()
 }
 
 function removeDwellBtnsAndGazeListener (app) {
@@ -67,22 +70,14 @@ function showAndActivateDwellBtns (dwellBtns, app) {
   registerDwellBtnsForGazeListenerIfNeeded(dwellBtns, app)
 }
 
-function executeQuitRoutine (app, startMode = startMainMenuClosedMode) {
-  app.drawingCanvas.clear()
-  removeDwellBtnsAndGazeListener(app)
-  startMode(app)
-}
-
 function getQuitBtn (
   app,
-  startMode = startMainMenuClosedMode,
-  size = false
+  size,
+  nextMode
 ) {
-  if (!size) size = app.minGazeTargetSize
+  if (!nextMode) nextMode = getMainMenuClosedMode(app)
   return createDwellBtn({
-    action: () => {
-      executeQuitRoutine(app, startMode)
-    },
+    action: () => activateMode(app, nextMode),
     domId: 'quitBtn',
     icon: quitIcon,
     size,

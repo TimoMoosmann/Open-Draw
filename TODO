@@ -1,6 +1,7 @@
-- Integrate new drawlinemode gaze detection
-- Remove legacy detection methods
+- modes
+- checkMode implementieren
 - implement recalibrate
 - show screens before calibration and validation
 - Edit mode
-- settings? (line-width)
+- setLineWidthMode
+- toggle to switch on and off background pattern - set density etc in settings

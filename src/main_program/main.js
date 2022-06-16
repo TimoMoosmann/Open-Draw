@@ -5,6 +5,8 @@ import { redraw } from 'Src/main_program/draw.js'
 import { arrangeOneBtnToLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import { startChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { startDrawLineMode } from 'Src/main_program/modes/draw_line.js'
+import { activateMode } from 'Src/main_program/modes/main.js'
+import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { startMoveMode } from 'Src/main_program/modes/move.js'
 import { startZoomMode } from 'Src/main_program/modes/zoom.js'
 import { getBackgroundGrid } from 'Src/main_program/modes/view.js'
@@ -22,7 +24,8 @@ import moveModeIcon from 'Assets/icons/move.png'
 import zoomModeIcon from 'Assets/icons/magnifying-glass.png'
 
 function startMainProgram (app) {
-  startMainMenuClosedMode(app)
+  activateMode(app, getMainMenuClosedMode(app))
+  // startMainMenuClosedMode(app)
 }
 
 function startMainMenu (app) {

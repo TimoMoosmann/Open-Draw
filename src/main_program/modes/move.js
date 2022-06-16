@@ -1,18 +1,18 @@
-import { addPositions, createPos, subPositions } from 'Src/data_types/pos.js'
-import { getViewport, vh, vw } from 'Src/util/browser.js'
+import { addPositions, createPos } from 'Src/data_types/pos.js'
+import { vh, vw } from 'Src/util/browser.js'
 import { createDwellBtn, createDwellBtnFromDwellBtnAndCenter } from 'Src/main_program/data_types/dwell_btn.js'
 import { redraw } from 'Src/main_program/draw.js'
-import {
-  getMinDistToEdgeFromSettings, getQuitBtn, showAndActivateDwellBtns
-} from 'Src/main_program/util.js'
+import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
+import { getMinDistToEdgeFromSettings, getQuitBtn } from 'Src/main_program/util.js'
 import { moveLeft, moveRight, moveUp, moveDown } from 'Src/main_program/zoom.js'
 import moveDownIcon from 'Assets/icons/arrow_down.png'
 import moveLeftIcon from 'Assets/icons/arrow_left.png'
 import moveRightIcon from 'Assets/icons/arrow_right.png'
 import moveUpIcon from 'Assets/icons/arrow_up.png'
 
-function startMoveMode (app) {
-  const quitBtn = getQuitBtn(app)
+function getMoveMode (app) {
+  const btnSize = app.minGazeTargetSize
+  const quitBtn = getQuitBtn(app, btnSize)
 
   const moveLeftBtn = createDwellBtn({
     action: () => {
@@ -21,7 +21,7 @@ function startMoveMode (app) {
     },
     domId: 'moveLeftBtn',
     icon: moveLeftIcon,
-    size: app.minGazeTargetSize
+    size: btnSize
   })
   const moveUpBtn = createDwellBtn({
     action: () => {
@@ -30,7 +30,7 @@ function startMoveMode (app) {
     },
     domId: 'moveUpBtn',
     icon: moveUpIcon,
-    size: app.minGazeTargetSize,
+    size: btnSize
   })
   const moveRightBtn = createDwellBtn({
     action: () => {
@@ -39,7 +39,7 @@ function startMoveMode (app) {
     },
     domId: 'moveRightBtn',
     icon: moveRightIcon,
-    size: app.minGazeTargetSize
+    size: btnSize
   })
   const moveDownBtn = createDwellBtn({
     action: () => {
@@ -48,15 +48,12 @@ function startMoveMode (app) {
     },
     domId: 'moveDownBtn',
     icon: moveDownIcon,
-    size: app.minGazeTargetSize,
+    size: btnSize
   })
 
-  const arrangedMoveBtns = arrangeDwellBtnsMoveMode({
+  return getDwellBtnMode(arrangeDwellBtnsMoveMode({
     app, moveLeftBtn, moveUpBtn, moveRightBtn, moveDownBtn, quitBtn
-  })
-
-  redraw(app)
-  showAndActivateDwellBtns(arrangedMoveBtns, app)
+  }))
 }
 
 function arrangeDwellBtnsMoveMode ({
@@ -103,5 +100,5 @@ function arrangeDwellBtnsMoveMode ({
 }
 
 export {
-  startMoveMode
+  getMoveMode
 }

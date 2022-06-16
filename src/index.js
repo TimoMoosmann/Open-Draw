@@ -11,7 +11,6 @@ import { getDrawingCanvasInContainer } from 'Src/main_program/view.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
-import { dwellDetectTest } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
 import { getCalibrationScoreEvaluation } from 'Src/calibration/success_score.js'
 import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluation.js'
 import { getCalibrationScorePage } from 'Src/calibration/view.js'
@@ -110,7 +109,6 @@ function getCalibrationResults (webgazer, rootDomEl) {
 
   return new Promise(resolve => {
     const calibrate = async (webgazer, trys) => {
-
       const { worstRelAcc, worstRelPrec } =
         await evaluateCalibrationAndValidation(webgazer)
 

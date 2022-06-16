@@ -2,8 +2,8 @@ import { scalePosByVal } from 'Src/data_types/pos.js'
 import { createEllipse, inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { drawLine, redraw } from 'Src/main_program/draw.js'
-import { startMainMenuClosedMode } from 'Src/main_program/main.js'
-// import { unzoomPos } from 'Src/main_program/zoom.js'
+import { activateMode } from 'Src/main_program/modes/main.js'
+import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { runTwoStepDwellDetection } from 'Src/main_program/dwell_detection/two_step_dwell_detection.js'
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
 
@@ -14,127 +14,136 @@ import {
   standardGazeDotColor
 } from 'Settings'
 
-function startDrawLineMode (app) {
-  if (!app.eyeModeOn) {
-    window.alert('Only available when eyeMode is on.')
-    startMainMenuClosedMode(app)
-  }
-  redraw(app)
-
-  const drawState = {
-    mode: 'looking',
-    safetyEllipse: false,
-    startPoint: false,
-    endPoint: false,
-    done: false
-  }
-
-  runTwoStepDwellDetection({
-    dispersionThreshold: app.dispersionThreshold,
-    firstStepDurationThreshold: lookStateDwellDuration,
-    secondStepDurationThreshold:
-      lookStateDwellDuration + drawStateDwellDuration,
-    onFirstStep: dwellPoint => onDwellDuringLookState({
-      app, drawState, dwellPoint
-    }),
-    onSecondStep: dwellPoint => onDwellDuringDrawState({
-      app, drawState, dwellPoint
-    }),
-    webgazer: app.webgazer
-  })
+function getDrawLineMode () {
+  return new DrawLineMode()
 }
 
-function onDwellDuringLookState ({ app, drawState, dwellPoint }) {
-  console.log('look state')
-  if (drawState.safetyEllipse) {
-    if (
-      // The second point of a line needs to be outside of the safetyEllipse
-      // because only then it is clear that the user is actually looking
-      // at another point on the screen.
-      !inEllipse(dwellPoint, drawState.safetyEllipse)
-    ) {
-      drawState.endPoint = dwellPoint
-    }
-  } else {
-    drawState.startPoint = dwellPoint
-  }
-  drawDrawState({ app, drawState })
-}
+class DrawLineMode {
+  active = true
 
-function onDwellDuringDrawState ({
-  app, drawState, dwellPoint
-}) {
-  if (dwellPoint) {
-    if (drawState.endPoint) {
-      app.state.lines.push(createLine({
-        startPoint: scalePosByVal(
-          drawState.startPoint, 1 / app.state.zoom.level.factor
-        ),
-        endPoint: scalePosByVal(drawState.endPoint, 1 / app.state.zoom.level.factor),
-        strokeProperties: app.state.newLineProperties
-      }))
-      endDrawLineMode(app)
+  start (app) {
+    if (!app.eyeModeOn) {
+      window.alert('Only available when eyeMode is on.')
+      activateMode(app, getMainMenuClosedMode(app))
       return
-    } else {
-      drawState.safetyEllipse = createEllipse({
-        center: drawState.startPoint,
-        radii: scalePosByVal(app.minGazeTargetSize, 1 / 2)
-      })
     }
-  } else {
-    if (drawState.endPoint) {
-      drawState.endPoint = false
-    } else if (!drawState.safetyEllipse) {
-      drawState.startPoint = false
+    webgazer.showPredictionPoints(true)
+
+    const drawState = {
+      safetyEllipse: false,
+      startPoint: false,
+      endPoint: false
     }
-  }
-  drawDrawState({ app, drawState })
-}
+    if (!this.active) return
+    this.#draw(app, drawState)
 
-function endDrawLineMode (app) {
-  app.drawingCanvas.clear()
-  app.webgazer.clearGazeListener()
-  setWebgazerGazeDotColor(standardGazeDotColor)
-  startMainMenuClosedMode(app)
-}
-
-const drawDrawState = ({
-  app,
-  drawState
-}) => {
-  redraw(app)
-  const ctx = app.drawingCanvas.canvasDomEl.getContext('2d')
-  const drawMarkPoint = center => drawCross({
-    ctx,
-    center,
-    halfSize: markPointHalfSize,
-    strokeProperties: markPointStrokeProperties
-  })
-
-  if (drawState.startPoint) drawMarkPoint(drawState.startPoint)
-
-  if (drawState.safetyEllipse) {
-    strokeEllipse({
-      ctx,
-      ellipse: drawState.safetyEllipse,
-      lineDash: safetyEllipseLineDash,
-      strokeProperties: safetyEllipseStrokeProperties
+    runTwoStepDwellDetection({
+      dispersionThreshold: app.dispersionThreshold,
+      firstStepDurationThreshold: lookStateDwellDuration,
+      secondStepDurationThreshold:
+        lookStateDwellDuration + drawStateDwellDuration,
+      onFirstStep: dwellPoint => this.#onDwellDuringLookState({
+        app, drawState, dwellPoint
+      }),
+      onSecondStep: dwellPoint => this.#onDwellDuringDrawState({
+        app, drawState, dwellPoint
+      }),
+      webgazer: app.webgazer
     })
   }
 
-  if (drawState.endPoint) {
-    // preview Line
-    drawMarkPoint(drawState.endPoint)
-    const newLinePreviewProperties = app.state.newLineProperties
-    newLinePreviewProperties.lineWidth =
-      scalePosByVal(
-        newLinePreviewProperties.lineWidth, app.state.zoom.level.factor
-      )
-    drawLine(createLine({
-      startPoint: drawState.startPoint,
-      endPoint: drawState.endPoint,
-      strokeProperties: newLinePreviewProperties
-    }), ctx)
+  #onDwellDuringLookState ({ app, drawState, dwellPoint }) {
+    if (drawState.safetyEllipse) {
+      if (
+        // The second point of a line needs to be outside of the safetyEllipse
+        // because only then it is clear that the user is actually looking
+        // at another point on the screen.
+        !inEllipse(dwellPoint, drawState.safetyEllipse)
+      ) {
+        drawState.endPoint = dwellPoint
+      }
+    } else {
+      drawState.startPoint = dwellPoint
+    }
+    if (!this.active) return
+    this.#draw(app, drawState)
+  }
+
+  #onDwellDuringDrawState ({
+    app, drawState, dwellPoint
+  }) {
+    if (dwellPoint) {
+      if (drawState.endPoint) {
+        app.state.lines.push(createLine({
+          startPoint: scalePosByVal(
+            drawState.startPoint, 1 / app.state.zoom.level.factor
+          ),
+          endPoint: scalePosByVal(drawState.endPoint, 1 / app.state.zoom.level.factor),
+          strokeProperties: app.state.newLineProperties
+        }))
+        activateMode(app, getMainMenuClosedMode(app))
+        return
+      } else {
+        drawState.safetyEllipse = createEllipse({
+          center: drawState.startPoint,
+          radii: scalePosByVal(app.minGazeTargetSize, 1 / 2)
+        })
+      }
+    } else {
+      if (drawState.endPoint) {
+        drawState.endPoint = false
+      } else if (!drawState.safetyEllipse) {
+        drawState.startPoint = false
+      }
+    }
+    if (!this.active) return
+    this.#draw(app, drawState)
+  }
+
+  #draw (app, drawState) {
+    redraw(app)
+    const ctx = app.drawingCanvas.canvasDomEl.getContext('2d')
+    const drawMarkPoint = center => drawCross({
+      ctx,
+      center,
+      halfSize: markPointHalfSize,
+      strokeProperties: markPointStrokeProperties
+    })
+
+    if (drawState.startPoint) drawMarkPoint(drawState.startPoint)
+
+    if (drawState.safetyEllipse) {
+      strokeEllipse({
+        ctx,
+        ellipse: drawState.safetyEllipse,
+        lineDash: safetyEllipseLineDash,
+        strokeProperties: safetyEllipseStrokeProperties
+      })
+    }
+
+    if (drawState.endPoint) {
+      // preview Line
+      drawMarkPoint(drawState.endPoint)
+      const newLinePreviewProperties = app.state.newLineProperties
+      newLinePreviewProperties.lineWidth =
+        scalePosByVal(
+          newLinePreviewProperties.lineWidth, app.state.zoom.level.factor
+        )
+      drawLine(createLine({
+        startPoint: drawState.startPoint,
+        endPoint: drawState.endPoint,
+        strokeProperties: newLinePreviewProperties
+      }), ctx)
+    }
+  }
+
+  stop (app) {
+    if (app.webgazer) {
+      app.webgazer.clearGazeListener()
+      app.webgazer.showPredictionPoints(false)
+      setWebgazerGazeDotColor(standardGazeDotColor)
+    }
+    app.drawingCanvas.clear()
   }
 }
 
@@ -176,4 +185,4 @@ function strokeEllipse ({ ctx, ellipse, lineDash, strokeProperties }) {
   ctx.setLineDash([])
 }
 
-export { startDrawLineMode }
+export { getDrawLineMode }
