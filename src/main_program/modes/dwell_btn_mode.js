@@ -3,16 +3,26 @@ import { removeDwellBtnsAndGazeListener, showAndActivateDwellBtns } from 'Src/ma
 
 class DwellBtnMode {
   active = true
+  #onStart
+  #onStop
 
   constructor (
-    arrangedDwellBtns, showLines = true, showBackgroundGrid = false
+    arrangedDwellBtns, {
+      onStart = () => {},
+      onStop = () => {},
+      showLines = true,
+      showBackgroundGrid = false
+    } = {}
   ) {
     this.arrangedDwellBtns = arrangedDwellBtns
+    this.#onStart = onStart
+    this.#onStop = onStop
     this.showLines = showLines
     this.showBackgroundGrid = showBackgroundGrid
   }
 
   start (app) {
+    this.#onStart()
     if (!this.active) return
     this.draw(app)
   }
@@ -23,14 +33,15 @@ class DwellBtnMode {
   }
 
   stop (app) {
+    this.#onStop()
     this.active = false
     removeDwellBtnsAndGazeListener(app)
     app.drawingCanvas.clear()
   }
 }
 
-function getDwellBtnMode (arrangedDwellBtns) {
-  return new DwellBtnMode(arrangedDwellBtns)
+function getDwellBtnMode (arrangedDwellBtns, additional) {
+  return new DwellBtnMode(arrangedDwellBtns, additional)
 }
 
 export {

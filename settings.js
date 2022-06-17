@@ -75,6 +75,7 @@ export const colors = [
 ]
 export const defaultColor = colors[0]
 export const defaultLineWidth = 2
+export const maxLineWidth = 10
 
 /*
  * Webgazer Settings

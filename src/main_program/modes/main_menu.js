@@ -1,4 +1,5 @@
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
+import { getChangeLineWidthMode } from 'Src/main_program/modes/change_line_width.js'
 import { getChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getDrawLineMode } from 'Src/main_program/modes/draw_line.js'
@@ -60,6 +61,11 @@ function getMainMenuMode (app) {
     icon: chooseColorModeIcon,
     title: (lang === 'de') ? 'Farbe' : 'Color'
   })
+  const startChangeLineWidthModeDwellBtn = getStartModeDwellBtn({
+    mode: getChangeLineWidthMode(app),
+    domId: 'startChangeLineWidthModeDwellBtn',
+    title: (lang === 'de') ? 'Linienbreite' : 'Line Width'
+  })
 
   return getParallelMenuMode({
     app,
@@ -69,7 +75,8 @@ function getMainMenuMode (app) {
       startZoomModeDwellBtn,
       startMoveModeDwellBtn,
       startEditModeDwellBtn,
-      startChooseColorModeDwellBtn
+      startChooseColorModeDwellBtn,
+      startChangeLineWidthModeDwellBtn
     ]
   })
 }

@@ -72,27 +72,22 @@ function createPrevBtn ({ action, size }) {
   })
 }
 
-function createDwellBtnFromDwellBtnAndCenter (dwellBtn, center) {
-  /*
-  const domId = dwellBtn.domId
-  const icon = dwellBtn.icon
-  */
-  /*
-  const activationTime = dwellBtn.activationTime
-  const title = dwellBtn.title
-  const action = dwellBtn.action
-  const dwellBtnArgs = {
-    action, center, domId, icon, size, activationTime, title
-  }
-  */
+function createDwellBtnFromDwellBtn (dwellBtn) {
+  const center = dwellBtn.ellipse.center
   const size = scalePosByVal(dwellBtn.ellipse.radii, 2)
-
   if (dwellBtn.colorDot) {
     return createDwellBtnWithColorDot({
       center, size, colorDot: dwellBtn.colorDot, ...dwellBtn
     })
   }
   return createDwellBtn({ center, size, ...dwellBtn })
+}
+
+function createDwellBtnFromDwellBtnAndCenter (dwellBtn, center) {
+  // So that the original dwellBtn reamains unchanged.
+  const safetyBtn = createDwellBtnFromDwellBtn(dwellBtn)
+  safetyBtn.ellipse.center = center
+  return createDwellBtnFromDwellBtn(safetyBtn)
 }
 
 function checkDwellBtn (dwellBtn, argName) {
@@ -124,6 +119,7 @@ export {
   checkDwellBtn,
   createDwellBtn,
   createDwellBtnWithColorDot,
+  createDwellBtnFromDwellBtn,
   createDwellBtnFromDwellBtnAndCenter,
   createNextBtn,
   createPrevBtn
