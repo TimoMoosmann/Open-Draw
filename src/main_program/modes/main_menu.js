@@ -6,6 +6,8 @@ import { getMoveMode } from 'Src/main_program/modes/move.js'
 import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
 import { getZoomMode } from 'Src/main_program/modes/zoom.js'
 
+import { lang } from 'Settings'
+
 import chooseColorModeIcon from 'Assets/icons/color-wheel.png'
 import drawLineModeIcon from 'Assets/icons/line.png'
 import moveModeIcon from 'Assets/icons/move.png'
@@ -30,7 +32,7 @@ function getMainMenuMode (app) {
     mode: getDrawLineMode(),
     domId: 'startDrawlineModeDwellBtn',
     icon: drawLineModeIcon,
-    title: 'Draw Line'
+    title: (lang === 'de') ? 'Linie Zeichnen' : 'Draw Line'
   })
   const startZoomModeDwellBtn = getStartModeDwellBtn({
     mode: getZoomMode(app),
@@ -42,13 +44,13 @@ function getMainMenuMode (app) {
     mode: getMoveMode(app),
     domId: 'startMoveDwellBtn',
     icon: moveModeIcon,
-    title: 'Move'
+    title: (lang === 'de') ? 'Bild Bewegen' : 'Move'
   })
   const startChooseColorModeDwellBtn = getStartModeDwellBtn({
     mode: getChooseColorMode(app),
     domId: 'startColorChooserDwellBtn',
     icon: chooseColorModeIcon,
-    title: 'Choose Color'
+    title: (lang === 'de') ? 'Farbe' : 'Color'
   })
 
   return getParallelMenuMode({

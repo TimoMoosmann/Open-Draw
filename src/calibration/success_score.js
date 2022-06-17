@@ -1,5 +1,7 @@
 import { createPos } from 'Src/data_types/pos.js'
 
+import { lang } from 'Settings'
+
 function calcCalibrationScore ({ acc, borderAcc, perfectAcc }) {
   if (acc.x < perfectAcc.x) acc.x = perfectAcc.x
   if (acc.y < perfectAcc.y) acc.y = perfectAcc.y
@@ -19,6 +21,7 @@ function calcCalibrationScore ({ acc, borderAcc, perfectAcc }) {
 
 function getCalibrationScoreEvaluation ({
   borderAcc,
+  colorCodes,
   perfectAcc,
   borderPrec,
   minForGreen = 80,
@@ -46,49 +49,68 @@ function getCalibrationScoreEvaluation ({
     ? accScoreColor.x
     : accScoreColor.y
 
-  let precStatus = 'bad'
+  let precStatus = (lang === 'de') ? 'schlecht' : 'bad'
   let precStatusColor = 'red'
   if (relPrec.x <= borderPrec.x && relPrec.y <= borderPrec.y) {
-    precStatus = 'good'
+    precStatus = (lang === 'de') ? 'gut' : 'good'
     precStatusColor = 'green'
   }
   let proceedBtnActive = true
   let message = ''
   switch (minAccScoreColor) {
     case 'red':
-      message += 'Your accuracy is too low to use the program properly.'
+      message += (lang === 'de')
+        ? 'Die Zielgenaugkeit ist zu niedrig um das Programm richtig ' +
+          'benutzen zu können.'
+        : 'Your accuracy is too low to use the program properly.'
       break
     case 'orange':
-      message +=
-        'Your accuracy is just enough to use the program.'
+      message += (lang === 'de')
+        ? 'Die Zielgenaugkeit ist gut genug um das Programm benutzen zu können.'
+        : 'Your accuracy is just enough to use the program.'
       break
     case 'yellow':
-      message += 'Your accuracy is good enough to use the program.'
+      message += (lang === 'de')
+        ? 'Die Zielgenaugkeit ist gut um das Programm zu benutzen.'
+        : 'Your accuracy is good enough to use the program.'
       break
     case 'green':
-      message += 'Your accuracy is good.'
+      message += (lang === 'de')
+        ? 'Perfekte Zielgenauigkeit.'
+        : 'Your accuracy is good.'
       break
   }
 
   if (precStatusColor === 'red') {
     message = addToStringWithNewLine(
-      message, 'Your precision is too low to use the program properly.'
+      message, (lang === 'de')
+        ? 'Die Stabilität der Blickpunkte ist zu schlecht um das Programm ' +
+          'richtig zu benutzen.'
+        : 'Your precision is too low to use the program properly.'
     )
   }
 
   if (minAccScoreColor === 'red' || precStatusColor === 'red') {
     if (!trys || trys.trys > 0) {
       message = addToStringWithNewLine(
-        message, 'Please calibrate again, or proceed with limited quality.'
+        message, (lang === 'de')
+          ? 'Kalibriere nochmal, oder fahre mit eingeschränkter Qualität fort.'
+          : 'Please calibrate again, or proceed with limited quality.'
       )
     } else {
       proceedBtnActive = false
-      message = addToStringWithNewLine(message, 'Please calibrate again.')
+      message = addToStringWithNewLine(message, (lang === 'de')
+        ? 'Bitte kalibriere erneut.'
+        : 'Please calibrate again.'
+      )
     }
-  } else if (minAccScoreColor === 'orange' || minAccScoreColor === 'yellow') {
-    message = addToStringWithNewLine(
-      message, 'If you want an better experience, try to calibrate again.'
-    )
+  }
+
+  if (colorCodes) {
+    for (const key of Object.keys(accScoreColor)) {
+      accScoreColor[key] = colorCodes[accScoreColor[key]]
+    }
+    precStatusColor = colorCodes[precStatusColor]
   }
 
   if (trys) trys.trys++
@@ -120,7 +142,7 @@ function getAccScoreColor ({
 }
 
 function addToStringWithNewLine (str, appendStr) {
-  return (str.length > 0) ? str + '\n' + appendStr : appendStr
+  return (str.length > 0) ? str + '<br>' + appendStr : appendStr
 }
 
 function createCalibrationScoreEvalOut ({

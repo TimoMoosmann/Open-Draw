@@ -8,7 +8,7 @@ import {
 } from 'Src/main_program/view.js'
 import { vh, vw } from 'Src/util/browser.js'
 
-import { minDistToEdgeInPct } from 'Settings'
+import { lang, minDistToEdgeInPct } from 'Settings'
 import quitIcon from 'Assets/icons/close.png'
 
 function getMinDistToEdgeFromSettings () {
@@ -53,7 +53,7 @@ function addCanvasToRootAndDrawLines (app) {
 function endGazeBtnListenerIfNeeded (app) {
   if (app.eyeModeOn) {
     app.webgazer.showPredictionPoints(false)
-    //app.gazeAtDwellBtnListener.unregister()
+    // app.gazeAtDwellBtnListener.unregister()
   }
 }
 
@@ -81,7 +81,7 @@ function getQuitBtn (
     domId: 'quitBtn',
     icon: quitIcon,
     size,
-    title: 'Quit Mode'
+    title: (lang === 'de') ? 'Modus Beenden' : 'Quit Mode'
   })
 }
 

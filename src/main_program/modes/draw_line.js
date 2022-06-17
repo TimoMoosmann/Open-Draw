@@ -8,7 +8,7 @@ import { runTwoStepDwellDetection } from 'Src/main_program/dwell_detection/two_s
 import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
 
 import {
-  drawStateDwellDuration, lookStateDwellDuration,
+  drawStateDwellDuration, lang, lookStateDwellDuration,
   markPointHalfSize, markPointStrokeProperties,
   safetyEllipseLineDash, safetyEllipseStrokeProperties,
   standardGazeDotColor
@@ -23,7 +23,9 @@ class DrawLineMode {
 
   start (app) {
     if (!app.eyeModeOn) {
-      window.alert('Only available when eyeMode is on.')
+      (lang === 'de')
+        ? window.alert('Nur verfügber wenn eyeMode auf true geschaltet ist.')
+        : window.alert('Only available when eyeMode is on.')
       activateMode(app, getMainMenuClosedMode(app))
       return
     }

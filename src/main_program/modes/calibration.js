@@ -3,7 +3,7 @@ import { runClickCalibration, runGazeCalibration, runValidation } from 'Src/cali
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { getCalibrationScoreEvaluation } from 'Src/calibration/success_score.js'
 import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluation.js'
-import { getCalibrationScorePage } from 'Src/calibration/view.js'
+import { getCalibrationInstructionPage, getCalibrationScorePage } from 'Src/calibration/view.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 
@@ -37,10 +37,18 @@ function getCalibrationResults (webgazer, rootDomEl) {
   return new Promise(resolve => {
     const calibrate = async webgazer => {
       const { worstRelAcc, worstRelPrec } =
-        await evaluateCalibrationAndValidation(webgazer)
+        await evaluateCalibrationAndValidation(rootDomEl, webgazer)
+
+      const colorCodes = {
+        green: 'green',
+        orange: 'darkorange',
+        red: 'red',
+        yellow: 'gold'
+      }
 
       const calibrationScore = getCalibrationScoreEvaluation({
         borderAcc,
+        colorCodes,
         perfectAcc,
         borderPrec,
         minForGreen: 80,
@@ -58,9 +66,9 @@ function getCalibrationResults (webgazer, rootDomEl) {
       const prec = getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel)
 
       const minGazeTargetSize = scalePosByVal(
-        addPositions(acc, scalePosByVal(prec, 2)), 2.3
+        addPositions(acc, scalePosByVal(prec, 2)), 2.2
       )
-      const dispersionThreshold = scalePosByVal(prec, 3)
+      const dispersionThreshold = scalePosByVal(prec, 2.5)
 
       const calibrationScorePage = getCalibrationScorePage({
         calibrationScore,
@@ -79,15 +87,17 @@ function getCalibrationResults (webgazer, rootDomEl) {
   })
 }
 
-async function evaluateCalibrationAndValidation (webgazer) {
+async function evaluateCalibrationAndValidation (root, webgazer) {
+  const showInstructionsTime = 7000
+  let runCal
   switch (calibrationType) {
     case 'click':
-      await runClickCalibration({
+      runCal = () => runClickCalibration({
         numTargets: numCalibrationTargets, webgazer
       })
       break
     case 'gaze':
-      await runGazeCalibration({
+      runCal = () => runGazeCalibration({
         numTargets: numCalibrationTargets, webgazer
       })
       break
@@ -96,8 +106,26 @@ async function evaluateCalibrationAndValidation (webgazer) {
         "calibrationType needs to be either 'click', or 'gaze."
       )
   }
+  await showPageForMilliseconds(
+    root, getCalibrationInstructionPage(calibrationType), showInstructionsTime
+  )
+  await runCal()
+  await showPageForMilliseconds(
+    root, getCalibrationInstructionPage('validation'), showInstructionsTime
+  )
   const validationData = await runValidation({ webgazer })
   return getWorstRelAccAndPrec(validationData)
+}
+
+function showPageForMilliseconds (root, page, milliseconds) {
+  return new Promise(resolve => {
+    console.log('hi')
+    root.appendChild(page)
+    setTimeout(() => {
+      page.remove()
+      resolve()
+    }, milliseconds)
+  })
 }
 
 export {

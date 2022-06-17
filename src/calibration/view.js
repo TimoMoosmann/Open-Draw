@@ -3,6 +3,8 @@ import { createElementFromHTML } from 'Src/util/browser.js'
 
 import { html } from 'common-tags'
 
+import { lang } from 'Settings'
+
 import '../../assets/css/calibration.css'
 import '../../assets/css/calibration_score.css'
 import '../../assets/css/style.css'
@@ -33,6 +35,33 @@ function getGazeTargetsContainer (id = '') {
   `)
 }
 
+function getCalibrationInstructionPage (calibrationType) {
+  let title = ''
+  let instruction = ''
+  switch (calibrationType) {
+    case 'gaze':
+      title = 'Kalibrierung'
+      instruction = 'Halte dein Kopf gerade und schaue auf die Ziele.'
+      break
+    case 'validation':
+      title = 'Überprüfung'
+      instruction = 'Halte dein Kopf gerade und schaue auf die Ziele.'
+      break
+    case 'click':
+      title = 'Kalibrierung'
+      instruction = 'Halte dein Kopf gerade und klicke auf die Ziele.'
+      break
+    default:
+      throw new TypeError(calibrationType + ' is no valid calibrationType.')
+  }
+  return createElementFromHTML(html`
+    <div id="calibrationInstructionContainer">
+      <h2>${title}</h2>
+      <li id="calibrationInstructionLi"><h2>${instruction}</h2></li>
+    </div>
+  `)
+}
+
 function getCalibrationScorePage ({
   calibrationScore,
   onContinue,
@@ -43,20 +72,24 @@ function getCalibrationScorePage ({
 
   const calibrationScorePage = createElementFromHTML(html`
     <div id="calibrationScoreContainer">
-      <h2>Calibration Score</h2>
+      <h2>
+        ${(lang === 'de') ? 'Kalibrierungsauswertung' : 'Calibration Score'}
+      </h2>
       <div id="calibrationScoreInnerTextContainer">
-          <p>Accuracy: x:
+          <p>${(lang === 'de') ? 'Genauigkeit' : 'Accuracy'}: x:
             <span id="accScoreX">${calibrationScore.accScore.x}</span>%, y:
             <span id="accScoreY">${calibrationScore.accScore.y}</span>%</p>
-          <p>Disribution:
+          <p>${(lang === 'de') ? 'Stabilität' : 'Stability'}:
             <span id="precStatus">${calibrationScore.precStatus}</span></p>
           <p id="message">${calibrationScore.message}</p>
       </div>
       <div id="calibrationScoreButtonsContainer">
           <button id="continueBtn" ${continueBtnState}>
-            Continue
+            ${(lang === 'de') ? 'Fortfahren' : 'Continue'}
           </button>
-          <button id="recalibrateBtn">Recalibrate</button>
+          <button id="recalibrateBtn">
+            ${(lang === 'de') ? 'Rekalibrieren' : 'Recalibrate'}
+          </button>
       </div>
     </div>
   `)
@@ -78,4 +111,9 @@ function getCalibrationScorePage ({
   return calibrationScorePage
 }
 
-export { getCalibrationScorePage, getGazeTarget, getGazeTargetsContainer }
+export {
+  getCalibrationInstructionPage,
+  getCalibrationScorePage,
+  getGazeTarget,
+  getGazeTargetsContainer
+}
