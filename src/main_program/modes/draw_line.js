@@ -29,7 +29,7 @@ class DrawLineMode {
       activateMode(app, getMainMenuClosedMode(app))
       return
     }
-    webgazer.showPredictionPoints(true)
+    app.webgazer.showPredictionPoints(true)
 
     const drawState = {
       safetyEllipse: false,
@@ -83,6 +83,8 @@ class DrawLineMode {
           endPoint: scalePosByVal(drawState.endPoint, 1 / app.state.zoom.level.factor),
           strokeProperties: app.state.newLineProperties
         }))
+        app.state.linesBuffer = JSON.parse(JSON.stringify(app.state.lines))
+        app.state.linesBufferIdx = app.state.linesBuffer.length - 1
         activateMode(app, getMainMenuClosedMode(app))
         return
       } else {

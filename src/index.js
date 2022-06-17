@@ -13,9 +13,7 @@ import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
 
 import {
-  borderAcc, perfectAcc, borderPrec,
-  calibrationType, defaultLineWidth, eyeModeOn, numCalibrationTargets,
-  standardGazeDotColor
+  borderAcc, borderPrec, defaultLineWidth, eyeModeOn, standardGazeDotColor
 } from 'Settings'
 
 async function main () {
@@ -56,6 +54,9 @@ async function main () {
       zoom: createZoom()
     }
   }
+  // For edit Mode to work
+  app.state.linesBuffer = JSON.parse(JSON.stringify(app.state.lines))
+  app.state.linesBufferIdx = app.state.linesBuffer.length - 1
 
   const { drawingCanvasDomEl, drawingCanvasContainer } =
     getDrawingCanvasInContainer()

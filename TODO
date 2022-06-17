@@ -1,4 +1,3 @@
-- show screens before calibration and validation
-- Edit mode
 - setLineWidthMode
 - toggle to switch on and off background pattern - set density etc in settings
+- Bug: main menu mode: ganz nach rechts dann ganz nach links

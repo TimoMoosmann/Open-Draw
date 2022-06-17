@@ -1,10 +1,9 @@
-import { addPositions, createPos, subPositions } from 'Src/data_types/pos.js'
-import { getViewport } from 'Src/util/browser.js'
-import { createDwellBtn, createDwellBtnFromDwellBtnAndCenter } from 'Src/main_program/data_types/dwell_btn.js'
+import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { redraw } from 'Src/main_program/draw.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
+import { arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import {
-  getMinDistToEdgeFromSettings, getQuitBtn, getSmallDistToNeighborTarget
+  getQuitBtn
 } from 'Src/main_program/util.js'
 import { zoomIn, zoomOut } from 'Src/main_program/zoom.js'
 
@@ -34,40 +33,10 @@ function getZoomMode (app) {
     size: btnSize
   })
 
-  const arrangedZoomBtns = arrangeDwellBtnsZoomMode({
-    btnSize, quitBtn, zoomInBtn, zoomOutBtn
-  })
+  const arrangedZoomBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight(
+    [zoomInBtn, zoomOutBtn, quitBtn], btnSize
+  )
   return getDwellBtnMode(arrangedZoomBtns)
-}
-
-function arrangeDwellBtnsZoomMode ({
-  btnSize,
-  quitBtn,
-  zoomInBtn,
-  zoomOutBtn
-}) {
-  const zoomInBtnPos = addPositions(
-    getMinDistToEdgeFromSettings(), zoomInBtn.ellipse.radii
-  )
-  const zoomOutBtnPos = createPos({
-    x: zoomInBtnPos.x + getSmallDistToNeighborTarget(btnSize).x +
-      zoomInBtn.ellipse.radii.x + zoomOutBtn.ellipse.radii.x,
-    y: zoomInBtnPos.y
-  })
-  const quitBtnPos = subPositions(
-    getViewport(), getMinDistToEdgeFromSettings(), quitBtn.ellipse.radii
-  )
-  return [
-    createDwellBtnFromDwellBtnAndCenter(
-      quitBtn, quitBtnPos
-    ),
-    createDwellBtnFromDwellBtnAndCenter(
-      zoomInBtn, zoomInBtnPos
-    ),
-    createDwellBtnFromDwellBtnAndCenter(
-      zoomOutBtn, zoomOutBtnPos
-    )
-  ]
 }
 
 export {

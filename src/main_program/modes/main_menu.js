@@ -2,6 +2,7 @@ import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { getChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getDrawLineMode } from 'Src/main_program/modes/draw_line.js'
+import { getEditMode } from 'Src/main_program/modes/edit.js'
 import { getMoveMode } from 'Src/main_program/modes/move.js'
 import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
 import { getZoomMode } from 'Src/main_program/modes/zoom.js'
@@ -9,6 +10,7 @@ import { getZoomMode } from 'Src/main_program/modes/zoom.js'
 import { lang } from 'Settings'
 
 import chooseColorModeIcon from 'Assets/icons/color-wheel.png'
+import editModeIcon from 'Assets/icons/edit.png'
 import drawLineModeIcon from 'Assets/icons/line.png'
 import moveModeIcon from 'Assets/icons/move.png'
 import zoomModeIcon from 'Assets/icons/magnifying-glass.png'
@@ -36,19 +38,25 @@ function getMainMenuMode (app) {
   })
   const startZoomModeDwellBtn = getStartModeDwellBtn({
     mode: getZoomMode(app),
-    domId: 'startZoomDwellBtn',
+    domId: 'startZoomModeDwellBtn',
     icon: zoomModeIcon,
     title: 'Zoom'
   })
   const startMoveModeDwellBtn = getStartModeDwellBtn({
     mode: getMoveMode(app),
-    domId: 'startMoveDwellBtn',
+    domId: 'startMoveModeDwellBtn',
     icon: moveModeIcon,
     title: (lang === 'de') ? 'Bild Bewegen' : 'Move'
   })
+  const startEditModeDwellBtn = getStartModeDwellBtn({
+    mode: getEditMode(app),
+    domId: 'startEditModeDwellBtn',
+    icon: editModeIcon,
+    title: (lang === 'de') ? 'Editieren' : 'Edit'
+  })
   const startChooseColorModeDwellBtn = getStartModeDwellBtn({
     mode: getChooseColorMode(app),
-    domId: 'startColorChooserDwellBtn',
+    domId: 'startColorChooserModeDwellBtn',
     icon: chooseColorModeIcon,
     title: (lang === 'de') ? 'Farbe' : 'Color'
   })
@@ -60,6 +68,7 @@ function getMainMenuMode (app) {
       startDrawLineModeDwellBtn,
       startZoomModeDwellBtn,
       startMoveModeDwellBtn,
+      startEditModeDwellBtn,
       startChooseColorModeDwellBtn
     ]
   })
