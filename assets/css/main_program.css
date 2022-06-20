@@ -20,7 +20,7 @@
   border-radius: 100%;
   transform: translate(-50%, -50%);
   background-repeat: no-repeat;
-  background-size: 20%;
+  background-size: 50px;
   background-position: center;
   cursor: pointer;
 }
