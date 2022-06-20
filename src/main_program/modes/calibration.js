@@ -88,7 +88,7 @@ function getCalibrationResults (webgazer, rootDomEl) {
 }
 
 async function evaluateCalibrationAndValidation (root, webgazer) {
-  const showInstructionsTime = 7000
+  const showInstructionsTime = 6000
   let runCal
   switch (calibrationType) {
     case 'click':
@@ -119,7 +119,6 @@ async function evaluateCalibrationAndValidation (root, webgazer) {
 
 function showPageForMilliseconds (root, page, milliseconds) {
   return new Promise(resolve => {
-    console.log('hi')
     root.appendChild(page)
     setTimeout(() => {
       page.remove()

@@ -1,6 +1,6 @@
 import { createPos } from 'Src/data_types/pos.js'
 
-import { lang } from 'Settings'
+import { lang as langFromSettings } from 'Settings'
 
 function calcCalibrationScore ({ acc, borderAcc, perfectAcc }) {
   if (acc.x < perfectAcc.x) acc.x = perfectAcc.x
@@ -24,7 +24,7 @@ function getCalibrationScoreEvaluation ({
   colorCodes,
   perfectAcc,
   borderPrec,
-  lang,
+  lang = langFromSettings,
   minForGreen = 80,
   minForYellow = 65,
   minForOrange = 50,

@@ -53,7 +53,7 @@ function addCanvasToRootAndDrawLines (app) {
 function endGazeBtnListenerIfNeeded (app) {
   if (app.eyeModeOn) {
     app.webgazer.showPredictionPoints(false)
-    // app.gazeAtDwellBtnListener.unregister()
+    app.webgazer.clearGazeListener()
   }
 }
 
