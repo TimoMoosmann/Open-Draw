@@ -15,7 +15,7 @@ export const lang = 'de'
 export const calibrationType = 'gaze'
 // 5, 9, or 13
 export const numCalibrationTargets = 9
-export const gazeTargetRadius = 30
+export const gazeTargetRadius = 35
 // Gaze Calibration
 export const gazeCalibrationTimeTillRecord = 1200
 export const gazeCalibrationRecordDuration = 1300
