@@ -539,6 +539,37 @@ test('When the viewport is to little, no buttons should be displayed.', () => {
   expect(arrangedWithToSmallViewport).toEqual([])
 })
 
+test('Test endIdx: 2, three Btns fit on the screen and 5 are available', () => {
+  const endIdx = 2
+  const fiveTestBtnsArranged =
+    arrangeToParallelMenuWithTestSettings({
+      equallySizedDwellBtns: createTestDwellBtns(5),
+      getNextBtn: createTestGetNextBtn(3),
+      getPrevBtn: createTestGetPrevBtn(1),
+      endIdx,
+      viewport: createPos({ x: 1300, y: 600 })
+    })
+
+  const expectedArrangedDwellBtns = createTestDwellBtnsFromArrangedPositions([
+    [
+      createPos({ x: 650, y: 300 })
+    ]
+  ], 2)
+
+  expectedArrangedDwellBtns.unshift(createTestPrevBtn({
+    center: createPos({ x: 300, y: 300 })
+  }))
+  expectedArrangedDwellBtns.push(createTestNextBtn({
+    center: createPos({ x: 1000, y: 300 })
+  }))
+
+  // Necassary because functions can't be compared properly.
+  deleteActionsFromDwellBtns(fiveTestBtnsArranged)
+  deleteActionsFromDwellBtns(expectedArrangedDwellBtns)
+
+  expect(fiveTestBtnsArranged).toEqual(expectedArrangedDwellBtns)
+})
+
 // Test arrangeOneBtnToLowerRight
 test('When there is space for the dwellBtn place it correctly.', () => {
   const dwellBtn = createSimpleDwellBtn({ domId: 'btn' })

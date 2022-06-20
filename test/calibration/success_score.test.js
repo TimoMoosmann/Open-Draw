@@ -43,6 +43,7 @@ function createCalibrationScoreInp ({
     borderAcc: testBorderAcc,
     perfectAcc: testPerfectAcc,
     borderPrec: testBorderPrec,
+    lang: 'en',
     relAcc: createPos({ x: xAcc, y: yAcc }),
     relPrec: createPos({ x: xPrec, y: yPrec }),
     trys
@@ -60,8 +61,8 @@ test('Insufficent Precision', () => {
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
-      'Your accuracy is good.\n' +
-      'Your precision is too low to use the program properly.\n' +
+      'Your accuracy is good.<br>' +
+      'Your precision is too low to use the program properly.<br>' +
       'Please calibrate again.',
     proceedBtnActive: false
   })
@@ -78,8 +79,8 @@ test('Insufficent Precision', () => {
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
-      'Your accuracy is good.\n' +
-      'Your precision is too low to use the program properly.\n' +
+      'Your accuracy is good.<br>' +
+      'Your precision is too low to use the program properly.<br>' +
       'Please calibrate again, or proceed with limited quality.',
     proceedBtnActive: true
   })
@@ -99,7 +100,7 @@ test('Relative Accuracy is lower than 50% in X or Y', () => {
     precStatus: 'good',
     precStatusColor: 'green',
     message:
-      'Your accuracy is too low to use the program properly.\n' +
+      'Your accuracy is too low to use the program properly.<br>' +
       'Please calibrate again.',
     proceedBtnActive: false
   })
@@ -116,7 +117,7 @@ test('Relative Accuracy is lower than 50% in X or Y', () => {
     precStatus: 'good',
     precStatusColor: 'green',
     message:
-      'Your accuracy is too low to use the program properly.\n' +
+      'Your accuracy is too low to use the program properly.<br>' +
       'Please calibrate again, or proceed with limited quality.',
     proceedBtnActive: true
   })
@@ -136,8 +137,8 @@ test('Accuracy and Precision too low', () => {
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
-      'Your accuracy is too low to use the program properly.\n' +
-      'Your precision is too low to use the program properly.\n' +
+      'Your accuracy is too low to use the program properly.<br>' +
+      'Your precision is too low to use the program properly.<br>' +
       'Please calibrate again.',
     proceedBtnActive: false
   })
@@ -154,8 +155,8 @@ test('Accuracy and Precision too low', () => {
     precStatus: 'bad',
     precStatusColor: 'red',
     message:
-      'Your accuracy is too low to use the program properly.\n' +
-      'Your precision is too low to use the program properly.\n' +
+      'Your accuracy is too low to use the program properly.<br>' +
+      'Your precision is too low to use the program properly.<br>' +
       'Please calibrate again, or proceed with limited quality.',
     proceedBtnActive: true
   })
@@ -174,9 +175,7 @@ test('Precision and Accuracy are just enough', () => {
     accScoreColor: createPos({ x: 'orange', y: 'orange' }),
     precStatus: 'good',
     precStatusColor: 'green',
-    message:
-      'Your accuracy is just enough to use the program.\n' +
-      'If you want an better experience, try to calibrate again.',
+    message: 'Your accuracy is just enough to use the program.',
     proceedBtnActive: true
   })
   expect(getCalibrationScoreEvaluation(medAccMedPrec))
@@ -194,9 +193,7 @@ test('Accuracy is 65% and precision okay', () => {
     accScoreColor: createPos({ x: 'yellow', y: 'yellow' }),
     precStatus: 'good',
     precStatusColor: 'green',
-    message:
-      'Your accuracy is good enough to use the program.\n' +
-      'If you want an better experience, try to calibrate again.',
+    message: 'Your accuracy is good enough to use the program.',
     proceedBtnActive: true
   })
   expect(getCalibrationScoreEvaluation(goodAccMedPrec))
@@ -221,66 +218,3 @@ test('Accuracy is 80% and precision okay', () => {
     .toEqual(firstTryAbleToProceed)
   expect(trys.trys).toBe(1)
 })
-
-/*
- * pct table
- *
- * 1pct x: 0,0006
- * 1pct y: 0,0012
- *
- * 65, 65: createPos({x: 0.051, y: 0.102})
- * 80, 80 createPos({x: 0.042, x: 0.084})
- *createPos({x: 0.03, y: 0.06}) : 100, 100
-  createPos({x: 0.02, y: 0.05}) : 100, 100
-  createPos({x: 0.1, y: 0.19})  : 0, 0
-  createPos({x: 0.06, y: 0.12}) : 50, 50
-  createPos({x: 0.045, y: 0.09) : 75, 75
-  createPos({x: 0.075, y: 0.15) : 25, 25
- * test cases : precision not fullfiled deny first, works for second,
- *              acc not fullfiled deny first, works for second,
- *              both at edge fullfiled works,
- *              acc >= 65% fullfilled,
- *              acc >= 80% fullfilled
- *
- */
-
-/*
- *
- * Success score for the calibration
- *
- * Give a score from 0% to 100% to the calculated accuracy aftter ones
- * calibration.
- *
- * 50% means: acc.x = 0.06; acc.y = 0,12
- *
- * For the precision one can either fail, or succed
- * Sucession means that the precision is in x direction >= 0.07, and
- *  in y-direction >= 0.08
- *
- * Depending on the score a sentence is displed on a screen that indiacates
- * how good the calibration was. And a color indicates that too.
- *
- * If ones score is higher or equals 50% one can proceed immeditely,
- * but can also retry the calibration.
- * If one scores less than 50% one have to repeat the calibration one time
- * before being able to prceed.
- *
- *
- * test cases : precision not fullfiled deny first, works for second,
- *              acc not fullfiled deny first, works for second,
- *              both at edge fullfiled works,
- *              acc >= 65% fullfilled,
- *              acc >= 80% fullfilled
- * Scenarios:
- * X or Y is under 50% or Precision is insufficient
- *   -> score or precision in red
- *   -> The next time one can proceed, but with warning message if criterias
- *      are not fullfilled;
- *   -> Can proceed without warning message, when criterias are fullfilled.
- *
- * X or Y is 50% or more and Precision is sufficient
- *   -> Precision in green, show: Precision: good
- *   -> 50% - 59%: orange, message: Accuracy is sufficient.
- *   -> 60% to 75%: yellow, message: Good accuracy.
- *   -> 75% to 100%: green, message: Very good accuracy.
- */

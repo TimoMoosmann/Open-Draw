@@ -24,6 +24,7 @@ function getCalibrationScoreEvaluation ({
   colorCodes,
   perfectAcc,
   borderPrec,
+  lang,
   minForGreen = 80,
   minForYellow = 65,
   minForOrange = 50,

@@ -110,7 +110,7 @@ function arrangeEquallySizedDwellBtnsToParallelMenu ({
       numFreePositions--
     }
     if (
-      endIdx - numFreePositions > 0 &&
+      endIdx - numFreePositions >= 0 &&
       numFreePositions > 0 &&
       getPrevBtn
     ) {
