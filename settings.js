@@ -5,7 +5,7 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
  * Main Settings
  */
 // Turn eyeMode off to just look around without using eye tracking.
-export const eyeModeOn = true
+export const eyeModeOn = false
 export const lang = 'de'
 
 /*
@@ -28,7 +28,7 @@ export const borderAcc = createPos({ x: 0.06, y: 0.12 })
 // Relative Accuracy to reach a calibrationScore of 100%
 export const perfectAcc = createPos({ x: 0.03, y: 0.06 })
 // Minimum recommended Relative Precision
-export const borderPrec = createPos({ x: 0.03, y: 0.05 })
+export const borderPrec = createPos({ x: 0.05, y: 0.08 })
 /*
  * DwellBtn Settings
  */
