@@ -22,6 +22,7 @@ class DrawLineMode {
   active = true
 
   start (app) {
+    app.showBackgroundGrid(true)
     if (!app.eyeModeOn) {
       (lang === 'de')
         ? window.alert('Nur verfügber wenn eyeMode auf true geschaltet ist.')
@@ -142,6 +143,7 @@ class DrawLineMode {
   }
 
   stop (app) {
+    app.showBackgroundGrid(false)
     if (app.webgazer) {
       app.webgazer.clearGazeListener()
       app.webgazer.showPredictionPoints(false)

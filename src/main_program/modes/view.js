@@ -5,13 +5,6 @@ import { html } from 'common-tags'
 
 import 'Assets/css/main_program.css'
 
-function getBackgroundGrid () {
-  return createElementFromHTML(html`
-    <div id="backgroundGrid">
-    </div>
-  `)
-}
-
 function getLineWidthDisplay (lineWidth, left, top) {
   return createElementFromHTML(html`
     <div
@@ -27,6 +20,5 @@ function getLineWidthDisplay (lineWidth, left, top) {
 }
 
 export {
-  getBackgroundGrid,
   getLineWidthDisplay
 }

@@ -9,7 +9,6 @@ import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { startMoveMode } from 'Src/main_program/modes/move.js'
 import { startZoomMode } from 'Src/main_program/modes/zoom.js'
-import { getBackgroundGrid } from 'Src/main_program/modes/view.js'
 import { drawAndActivateParallelMenu } from 'Src/main_program/parallel_menu.js'
 import {
   removeDwellBtnsAndGazeListener, showAndActivateDwellBtns
@@ -84,7 +83,6 @@ function startMainMenu (app) {
 }
 
 function startMainMenuClosedMode (app) {
-  app.rootDomEl.appendChild(getBackgroundGrid())
   const openMainMenuDwellBtn = createDwellBtn({
     action: () => {
       removeDwellBtnsAndGazeListener(app)

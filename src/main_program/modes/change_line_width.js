@@ -18,12 +18,12 @@ function getChangeLineWidthMode (app) {
   const increaseBtn = createDwellBtn({
     domId: 'increaseLineWidthBtn',
     icon: increaseIcon,
-    size: btnSize,
+    size: btnSize
   })
   const decreaseBtn = createDwellBtn({
     domId: 'decreaseLineWidthBtn',
     icon: decreaseIcon,
-    size: btnSize,
+    size: btnSize
   })
 
   let [arrangedIncreaseBtn, arrangedDecreaseBtn, arrangedQuitBtn] =

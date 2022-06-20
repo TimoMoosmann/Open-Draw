@@ -96,7 +96,15 @@ function getDrawingCanvasInContainer () {
   }
 }
 
+function getBackgroundGrid () {
+  return createElementFromHTML(html`
+    <div id="backgroundGrid">
+    </div>
+  `)
+}
+
 export {
+  getBackgroundGrid,
   getDrawingCanvasInContainer,
   getDwellBtnDomEl,
   getDwellBtnContainer,

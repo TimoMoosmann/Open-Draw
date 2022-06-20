@@ -7,7 +7,7 @@ import { getDrawingCanvas } from 'Src/main_program/drawing_canvas.js'
 import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
-import { getDrawingCanvasInContainer } from 'Src/main_program/view.js'
+import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
@@ -54,7 +54,7 @@ async function main () {
       zoom: createZoom()
     }
   }
-  // For edit Mode to work
+  // For edit Mode to work with predefined lines
   app.state.linesBuffer = JSON.parse(JSON.stringify(app.state.lines))
   app.state.linesBufferIdx = app.state.linesBuffer.length - 1
 
@@ -62,6 +62,14 @@ async function main () {
     getDrawingCanvasInContainer()
   app.rootDomEl.appendChild(drawingCanvasContainer)
   app.drawingCanvas = getDrawingCanvas(drawingCanvasDomEl)
+
+  app.backgroundGrid = getBackgroundGrid()
+  app.rootDomEl.appendChild(app.backgroundGrid)
+  app.showBackgroundGrid = show => {
+    show
+      ? app.backgroundGrid.style.visibility = 'visible'
+      : app.backgroundGrid.style.visibility = 'hidden'
+  }
 
   if (eyeModeOn) {
     app.webgazer = await makeWebgazerReady()

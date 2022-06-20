@@ -11,7 +11,6 @@ function getParallelMenuMode ({
   endIdx = false,
   equallySizedDwellBtns,
   showLines = true,
-  showBackgroundGrid = false,
   startIdx = 0
 }) {
   if (!distToNeighbor) distToNeighbor = getSmallDistToNeighborTarget(btnSize)
@@ -22,7 +21,6 @@ function getParallelMenuMode ({
     endIdx,
     equallySizedDwellBtns,
     showLines,
-    showBackgroundGrid,
     startIdx
   })
   const getNextBtn = startIdx => createNextBtn({
@@ -42,7 +40,7 @@ function getParallelMenuMode ({
     getPrevBtn,
     startIdx
   })
-  return getDwellBtnMode(arrangedBtns, showLines, showBackgroundGrid)
+  return getDwellBtnMode(arrangedBtns, showLines)
 }
 
 export {

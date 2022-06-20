@@ -10,15 +10,13 @@ class DwellBtnMode {
     arrangedDwellBtns, {
       onStart = () => {},
       onStop = () => {},
-      showLines = true,
-      showBackgroundGrid = false
+      showLines = true
     } = {}
   ) {
     this.arrangedDwellBtns = arrangedDwellBtns
     this.#onStart = onStart
     this.#onStop = onStop
     this.showLines = showLines
-    this.showBackgroundGrid = showBackgroundGrid
   }
 
   start (app) {
