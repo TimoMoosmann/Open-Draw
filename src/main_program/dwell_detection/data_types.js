@@ -7,7 +7,7 @@ function createTimedGazePoint ({ pos, time }) {
 
 function isTimedGazePoint (timedGazePoint) {
   const { pos, time } = timedGazePoint
-  return isPos(pos) && Number.isInteger(time)
+  return isPos(pos) && typeof(time) === 'number'
 }
 
 function checkTimedGazePoint (timedGazePoint, argName) {
