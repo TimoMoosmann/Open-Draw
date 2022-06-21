@@ -7,6 +7,7 @@ import { getCalibrationInstructionPage, getCalibrationScorePage } from 'Src/cali
 import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
+import { getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc } from 'Src/main_program/util.js'
 
 import {
   borderAcc, perfectAcc, borderPrec, calibrationType, numCalibrationTargets
@@ -72,8 +73,8 @@ function getCalibrationResults (webgazer, rootDomEl) {
       const acc = getAbsPosFromPosRelativeToViewport(worstAccOrBorderAccRel)
       const prec = getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel)
 
-      const minGazeTargetSize = scalePosByVal(acc, 3)
-      const dispersionThreshold = scalePosByVal(prec, 3)
+      const dispersionThreshold = getDispersionThresholdFromPrec(prec)
+      const minGazeTargetSize = getMinGazeTargetSizeFromAcc(acc)
 
       const calibrationScorePage = getCalibrationScorePage({
         calibrationScore,

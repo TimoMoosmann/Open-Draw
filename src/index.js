@@ -8,6 +8,7 @@ import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'
+import { getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc } from 'Src/main_program/util.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
@@ -85,8 +86,8 @@ async function main () {
     const acc = getAbsPosFromPosRelativeToViewport(borderAcc)
     const prec = getAbsPosFromPosRelativeToViewport(borderPrec)
 
-    app.minGazeTargetSize = scalePosByVal(acc, 3)
-    app.dispersionThreshold = scalePosByVal(prec, 3)
+    app.dispersionThreshold = getDispersionThresholdFromPrec(prec)
+    app.minGazeTargetSize = getMinGazeTargetSizeFromAcc(acc)
     activateMode(app, getMainMenuClosedMode(app))
   }
 }

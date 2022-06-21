@@ -22,6 +22,14 @@ function getSmallDistToNeighborTarget (app) {
   return scalePosByVal(createPos(app.dispersionThreshold), 1 / 2)
 }
 
+function getMinGazeTargetSizeFromAcc (acc) {
+  return scalePosByVal(acc, 3.2)
+}
+
+function getDispersionThresholdFromPrec (prec) {
+  return scalePosByVal(prec, 2.5)
+}
+
 function addDwellBtnsToRoot (dwellBtns, rootEl) {
   clearDwellBtns()
   const dwellBtnContainer = getDwellBtnContainer()
@@ -89,7 +97,9 @@ function getQuitBtn (
 export {
   addCanvasToRootAndDrawLines,
   endGazeBtnListenerIfNeeded,
+  getDispersionThresholdFromPrec,
   getMinDistToEdgeFromSettings,
+  getMinGazeTargetSizeFromAcc,
   getSmallDistToNeighborTarget,
   getQuitBtn,
   removeDwellBtnsAndGazeListener,
