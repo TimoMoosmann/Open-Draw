@@ -4,6 +4,7 @@ import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { getCalibrationScoreEvaluation } from 'Src/calibration/success_score.js'
 import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluation.js'
 import { getCalibrationInstructionPage, getCalibrationScorePage } from 'Src/calibration/view.js'
+import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 
@@ -11,18 +12,24 @@ import {
   borderAcc, perfectAcc, borderPrec, calibrationType, numCalibrationTargets
 } from 'Settings'
 
-function getCalibrationMode () {
-  return new CalibrationMode()
+function getCalibrationMode (onCalibrated) {
+  return new CalibrationMode(onCalibrated)
 }
 
 class CalibrationMode {
   name = 'calibration'
+
+  constructor (onCalibrated) {
+    this.onCalibrated = onCalibrated
+  }
 
   start (app) {
     getCalibrationResults(app.webgazer, app.rootDomEl).then(res => {
       const { minGazeTargetSize, dispersionThreshold } = res
       app.minGazeTargetSize = minGazeTargetSize
       app.dispersionThreshold = dispersionThreshold
+      app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
+      if (this.onCalibrated) this.onCalibrated(app)
       activateMode(app, getMainMenuClosedMode(app))
     })
   }
@@ -65,10 +72,8 @@ function getCalibrationResults (webgazer, rootDomEl) {
       const acc = getAbsPosFromPosRelativeToViewport(worstAccOrBorderAccRel)
       const prec = getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel)
 
-      const minGazeTargetSize = scalePosByVal(
-        addPositions(acc, scalePosByVal(prec, 2)), 2.2
-      )
-      const dispersionThreshold = scalePosByVal(prec, 2.5)
+      const minGazeTargetSize = scalePosByVal(acc, 3)
+      const dispersionThreshold = scalePosByVal(prec, 3)
 
       const calibrationScorePage = getCalibrationScorePage({
         calibrationScore,

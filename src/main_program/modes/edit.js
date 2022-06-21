@@ -33,7 +33,7 @@ function getEditMode (app) {
   })
 
   const arrangedBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight(
-    [undoBtn, redoBtn, quitBtn], btnSize
+    [undoBtn, redoBtn, quitBtn], app
   )
   return getDwellBtnMode(arrangedBtns)
 }

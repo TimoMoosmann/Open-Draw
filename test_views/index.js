@@ -3,7 +3,6 @@ import { dwellBtnArrangedLowerRightTest } from 'TestViews/pages/lower_right_btn.
 import { dwellBtnsTest } from 'TestViews/pages/dwell_btns.js'
 import { dwellBtnsAndDrawingCanvasTest } from 'TestViews/pages/canvas_and_dwell_btns.js'
 import { dwellBtnsWithColorDotTest } from 'TestViews/pages/dwell_btns_with_color_dot.js'
-import { dwellBtnsGazedAtTest } from 'TestViews/pages/dwell_btns_gazed_at.js'
 
 import 'Assets/css/test_views.css'
 
@@ -12,8 +11,7 @@ const testPages = [
   dwellBtnArrangedLowerRightTest,
   dwellBtnsTest,
   dwellBtnsAndDrawingCanvasTest,
-  dwellBtnsWithColorDotTest,
-  dwellBtnsGazedAtTest
+  dwellBtnsWithColorDotTest
 ]
 
 function main () {

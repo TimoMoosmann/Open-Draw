@@ -1,4 +1,4 @@
-import { activateDwellBtnGazeListener } from 'Src/main_program/dwell_detection/dwell_at_btn_detection.js'
+// import { activateDwellBtnGazeListener } from 'Src/main_program/dwell_detection/dwell_at_btn_detection.js'
 import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
@@ -18,8 +18,8 @@ function getMinDistToEdgeFromSettings () {
   })
 }
 
-function getSmallDistToNeighborTarget (minGazeTargetSize) {
-  return scalePosByVal(minGazeTargetSize, 1 / 6)
+function getSmallDistToNeighborTarget (app) {
+  return app.dispersionThreshold
 }
 
 function addDwellBtnsToRoot (dwellBtns, rootEl) {
@@ -53,15 +53,16 @@ function addCanvasToRootAndDrawLines (app) {
 function endGazeBtnListenerIfNeeded (app) {
   if (app.eyeModeOn) {
     app.webgazer.showPredictionPoints(false)
-    app.webgazer.clearGazeListener()
+    // app.webgazer.clearGazeListener()
+    app.gazeAtDwellBtnListener.unregister()
   }
 }
 
 function registerDwellBtnsForGazeListenerIfNeeded (dwellBtns, app) {
   if (app.eyeModeOn) {
     app.webgazer.showPredictionPoints(true)
-    activateDwellBtnGazeListener(dwellBtns, app.webgazer)
-    // app.gazeAtDwellBtnListener.register(dwellBtns)
+    // activateDwellBtnGazeListener(dwellBtns, app.webgazer)
+    app.gazeAtDwellBtnListener.register(dwellBtns)
   }
 }
 

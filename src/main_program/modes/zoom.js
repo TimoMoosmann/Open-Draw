@@ -34,7 +34,7 @@ function getZoomMode (app) {
   })
 
   const arrangedZoomBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight(
-    [zoomInBtn, zoomOutBtn, quitBtn], btnSize
+    [zoomInBtn, zoomOutBtn, quitBtn], app
   )
   return getDwellBtnMode(arrangedZoomBtns)
 }

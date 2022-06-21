@@ -1,14 +1,11 @@
 /* global expect, test */
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
-import { createCurrentDwellBtnProgress } from 'Src/main_program/data_types/current_dwell_btn_progress.js'
-import { evaluateEyeFixationsAtDwellBtns } from 'Src/main_program/evaluate_fixations.js'
+import { createDwellBtnProgress, evaluateEyeFixationsAtDwellBtns } from 'Src/main_program/evaluate_fixations.js'
 import { createPos } from 'Src/data_types/pos.js'
 import { createFixation } from 'Src/webgazer_extensions/fixation_detection/data_types/fixation.js'
 
 function getNoCurrentBtnProgress () {
-  return createCurrentDwellBtnProgress({
-    btnId: false, progressInPct: 0
-  })
+  return createDwellBtnProgress()
 }
 
 test(
@@ -25,14 +22,14 @@ test(
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
-    const currentBtnProgress = createCurrentDwellBtnProgress({
+    const currentBtnProgress = createDwellBtnProgress({
       dwellBtn: testDwellBtnCentered,
-      progressInPct: 30
+      progress: 0.3
     })
 
-    const btnProgress0 = createCurrentDwellBtnProgress({
+    const btnProgress0 = createDwellBtnProgress({
       dwellBtn: testDwellBtnCentered,
-      progressInPct: 0
+      progress: 0
     })
     const shortFixationUpperLeft = createFixation({
       center: createPos({ x: 200, y: 200 }),
@@ -85,14 +82,14 @@ test(
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
-    const currentBtnProgress = createCurrentDwellBtnProgress({
-      dwellBtn: testDwellBtnCentered, progressInPct: 50
+    const currentBtnProgress = createDwellBtnProgress({
+      dwellBtn: testDwellBtnCentered, progress: 0.5
     })
 
     const falseFixation = false
-    const btnProgress0 = createCurrentDwellBtnProgress({
+    const btnProgress0 = createDwellBtnProgress({
       dwellBtn: testDwellBtnCentered,
-      progressInPct: 0
+      progress: 0
     })
 
     evaluateEyeFixationsAtDwellBtns({
@@ -132,9 +129,9 @@ test(
       center: createPos({ x: 700, y: 400 }),
       duration: 400
     })
-    const btnProgress40 = createCurrentDwellBtnProgress({
+    const btnProgress40 = createDwellBtnProgress({
       dwellBtn: testDwellBtnCentered,
-      progressInPct: 40
+      progress: 0.4
     })
 
     evaluateEyeFixationsAtDwellBtns({
@@ -183,9 +180,9 @@ test(
       center: createPos({ x: 850, y: 400 }),
       duration: 1400
     })
-    const btnProgress100 = createCurrentDwellBtnProgress({
+    const btnProgress100 = createDwellBtnProgress({
       dwellBtn: testDwellBtnCentered,
-      progressInPct: 100
+      progress: 1
     })
 
     evaluateEyeFixationsAtDwellBtns({
@@ -244,14 +241,14 @@ test(
       // if action is triggered the test fails
       action: () => expect(true).toBe(false)
     })
-    const currentBtnProgress = createCurrentDwellBtnProgress({
+    const currentBtnProgress = createDwellBtnProgress({
       dwellBtn: false,
-      progressInPct: 0
+      progress: 0
     })
 
-    const btnProgress30 = createCurrentDwellBtnProgress({
+    const btnProgress30 = createDwellBtnProgress({
       dwellBtn: testDwellBtnCentered,
-      progressInPct: 30
+      progress: 0.3
     })
 
     const shortFixationUpperLeft = createFixation({

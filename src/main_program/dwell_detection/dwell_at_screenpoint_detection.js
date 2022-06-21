@@ -7,7 +7,7 @@ import { Item, List } from 'OtherModules/linked-list.js'
 
 function runWebgazerFixationDetection ({
   dispersionThreshold,
-  durationThreshold,
+  durationThreshold = 300,
   maxFixationDuration,
   onFixation,
   webgazer

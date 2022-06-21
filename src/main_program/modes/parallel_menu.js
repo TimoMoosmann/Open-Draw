@@ -13,7 +13,7 @@ function getParallelMenuMode ({
   showLines = true,
   startIdx = 0
 }) {
-  if (!distToNeighbor) distToNeighbor = getSmallDistToNeighborTarget(btnSize)
+  if (!distToNeighbor) distToNeighbor = getSmallDistToNeighborTarget(app)
   const getParallelMenuModeFixed = (startIdx, endIdx) => getParallelMenuMode({
     app,
     btnSize,
@@ -33,6 +33,7 @@ function getParallelMenuMode ({
   })
 
   const arrangedBtns = arrangeEquallySizedDwellBtnsToParallelMenu({
+    app,
     distToNeighbor,
     endIdx,
     equallySizedDwellBtns,

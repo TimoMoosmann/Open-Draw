@@ -30,7 +30,7 @@ class DrawLineMode {
       activateMode(app, getMainMenuClosedMode(app))
       return
     }
-    //app.webgazer.showPredictionPoints(true)
+    // app.webgazer.showPredictionPoints(true)
 
     const drawState = {
       safetyEllipse: false,

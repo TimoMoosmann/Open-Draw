@@ -1,7 +1,7 @@
-import { createCurrentDwellBtnProgress } from 'Src/main_program/data_types/current_dwell_btn_progress.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
+import { checkDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { runWebgazerFixationDetection } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
-import { getDwellBtnBackgroundColor, maxFixationDuration, minFixationDuration } from 'Settings'
+import { shadeBtnLinear } from 'Src/main_program/view.js'
 
 class GazeAtDwellBtnListner {
   dispersionThreshold
@@ -11,36 +11,32 @@ class GazeAtDwellBtnListner {
 
   constructor (app) {
     this.dwellBtnContainer = app.rootDomEl
-    this.dispersionThreshold = app.maxFixationDispersion
-    this.durationThreshold = minFixationDuration
-    this.maxFixationDuration = maxFixationDuration
+    this.dispersionThreshold = app.dispersionThreshold
     this.webgazer = app.webgazer
   }
 
   start () {
-    const currentBtnProgress = createCurrentDwellBtnProgress({
-      currentDwellBtn: false,
-      progressInPct: 0
-    })
+    const currentBtnProgress = createDwellBtnProgress()
+    let maxFixationDuration = -1
+    for (const dwellBtn of this.registeredBtns) {
+      if (dwellBtn.activationTime > maxFixationDuration) {
+        maxFixationDuration = dwellBtn.activationTime
+      }
+    }
+    // Buffer for webgazer
+    maxFixationDuration += 200
 
     runWebgazerFixationDetection({
       dispersionThreshold: this.dispersionThreshold,
-      durationThreshold: this.durationThreshold,
-      maxFixationDuration: this.maxFixationDuration,
+      maxFixationDuration,
       webgazer: this.webgazer,
       onFixation: fixation => evaluateEyeFixationsAtDwellBtns({
         currentBtnProgress,
         dwellBtns: this.registeredBtns,
         fixation,
-        displayCurrentBtnProgress: currentDwellBtnProgress => {
-          if (currentDwellBtnProgress.dwellBtn) {
-            // Make DwellBtn darker when the user focuses on it.
-            const dwellBtnDomEl = this.dwellBtnContainer.querySelector(
-              '#' + currentDwellBtnProgress.dwellBtn.domId
-            )
-            // 1.0 when not focused, 0.5 when focused till activation.
-            shadeBtn(dwellBtnDomEl, currentDwellBtnProgress.progressInPct)
-          }
+        displayCurrentBtnProgress: currentBtnProgress => {
+          const { dwellBtn, progress } = currentBtnProgress
+          if (dwellBtn) shadeBtnLinear(dwellBtn.domId, progress)
         }
       })
     })
@@ -65,15 +61,6 @@ class GazeAtDwellBtnListner {
   }
 }
 
-function shadeBtn (btnDomId, activationProgress) {
-  const btnDomEl = document.getElementById(btnDomId)
-  if (btnDomEl) {
-    const bgColor = getDwellBtnBackgroundColor(activationProgress / 2 + 0.1)
-    // 1.0 when not focused, 0.5 when focused till activation.
-    btnDomEl.style.backgroundColor = bgColor
-  }
-}
-
 function getGazeAtDwellBtnListener (app) {
   return new GazeAtDwellBtnListner(app)
 }
@@ -88,28 +75,35 @@ function evaluateEyeFixationsAtDwellBtns ({
     if (fixation && inEllipse(fixation.center, dwellBtn.ellipse)) {
       currentBtnProgress.dwellBtn = dwellBtn
       if (fixation.duration >= dwellBtn.activationTime) {
-        if (currentBtnProgress.progressInPct < 100) {
-          currentBtnProgress.progressInPct = 100
+        if (currentBtnProgress.progress < 1) {
+          currentBtnProgress.progress = 1
           dwellBtn.action()
         }
       } else {
-        currentBtnProgress.progressInPct = Math.round(
-          (fixation.duration / dwellBtn.activationTime) * 100
-        )
+        currentBtnProgress.progress =
+          fixation.duration / dwellBtn.activationTime
       }
       displayCurrentBtnProgress(currentBtnProgress)
       return
     }
   }
   if (currentBtnProgress.dwellBtn !== false) {
-    currentBtnProgress.progressInPct = 0
+    currentBtnProgress.progress = 0
     displayCurrentBtnProgress(currentBtnProgress)
     currentBtnProgress.dwellBtn = false
   }
 }
 
+function createDwellBtnProgress ({ dwellBtn = false, progress = 0 } = {}) {
+  if (dwellBtn !== false) checkDwellBtn(dwellBtn, 'dwellBtn')
+  if (!(typeof progress === 'number') || progress < 0) {
+    throw new TypeError('Illegal progress given')
+  }
+  return { dwellBtn, progress }
+}
+
 export {
+  createDwellBtnProgress,
   evaluateEyeFixationsAtDwellBtns,
-  getGazeAtDwellBtnListener,
-  shadeBtn
+  getGazeAtDwellBtnListener
 }

@@ -11,7 +11,8 @@ import { getViewport } from 'Src/util/browser.js'
 import { getMinDistToEdgeFromSettings, getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 
 function arrangeEquallySizedDwellBtnsToParallelMenu ({
-  distToNeighbor = getSmallDistToNeighborTarget(),
+  app,
+  distToNeighbor,
   endIdx = false,
   equallySizedDwellBtns,
   minDistToEdge = getMinDistToEdgeFromSettings(),
@@ -20,6 +21,7 @@ function arrangeEquallySizedDwellBtnsToParallelMenu ({
   startIdx = 0,
   viewport = getViewport()
 }) {
+  if (!distToNeighbor) distToNeighbor = getSmallDistToNeighborTarget(app)
   checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns')
   checkPositiveNumericPos(distToNeighbor, 'distToNeighbor')
   checkPositiveNumericPos(minDistToEdge, 'minDistToEdge')
@@ -188,12 +190,12 @@ function arrangeOneBtnToLowerRight ({
   )
 }
 
-function arrangeTwoBtnsUpperLeftOneBtnLowerRight (btns, btnSize) {
+function arrangeTwoBtnsUpperLeftOneBtnLowerRight (btns, app) {
   const upperLeftLeftPos = addPositions(
     getMinDistToEdgeFromSettings(), btns[0].ellipse.radii
   )
   const upperLeftPos = createPos({
-    x: upperLeftLeftPos.x + getSmallDistToNeighborTarget(btnSize).x +
+    x: upperLeftLeftPos.x + getSmallDistToNeighborTarget(app).x +
       btns[0].ellipse.radii.x + btns[1].ellipse.radii.x,
     y: upperLeftLeftPos.y
   })

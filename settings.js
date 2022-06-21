@@ -5,7 +5,7 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
  * Main Settings
  */
 // Turn eyeMode off to just look around without using eye tracking.
-export const eyeModeOn = false
+export const eyeModeOn = true
 export const lang = 'de'
 
 /*

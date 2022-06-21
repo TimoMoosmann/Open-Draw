@@ -3,7 +3,8 @@ import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { shadeBtnLinear } from 'Src/main_program/view.js'
 
 function activateBtnsOnDwell (
-  btns, buckets, timedGazePoint, id, shadeBtn = shadeBtnLinear) {
+  btns, buckets, timedGazePoint, id, shadeBtn = shadeBtnLinear
+) {
   for (let i = 0; i < btns.length; i++) {
     if (inEllipse(timedGazePoint.pos, btns[i].ellipse)) {
       const bucket = buckets[i]

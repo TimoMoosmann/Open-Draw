@@ -28,11 +28,11 @@ function getChangeLineWidthMode (app) {
 
   let [arrangedIncreaseBtn, arrangedDecreaseBtn, arrangedQuitBtn] =
     arrangeTwoBtnsUpperLeftOneBtnLowerRight(
-      [increaseBtn, decreaseBtn, quitBtn], btnSize
+      [increaseBtn, decreaseBtn, quitBtn], app
     )
 
   const displayLeft = arrangedDecreaseBtn.ellipse.center.x +
-    arrangedDecreaseBtn.ellipse.radii.x + getSmallDistToNeighborTarget(btnSize).x
+    arrangedDecreaseBtn.ellipse.radii.x + getSmallDistToNeighborTarget(app).x
   const displayTop = arrangedIncreaseBtn.ellipse.center.y
   const lineWidthDisplay = getLineWidthDisplay(
     app.state.newLineProperties.lineWidth, displayLeft, displayTop

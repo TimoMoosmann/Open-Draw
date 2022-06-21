@@ -78,7 +78,7 @@ async function main () {
     activateMode(app, getCalibrationMode())
     document.addEventListener('keydown', event => {
       if (event.key === 'r' && app.activeMode.name !== 'calibration') {
-        activateMode(app, getCalibrationMode())
+        activateMode(app)
       }
     })
   } else {
@@ -88,8 +88,8 @@ async function main () {
     app.minGazeTargetSize = scalePosByVal(
       addPositions(acc, scalePosByVal(prec, 2)), 2.2
     )
+    activateMode(app, getMainMenuClosedMode(app))
   }
-  activateMode(app, getMainMenuClosedMode(app))
 }
 
 async function makeWebgazerReady () {
