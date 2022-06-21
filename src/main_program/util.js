@@ -23,7 +23,7 @@ function getSmallDistToNeighborTarget (app) {
 }
 
 function getMinGazeTargetSizeFromAcc (acc) {
-  return scalePosByVal(acc, 3)
+  return scalePosByVal(acc, 3.2)
 }
 
 function getDispersionThresholdFromPrec (prec) {

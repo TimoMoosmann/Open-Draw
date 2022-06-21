@@ -36,7 +36,7 @@ export const standardDwellBtnActivationTime = 1000
 export const getDwellBtnBackgroundColor = alpha => {
   return `rgba(112, 128, 144, ${alpha})`
 }
-export const minDistToEdgeInPct = createPos({ x: 8, y: 8 })
+export const minDistToEdgeInPct = createPos({ x: 10, y: 10 })
 
 /*
  * Draw Line Mode Settings

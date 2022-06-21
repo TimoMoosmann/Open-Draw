@@ -60,10 +60,13 @@ function scalePosByPos (pos1, pos2) {
   })
 }
 
-function addPositions (pos1, pos2) {
-  return createPos({
-    x: pos1.x + pos2.x, y: pos1.y + pos2.y
-  })
+function addPositions (...positions) {
+  const outPos = createPos(positions[0])
+  for (let i = 1; i < positions.length; i++) {
+    outPos.x += positions[i].x
+    outPos.y += positions[i].y
+  }
+  return outPos
 }
 
 function subPositions (...positions) {

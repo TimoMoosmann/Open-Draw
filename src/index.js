@@ -1,5 +1,6 @@
 /* global webgazer */
-import { addPositions, createPos, scalePosByVal } from 'Src/data_types/pos.js'
+import { addPositions, createPos, dividePositions, scalePosByVal } from 'Src/data_types/pos.js'
+import { getViewport } from 'Src/util/browser.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 import { createZoom } from 'Src/main_program/data_types/zoom.js'
@@ -8,13 +9,17 @@ import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'
-import { getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc } from 'Src/main_program/util.js'
+import {
+  getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc,
+  getSmallDistToNeighborTarget
+} from 'Src/main_program/util.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
 
 import {
-  borderAcc, borderPrec, defaultLineWidth, eyeModeOn, standardGazeDotColor
+  borderAcc, borderPrec, defaultLineWidth, eyeModeOn, minDistToEdgeInPct,
+  standardGazeDotColor
 } from 'Settings'
 
 async function main () {
@@ -88,7 +93,14 @@ async function main () {
 
     app.dispersionThreshold = getDispersionThresholdFromPrec(prec)
     app.minGazeTargetSize = getMinGazeTargetSizeFromAcc(acc)
+
+    // print how many btns fit in x and y direction every time the app
+    // is started with eyeModeOn === false
+    console.log('Number of buttons that fit on the screen:')
+    console.log(calcNumBtnsFitOnScreen(app))
+
     activateMode(app, getMainMenuClosedMode(app))
+
   }
 }
 
@@ -102,6 +114,22 @@ async function makeWebgazerReady () {
   })
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal)
   return webgazerLocal
+}
+
+function calcNumBtnsFitOnScreen (app) {
+  const distToNeighbor = dividePositions(
+    getSmallDistToNeighborTarget(app), getViewport()
+  )
+  const distToEdge = scalePosByVal(minDistToEdgeInPct, 1 / 100)
+  const btnSize = dividePositions(app.minGazeTargetSize, getViewport())
+  return dividePositions(
+    addPositions(
+      createPos({ x: 1, y: 1 }),
+      scalePosByVal(distToEdge, -2),
+      distToNeighbor
+    ),
+    addPositions(btnSize, distToNeighbor)
+  )
 }
 
 main()
