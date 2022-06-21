@@ -4,7 +4,7 @@ import {
 import { checkEquallySizedDwellBtns } from 'Src/main_program/data_types/equally_sized_dwell_btns.js'
 import { checkIdxInBounds } from 'Src/data_types/array.js'
 import {
-  addPositions, checkPositiveNumericPos, createPos, isPosEqual, subPositions
+  addPositions, checkNumericPos, checkPositiveNumericPos, createPos, isPosEqual, subPositions
 } from 'Src/data_types/pos.js'
 import { checkUnsignedInteger } from 'Src/data_types/numbers.js'
 import { getViewport } from 'Src/util/browser.js'
@@ -23,7 +23,7 @@ function arrangeEquallySizedDwellBtnsToParallelMenu ({
 }) {
   if (!distToNeighbor) distToNeighbor = getSmallDistToNeighborTarget(app)
   checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns')
-  checkPositiveNumericPos(distToNeighbor, 'distToNeighbor')
+  checkNumericPos(distToNeighbor, 'distToNeighbor')
   checkPositiveNumericPos(minDistToEdge, 'minDistToEdge')
   checkPositiveNumericPos(viewport, 'viewport')
 

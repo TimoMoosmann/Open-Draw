@@ -5,7 +5,7 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
  * Main Settings
  */
 // Turn eyeMode off to just look around without using eye tracking.
-export const eyeModeOn = false
+export const eyeModeOn = true
 export const lang = 'de'
 
 /*
@@ -24,7 +24,7 @@ export const gazeCalibrationRecordIntervalDuration = 200
 export const validationCaptureDuration = 1000
 export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
 // Minimum Relative Accuracy to use the program properly
-export const borderAcc = createPos({ x: 0.08, y: 0.12 })
+export const borderAcc = createPos({ x: 0.07, y: 0.14 })
 // Relative Accuracy to reach a calibrationScore of 100%
 export const perfectAcc = createPos({ x: 0.03, y: 0.06 })
 // Minimum recommended Relative Precision

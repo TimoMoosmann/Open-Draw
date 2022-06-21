@@ -19,15 +19,15 @@ function getMinDistToEdgeFromSettings () {
 }
 
 function getSmallDistToNeighborTarget (app) {
-  return scalePosByVal(createPos(app.dispersionThreshold), 1 / 3)
+  return scalePosByVal(createPos(app.dispersionThreshold), 0)
 }
 
 function getMinGazeTargetSizeFromAcc (acc) {
-  return scalePosByVal(acc, 3.2)
+  return scalePosByVal(acc, 3.7)
 }
 
 function getDispersionThresholdFromPrec (prec) {
-  return scalePosByVal(prec, 2.5)
+  return scalePosByVal(prec, 3.3)
 }
 
 function addDwellBtnsToRoot (dwellBtns, rootEl) {
