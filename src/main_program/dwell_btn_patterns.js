@@ -195,7 +195,7 @@ function arrangeTwoBtnsUpperLeftOneBtnLowerRight (btns, app) {
     getMinDistToEdgeFromSettings(), btns[0].ellipse.radii
   )
   const upperLeftPos = createPos({
-    x: upperLeftLeftPos.x + getSmallDistToNeighborTarget(app).x +
+    x: upperLeftLeftPos.x + (getSmallDistToNeighborTarget(app)).x +
       btns[0].ellipse.radii.x + btns[1].ellipse.radii.x,
     y: upperLeftLeftPos.y
   })

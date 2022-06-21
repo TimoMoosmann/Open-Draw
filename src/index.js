@@ -85,9 +85,8 @@ async function main () {
     const acc = getAbsPosFromPosRelativeToViewport(borderAcc)
     const prec = getAbsPosFromPosRelativeToViewport(borderPrec)
 
-    app.minGazeTargetSize = scalePosByVal(
-      addPositions(acc, scalePosByVal(prec, 2)), 2.2
-    )
+    app.minGazeTargetSize = scalePosByVal(acc, 3)
+    app.dispersionThreshold = scalePosByVal(prec, 3)
     activateMode(app, getMainMenuClosedMode(app))
   }
 }

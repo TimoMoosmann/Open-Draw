@@ -19,7 +19,7 @@ function getMinDistToEdgeFromSettings () {
 }
 
 function getSmallDistToNeighborTarget (app) {
-  return app.dispersionThreshold
+  return scalePosByVal(createPos(app.dispersionThreshold), 1 / 2)
 }
 
 function addDwellBtnsToRoot (dwellBtns, rootEl) {
