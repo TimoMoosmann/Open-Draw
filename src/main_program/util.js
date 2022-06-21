@@ -19,11 +19,11 @@ function getMinDistToEdgeFromSettings () {
 }
 
 function getSmallDistToNeighborTarget (app) {
-  return scalePosByVal(createPos(app.dispersionThreshold), 1 / 2)
+  return scalePosByVal(createPos(app.dispersionThreshold), 1 / 3)
 }
 
 function getMinGazeTargetSizeFromAcc (acc) {
-  return scalePosByVal(acc, 3.2)
+  return scalePosByVal(acc, 3)
 }
 
 function getDispersionThresholdFromPrec (prec) {
