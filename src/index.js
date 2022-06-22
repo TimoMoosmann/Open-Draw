@@ -6,6 +6,7 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
 import { createZoom } from 'Src/main_program/data_types/zoom.js'
 import { getDrawingCanvas } from 'Src/main_program/drawing_canvas.js'
 import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
+import { getChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'

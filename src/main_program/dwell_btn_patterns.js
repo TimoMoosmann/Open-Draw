@@ -7,7 +7,7 @@ import {
   addPositions, checkNumericPos, checkPositiveNumericPos, createPos, isPosEqual, subPositions
 } from 'Src/data_types/pos.js'
 import { checkUnsignedInteger } from 'Src/data_types/numbers.js'
-import { getViewport } from 'Src/util/browser.js'
+import { getViewport, vh, vw } from 'Src/util/browser.js'
 import { getMinDistToEdgeFromSettings, getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 
 function arrangeEquallySizedDwellBtnsToParallelMenu ({
@@ -215,7 +215,39 @@ function arrangeTwoBtnsUpperLeftOneBtnLowerRight (btns, app) {
   ]
 }
 
+function arrangeBtnsTwoHighOneLow (btns) {
+  const upperLeftPos = addPositions(
+    getMinDistToEdgeFromSettings(), btns[0].ellipse.radii
+  )
+  const lowerMiddlePos = createPos({
+    x: vw() / 2,
+    y: vh() - getMinDistToEdgeFromSettings().y - btns[1].ellipse.radii.y
+  })
+  let upperRightPos = false
+  if (btns[2]) {
+    upperRightPos = createPos({
+      x: vw() - getMinDistToEdgeFromSettings().x - btns[2].ellipse.radii.x,
+      y: upperLeftPos.y
+    })
+  }
+
+  const arrangedBtns = []
+  arrangedBtns.push(createDwellBtnFromDwellBtnAndCenter(
+    btns[0], upperLeftPos
+  ))
+  arrangedBtns.push(createDwellBtnFromDwellBtnAndCenter(
+    btns[1], lowerMiddlePos
+  ))
+  if (btns[2]) {
+    arrangedBtns.push(createDwellBtnFromDwellBtnAndCenter(
+      btns[2], upperRightPos
+    ))
+  }
+  return arrangedBtns
+}
+
 export {
+  arrangeBtnsTwoHighOneLow,
   arrangeEquallySizedDwellBtnsToParallelMenu,
   arrangeOneBtnToLowerRight,
   arrangeTwoBtnsUpperLeftOneBtnLowerRight

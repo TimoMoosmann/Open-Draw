@@ -2,6 +2,7 @@ import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { getChangeLineWidthMode } from 'Src/main_program/modes/change_line_width.js'
 import { getChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
+import { getArrangeManyMode } from 'Src/main_program/arrange_many_btns.js'
 import { getDrawLineMode } from 'Src/main_program/modes/draw_line.js'
 import { getEditMode } from 'Src/main_program/modes/edit.js'
 import { getMoveMode } from 'Src/main_program/modes/move.js'
@@ -67,10 +68,11 @@ function getMainMenuMode (app) {
     title: (lang === 'de') ? 'Linienbreite' : 'Line Width'
   })
 
-  return getParallelMenuMode({
+  return getArrangeManyMode(
     app,
-    btnSize,
-    equallySizedDwellBtns: [
+    // btnSize,
+    // equallySizedDwellBtns: [
+    [
       startDrawLineModeDwellBtn,
       startZoomModeDwellBtn,
       startMoveModeDwellBtn,
@@ -78,7 +80,7 @@ function getMainMenuMode (app) {
       startChooseColorModeDwellBtn,
       startChangeLineWidthModeDwellBtn
     ]
-  })
+  )
 }
 
 export {

@@ -26,6 +26,7 @@ function createDwellBtn ({
     domId,
     icon,
     activationTime,
+    size,
     title
   }
 }
