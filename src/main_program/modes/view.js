@@ -1,11 +1,10 @@
 import { createElementFromHTML } from 'Src/util/browser.js'
-import { lang } from 'Settings'
 
 import { html } from 'common-tags'
 
 import 'Assets/css/main_program.css'
 
-function getLineWidthDisplay (lineWidth, left, top) {
+function getLineWidthDisplay (lineWidth, left, top, lang) {
   return createElementFromHTML(html`
     <div
       id="lineWidthDisplayContainer"

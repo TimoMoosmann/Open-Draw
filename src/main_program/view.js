@@ -1,5 +1,4 @@
 import { createElementFromHTML } from 'Src/util/browser.js'
-import { getDwellBtnBackgroundColor } from 'Settings'
 
 import { html } from 'common-tags'
 
@@ -20,7 +19,7 @@ function getDwellBtnContainer () {
   `)
 }
 
-function getDwellBtnDomEl (dwellBtn) {
+function getDwellBtnDomEl (dwellBtn, getDwellBtnBackgroundColor) {
   const btnWidth = dwellBtn.ellipse.radii.x * 2
   const btnHeight = dwellBtn.ellipse.radii.y * 2
   const left = dwellBtn.ellipse.center.x
@@ -64,7 +63,10 @@ function getDwellBtnDomEl (dwellBtn) {
   return btnContainer
 }
 
-function shadeBtnLinear (btnDomId, activationProgress) {
+function shadeBtnLinear (
+  btnDomId, activationProgress, getDwellBtnBackgroundColor
+
+) {
   const btnDomEl = document.getElementById(btnDomId)
   if (btnDomEl) {
     const bgColor = getDwellBtnBackgroundColor(activationProgress / 2 + 0.1)

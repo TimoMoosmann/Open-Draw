@@ -4,7 +4,7 @@ import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuMode } from 'Src/main_program/modes/main_menu.js'
 
-import { lang, standardDwellBtnActivationTime } from 'Settings'
+import { standardDwellBtnActivationTime } from 'Settings'
 
 import openMenuIcon from 'Assets/icons/menu.png'
 
@@ -17,7 +17,7 @@ function getMainMenuClosedMode (app) {
     icon: openMenuIcon,
     size: app.minGazeTargetSize,
     activationTime: standardDwellBtnActivationTime,
-    title: (lang === 'de') ? 'Menü Öffnen' : 'Open Menu'
+    title: (app.settings.lang === 'de') ? 'Menü Öffnen' : 'Open Menu'
   })
 
   const arrangedOpenMainMenuDwellBtn = arrangeOneBtnToLowerRight({

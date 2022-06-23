@@ -22,7 +22,7 @@ class DrawLineMode {
 
   start (app) {
     app.showBackgroundGrid(true)
-    if (!app.eyeModeOn) {
+    if (!app.settings.eyeModeOn) {
       (lang === 'de')
         ? window.alert('Nur verfügber wenn eyeMode auf true geschaltet ist.')
         : window.alert('Only available when eyeMode is on.')

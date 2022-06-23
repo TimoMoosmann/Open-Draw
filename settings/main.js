@@ -1,12 +1,28 @@
 import { createPos } from 'Src/data_types/pos.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 
-/*
- * Main Settings
- */
-// Turn eyeMode off to just look around without using eye tracking.
-export const eyeModeOn = true
-export const lang = 'de'
+export const mainSettings = {
+  /*
+   * Main Settings
+   */
+  // Turn eyeMode off to just look around without using eye tracking.
+  eyeModeOn: true,
+  lang: 'de',
+
+  /*
+   * Dwell Detection Settings
+   */
+  // 'screenpoint' for a fixation based algorithm (could save some space),
+  // 'bucket' for a target based algorithm (more stable)
+  dwellBtnDetectionAlgorithm: 'bucket',
+  targetSizeIsFixed: true,
+  /*
+   * DwellBtn Settings
+   */
+  getDwellBtnBackgroundColor: alpha => {
+    return `rgba(112, 128, 144, ${alpha})`
+  }
+}
 
 /*
  * Calibration Settings
@@ -82,10 +98,3 @@ export const maxLineWidth = 10
  */
 export const standardGazeDotColor = 'blue'
 export const gazeDotRefreshesPerSecond = 20
-
-/*
- * Dwell Detection Settings
- */
-// 'screenpoint' for a fixation based algorithm (could save some space),
-// 'bucket' for a target based algorithm (more stable)
-export const dwellBtnDetectionAlgorithm = 'bucket'

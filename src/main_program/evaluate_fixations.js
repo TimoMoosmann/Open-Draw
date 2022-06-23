@@ -13,6 +13,7 @@ class GazeAtDwellBtnListner {
   constructor (app) {
     this.dwellBtnContainer = app.rootDomEl
     this.dispersionThreshold = app.dispersionThreshold
+    this.getDwellBtnBackgroundColor = app.settings.getDwellBtnBackgroundColor
     this.webgazer = app.webgazer
   }
 
@@ -37,7 +38,11 @@ class GazeAtDwellBtnListner {
         fixation,
         displayCurrentBtnProgress: currentBtnProgress => {
           const { dwellBtn, progress } = currentBtnProgress
-          if (dwellBtn) shadeBtnLinear(dwellBtn.domId, progress)
+          if (dwellBtn) {
+            shadeBtnLinear(
+              dwellBtn.domId, progress, this.getDwellBtnBackgroundColor
+            )
+          }
         }
       })
     })

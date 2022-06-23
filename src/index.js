@@ -18,14 +18,20 @@ import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
 
+import { mainSettings } from '../settings/main.js'
+
 import {
-  borderAcc, borderPrec, defaultLineWidth, eyeModeOn, minDistToEdgeInPct,
-  gazeDotRefreshesPerSecond, standardGazeDotColor
+  borderAcc,
+  borderPrec,
+  defaultLineWidth,
+  gazeDotRefreshesPerSecond,
+  minDistToEdgeInPct,
+  standardGazeDotColor
 } from 'Settings'
 
 async function main () {
   const app = {
-    eyeModeOn,
+    settings: mainSettings,
     rootDomEl: document.body,
     state: {
       lines: [
@@ -78,7 +84,7 @@ async function main () {
       : app.backgroundGrid.style.visibility = 'hidden'
   }
 
-  if (eyeModeOn) {
+  if (app.settings.eyeModeOn) {
     app.webgazer = await makeWebgazerReady()
     app.gazeDot = getGazeDot({
       color: standardGazeDotColor,

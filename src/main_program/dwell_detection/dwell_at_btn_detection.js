@@ -3,9 +3,13 @@ import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { shadeBtnLinear } from 'Src/main_program/view.js'
 import { addGazeListener } from 'Src/webgazer_extensions/helper.js'
 
-function activateBtnsOnDwell (
-  btns, buckets, timedGazePoint, id, shadeBtn = shadeBtnLinear
-) {
+function activateBtnsOnDwell ({
+  btns,
+  buckets,
+  id,
+  shadeBtn,
+  timedGazePoint
+}) {
   for (let i = 0; i < btns.length; i++) {
     if (inEllipse(timedGazePoint.pos, btns[i].ellipse)) {
       const bucket = buckets[i]
@@ -34,7 +38,11 @@ function activateBtnsOnDwell (
   }
 }
 
-function activateDwellBtnGazeListener (dwellBtns, webgazer) {
+function activateDwellBtnGazeListener ({
+  dwellBtns,
+  getDwellBtnBackgroundColor,
+  webgazer
+}) {
   const buckets = dwellBtns.map(() => [])
   let id = 0
   addGazeListener(webgazer, 'dwell_at_btn', (gazePoint, elapsedTime) => {
@@ -42,7 +50,16 @@ function activateDwellBtnGazeListener (dwellBtns, webgazer) {
       pos: gazePoint,
       time: elapsedTime
     })
-    activateBtnsOnDwell(dwellBtns, buckets, timedGazePoint, id)
+
+    activateBtnsOnDwell({
+      btns: dwellBtns,
+      buckets,
+      id,
+      shadeBtn: (id, progress) => {
+        shadeBtnLinear(id, progress, getDwellBtnBackgroundColor)
+      },
+      timedGazePoint
+    })
     id++
   })
 }

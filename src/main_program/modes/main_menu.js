@@ -9,8 +9,6 @@ import { getMoveMode } from 'Src/main_program/modes/move.js'
 // import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
 import { getZoomMode } from 'Src/main_program/modes/zoom.js'
 
-import { lang } from 'Settings'
-
 import chooseColorModeIcon from 'Assets/icons/color-wheel.png'
 import editModeIcon from 'Assets/icons/edit.png'
 import drawLineModeIcon from 'Assets/icons/line.png'
@@ -32,6 +30,7 @@ function getMainMenuMode (app) {
     title
   })
 
+  const lang = app.settings.lang
   const startDrawLineModeDwellBtn = getStartModeDwellBtn({
     mode: getDrawLineMode(),
     domId: 'startDrawlineModeDwellBtn',

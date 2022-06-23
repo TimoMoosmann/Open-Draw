@@ -35,7 +35,8 @@ function getChangeLineWidthMode (app) {
     arrangedDecreaseBtn.ellipse.radii.x + getSmallDistToNeighborTarget(app).x
   const displayTop = arrangedIncreaseBtn.ellipse.center.y
   const lineWidthDisplay = getLineWidthDisplay(
-    app.state.newLineProperties.lineWidth, displayLeft, displayTop
+    app.state.newLineProperties.lineWidth, displayLeft, displayTop,
+    app.settings.lang
   )
 
   arrangedIncreaseBtn.action = () => {

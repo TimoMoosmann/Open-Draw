@@ -10,27 +10,30 @@ import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.j
 import { getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc } from 'Src/main_program/util.js'
 
 import {
-  borderAcc, perfectAcc, borderPrec, calibrationType, numCalibrationTargets
+  borderAcc, perfectAcc, borderPrec, calibrationType, numCalibrationTargets,
+  dwellBtnDetectionAlgorithm
 } from 'Settings'
 
-function getCalibrationMode (onCalibrated) {
-  return new CalibrationMode(onCalibrated)
+function getCalibrationMode () {
+  return new CalibrationMode()
 }
 
 class CalibrationMode {
   name = 'calibration'
 
-  constructor (onCalibrated) {
-    this.onCalibrated = onCalibrated
-  }
-
   start (app) {
-    getCalibrationResults(app.webgazer, app.rootDomEl).then(res => {
+    getCalibrationResults({
+      lang: app.settings.lang,
+      rootDomEl: app.rootDomEl,
+      targetSizeIsFixed: app.settings.targetSizeIsFixed,
+      webgazer: app.webgazer
+    }).then(res => {
       const { minGazeTargetSize, dispersionThreshold } = res
       app.minGazeTargetSize = minGazeTargetSize
       app.dispersionThreshold = dispersionThreshold
-      app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
-      if (this.onCalibrated) this.onCalibrated(app)
+      if (dwellBtnDetectionAlgorithm === 'screenpoint') {
+        app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
+      }
       activateMode(app, getMainMenuClosedMode(app))
     })
   }
@@ -41,7 +44,12 @@ class CalibrationMode {
   }
 }
 
-function getCalibrationResults (webgazer, rootDomEl) {
+function getCalibrationResults ({
+  lang,
+  targetSizeIsFixed,
+  rootDomEl,
+  webgazer
+}) {
   return new Promise(resolve => {
     const calibrate = async webgazer => {
       const { worstRelAcc, worstRelPrec } =
@@ -59,6 +67,7 @@ function getCalibrationResults (webgazer, rootDomEl) {
         colorCodes,
         perfectAcc,
         borderPrec,
+        lang,
         minForGreen: 80,
         minForYellow: 65,
         minForOrange: 50,
@@ -74,10 +83,15 @@ function getCalibrationResults (webgazer, rootDomEl) {
       const prec = getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel)
 
       const dispersionThreshold = getDispersionThresholdFromPrec(prec)
-      const minGazeTargetSize = getMinGazeTargetSizeFromAcc(acc)
+      const minGazeTargetSize = targetSizeIsFixed
+        ? getMinGazeTargetSizeFromAcc(
+          getAbsPosFromPosRelativeToViewport(borderAcc)
+        )
+        : getMinGazeTargetSizeFromAcc(acc)
 
       const calibrationScorePage = getCalibrationScorePage({
         calibrationScore,
+        lang,
         onContinue: () => {
           calibrationScorePage.remove()
           resolve({ dispersionThreshold, minGazeTargetSize })

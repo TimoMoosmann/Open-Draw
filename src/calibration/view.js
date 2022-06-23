@@ -3,8 +3,6 @@ import { createElementFromHTML } from 'Src/util/browser.js'
 
 import { html } from 'common-tags'
 
-import { lang } from 'Settings'
-
 import '../../assets/css/calibration.css'
 import '../../assets/css/calibration_score.css'
 import '../../assets/css/style.css'
@@ -64,6 +62,7 @@ function getCalibrationInstructionPage (calibrationType) {
 
 function getCalibrationScorePage ({
   calibrationScore,
+  lang,
   onContinue,
   onRecalibrate
 }) {
