@@ -7,6 +7,7 @@ import {
   getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl
 } from 'Src/main_program/view.js'
 import { vh, vw } from 'Src/util/browser.js'
+import { clearGazeListeners } from 'Src/webgazer_extensions/helper.js'
 
 import { lang, minDistToEdgeInPct } from 'Settings'
 import quitIcon from 'Assets/icons/close.png'
@@ -60,15 +61,15 @@ function addCanvasToRootAndDrawLines (app) {
 
 function endGazeBtnListenerIfNeeded (app) {
   if (app.eyeModeOn) {
-    app.webgazer.showPredictionPoints(false)
-    // app.webgazer.clearGazeListener()
+    clearGazeListeners(app.webgazer)
+    app.gazeDot.hide()
     app.gazeAtDwellBtnListener.unregister()
   }
 }
 
 function registerDwellBtnsForGazeListenerIfNeeded (dwellBtns, app) {
   if (app.eyeModeOn) {
-    app.webgazer.showPredictionPoints(true)
+    app.gazeDot.show()
     // activateDwellBtnGazeListener(dwellBtns, app.webgazer)
     app.gazeAtDwellBtnListener.register(dwellBtns)
   }

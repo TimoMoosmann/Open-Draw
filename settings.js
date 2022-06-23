@@ -5,7 +5,7 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
  * Main Settings
  */
 // Turn eyeMode off to just look around without using eye tracking.
-export const eyeModeOn = false
+export const eyeModeOn = true
 export const lang = 'de'
 
 /*
@@ -81,6 +81,7 @@ export const maxLineWidth = 10
  * Webgazer Settings
  */
 export const standardGazeDotColor = 'blue'
+export const gazeDotRefreshesPerSecond = 20
 
 /*
  * Screenpoint Dwell Detection (not used anymore)

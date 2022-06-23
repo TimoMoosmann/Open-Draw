@@ -2,7 +2,7 @@ import { getArrangeManyMode } from 'Src/main_program/arrange_many_btns.js'
 import { createDwellBtnWithColorDot } from 'Src/main_program/data_types/dwell_btn.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
-import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
+// import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
 import { colors } from 'Settings'
 
 function getChooseColorMode (app) {

@@ -5,13 +5,12 @@ import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { runTwoStepDwellDetection } from 'Src/main_program/dwell_detection/two_step_dwell_detection.js'
-import { setWebgazerGazeDotColor } from 'Src/webgazer_extensions/setup/main.js'
+import { clearGazeListeners } from 'Src/webgazer_extensions/helper.js'
 
 import {
   drawStateDwellDuration, lang, lookStateDwellDuration,
   markPointHalfSize, markPointStrokeProperties,
-  safetyEllipseLineDash, safetyEllipseStrokeProperties,
-  standardGazeDotColor
+  safetyEllipseLineDash, safetyEllipseStrokeProperties
 } from 'Settings'
 
 function getDrawLineMode () {
@@ -30,7 +29,6 @@ class DrawLineMode {
       activateMode(app, getMainMenuClosedMode(app))
       return
     }
-    // app.webgazer.showPredictionPoints(true)
 
     const drawState = {
       safetyEllipse: false,
@@ -145,9 +143,7 @@ class DrawLineMode {
   stop (app) {
     app.showBackgroundGrid(false)
     if (app.webgazer) {
-      app.webgazer.clearGazeListener()
-      app.webgazer.showPredictionPoints(false)
-      setWebgazerGazeDotColor(standardGazeDotColor)
+      clearGazeListeners(app.webgazer)
     }
     app.drawingCanvas.clear()
   }

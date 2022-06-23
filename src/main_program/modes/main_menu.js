@@ -6,7 +6,7 @@ import { getArrangeManyMode } from 'Src/main_program/arrange_many_btns.js'
 import { getDrawLineMode } from 'Src/main_program/modes/draw_line.js'
 import { getEditMode } from 'Src/main_program/modes/edit.js'
 import { getMoveMode } from 'Src/main_program/modes/move.js'
-import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
+// import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
 import { getZoomMode } from 'Src/main_program/modes/zoom.js'
 
 import { lang } from 'Settings'
@@ -18,7 +18,7 @@ import moveModeIcon from 'Assets/icons/move.png'
 import zoomModeIcon from 'Assets/icons/magnifying-glass.png'
 
 function getMainMenuMode (app) {
-  const btnSize = app.minGazeTargetSize
+  // const btnSize = app.minGazeTargetSize
 
   const getStartModeDwellBtn = ({
     domId, icon, mode, title

@@ -58,4 +58,13 @@ function getSetupInstructions (language = 'german') {
   }
 }
 
-export { getSetupInstructionsPage }
+function getGazePoint () {
+  return createElementFromHTML(html`
+    <div id="gazePoint"></div>
+  `)
+}
+
+export {
+  getGazePoint,
+  getSetupInstructionsPage
+}

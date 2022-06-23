@@ -5,13 +5,12 @@ import { vw } from 'Src/util/browser.js'
 
 function initWebgazer ({
   webgazer,
-  gazeListener = (gazeData, elapsedTime) => {},
   onFaceDetectionStatusChanged = faceDetected => {},
   onVideoAvailable = videoContainer => {},
   clearData = true,
   mouseModeOn = false,
-  showVideo = true,
   showPredictionPoints = false,
+  showVideo = true,
   startFaceDetector = true,
   videoPosition = createPos({ x: 0, y: 0 }),
   videoSize = createPos({ x: 320, y: 240 })
@@ -34,14 +33,13 @@ function initWebgazer ({
         faceFeedbackBox,
         onDetectionStatusChanged: onFaceDetectionStatusChanged
       })
+      webgazer.showPredictionPoints(showPredictionPoints)
       if (startFaceDetector) webgazer.faceDetector.start()
       if (!mouseModeOn) webgazer.removeMouseEventListeners()
       if (clearData) webgazer.clearData()
     }
   })
-  webgazer.setGazeListener(gazeListener)
   webgazer.showVideo(showVideo)
-  webgazer.showPredictionPoints(showPredictionPoints)
   webgazer.begin()
 }
 

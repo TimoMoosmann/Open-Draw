@@ -8,7 +8,6 @@ const setupWebgazer = ({
   language = 'german',
   mouseModeOn = false,
   root = document.body,
-  showPredictionPoints = false,
   title = 'Open Draw'
 } = {}) => {
   return new Promise(resolve => {
@@ -41,7 +40,6 @@ const setupWebgazer = ({
           parentNode: document.getElementById('videoFrame')
         })
       },
-      showPredictionPoints,
       videoSize
     })
   })

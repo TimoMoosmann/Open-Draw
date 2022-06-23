@@ -1,6 +1,7 @@
 import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { shadeBtnLinear } from 'Src/main_program/view.js'
+import { addGazeListener } from 'Src/webgazer_extensions/helper.js'
 
 function activateBtnsOnDwell (
   btns, buckets, timedGazePoint, id, shadeBtn = shadeBtnLinear
@@ -36,7 +37,7 @@ function activateBtnsOnDwell (
 function activateDwellBtnGazeListener (dwellBtns, webgazer) {
   const buckets = dwellBtns.map(() => [])
   let id = 0
-  webgazer.setGazeListener((gazePoint, elapsedTime) => {
+  addGazeListener(webgazer, 'dwell_at_btn', (gazePoint, elapsedTime) => {
     const timedGazePoint = createTimedGazePoint({
       pos: gazePoint,
       time: elapsedTime

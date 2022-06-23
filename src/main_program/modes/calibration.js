@@ -1,4 +1,4 @@
-import { addPositions, scalePosByVal, getMinXAndY } from 'Src/data_types/pos.js'
+import { getMinXAndY } from 'Src/data_types/pos.js'
 import { runClickCalibration, runGazeCalibration, runValidation } from 'Src/calibration/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { getCalibrationScoreEvaluation } from 'Src/calibration/success_score.js'

@@ -6,7 +6,6 @@ import { createStrokeProperties } from 'Src/main_program/data_types/stroke_prope
 import { createZoom } from 'Src/main_program/data_types/zoom.js'
 import { getDrawingCanvas } from 'Src/main_program/drawing_canvas.js'
 import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
-import { getChooseColorMode } from 'Src/main_program/modes/choose_color.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'
@@ -14,13 +13,14 @@ import {
   getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc,
   getSmallDistToNeighborTarget
 } from 'Src/main_program/util.js'
+import { getGazeDot } from 'Src/setup_webgazer/gaze_dot.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
-import { setWebgazerGazeDotColor, showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
+import { showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
 
 import {
   borderAcc, borderPrec, defaultLineWidth, eyeModeOn, minDistToEdgeInPct,
-  standardGazeDotColor
+  gazeDotRefreshesPerSecond, standardGazeDotColor
 } from 'Settings'
 
 async function main () {
@@ -80,8 +80,13 @@ async function main () {
 
   if (eyeModeOn) {
     app.webgazer = await makeWebgazerReady()
-    setWebgazerGazeDotColor(standardGazeDotColor)
-
+    app.gazeDot = getGazeDot({
+      color: standardGazeDotColor,
+      refreshesPerSecond: gazeDotRefreshesPerSecond,
+      rootEl: app.rootDomEl,
+      webgazer: app.webgazer
+    })
+    webgazer.addMouseEventListeners()
     activateMode(app, getCalibrationMode())
     document.addEventListener('keydown', event => {
       if (event.key === 'r' && app.activeMode.name !== 'calibration') {
@@ -109,8 +114,7 @@ async function makeWebgazerReady () {
   await setupWebgazer({
     webgazer: webgazerLocal,
     mouseModeOn: false,
-    root: document.body,
-    showPredictionPoints: false
+    root: document.body
   })
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal)
   return webgazerLocal

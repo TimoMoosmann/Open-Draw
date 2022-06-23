@@ -2,6 +2,7 @@ import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { checkDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { runWebgazerFixationDetection } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
 import { shadeBtnLinear } from 'Src/main_program/view.js'
+import { clearGazeListeners } from 'Src/webgazer_extensions/helper.js'
 
 class GazeAtDwellBtnListner {
   dispersionThreshold
@@ -43,7 +44,7 @@ class GazeAtDwellBtnListner {
   }
 
   stop () {
-    this.webgazer.clearGazeListener()
+    clearGazeListeners(this.webgazer)
   }
 
   reset () {
