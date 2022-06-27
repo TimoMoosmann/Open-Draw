@@ -3,6 +3,7 @@ import { redraw } from 'Src/main_program/draw.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import { getQuitBtn } from 'Src/main_program/util.js'
+import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
 import undoIcon from 'Assets/icons/undo.png'
 import redoIcon from 'Assets/icons/redo.png'
@@ -32,9 +33,13 @@ function getEditMode (app) {
     title: 'Redo'
   })
 
-  const arrangedBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight(
-    [undoBtn, redoBtn, quitBtn], app
-  )
+  const arrangedBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight({
+    btns: [undoBtn, redoBtn, quitBtn],
+    dispersionThreshold: app.dispersionThreshold,
+    minDistToEdge: getAbsPosFromPosRelativeToViewport(
+      app.settings.minDistToEdgeRel
+    )
+  })
   return getDwellBtnMode(arrangedBtns)
 }
 

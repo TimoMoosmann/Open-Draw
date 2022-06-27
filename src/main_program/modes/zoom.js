@@ -1,11 +1,12 @@
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { redraw } from 'Src/main_program/draw.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
-import { arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
+import { arrangeBtnsTwoHighOneLow, arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import {
   getQuitBtn
 } from 'Src/main_program/util.js'
 import { zoomIn, zoomOut } from 'Src/main_program/zoom.js'
+import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
 import zoomInIcon from 'Assets/icons/plus.png'
 import zoomOutIcon from 'Assets/icons/minus.png'
@@ -33,9 +34,20 @@ function getZoomMode (app) {
     size: btnSize
   })
 
-  const arrangedZoomBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight(
-    [zoomInBtn, zoomOutBtn, quitBtn], app
+  const minDistToEdge = getAbsPosFromPosRelativeToViewport(
+    app.settings.minDistToEdgeRel
   )
+  let arrangedZoomBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight({
+    btns: [zoomInBtn, zoomOutBtn, quitBtn],
+    dispersionThreshold: app.dispersionThreshold,
+    minDistToEdge
+  })
+  if (app.settings.useSimpleBtnPatterns) {
+    arrangedZoomBtns = arrangeBtnsTwoHighOneLow(
+      [zoomInBtn, quitBtn, zoomOutBtn],
+      minDistToEdge
+    )
+  }
   return getDwellBtnMode(arrangedZoomBtns)
 }
 

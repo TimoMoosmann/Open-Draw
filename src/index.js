@@ -9,10 +9,7 @@ import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'
-import {
-  getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc,
-  getSmallDistToNeighborTarget
-} from 'Src/main_program/util.js'
+import { getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 import { getGazeDot } from 'Src/setup_webgazer/gaze_dot.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
@@ -103,8 +100,10 @@ async function main () {
     const acc = getAbsPosFromPosRelativeToViewport(borderAcc)
     const prec = getAbsPosFromPosRelativeToViewport(borderPrec)
 
-    app.dispersionThreshold = getDispersionThresholdFromPrec(prec)
-    app.minGazeTargetSize = getMinGazeTargetSizeFromAcc(acc)
+    app.minGazeTargetSize = app.settings.getMinTargetSize[
+      app.settings.dwellBtnDetectionAlgorithm
+    ](acc, prec)
+    app.dispersionThreshold = app.settings.getDispersionThreshold(prec)
 
     // print how many btns fit in x and y direction every time the app
     // is started with eyeModeOn === false

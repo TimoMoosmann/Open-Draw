@@ -6,18 +6,9 @@ import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.j
 import {
   getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl
 } from 'Src/main_program/view.js'
-import { vh, vw } from 'Src/util/browser.js'
 import { clearGazeListeners } from 'Src/webgazer_extensions/helper.js'
 
-import { minDistToEdgeInPct } from 'Settings'
 import quitIcon from 'Assets/icons/close.png'
-
-function getMinDistToEdgeFromSettings () {
-  return createPos({
-    x: (1 / 100) * vw() * minDistToEdgeInPct.x,
-    y: (1 / 100) * vh() * minDistToEdgeInPct.y
-  })
-}
 
 function getSmallDistToNeighborTarget (app) {
   return scalePosByVal(createPos(app.dispersionThreshold), 0)
@@ -123,7 +114,6 @@ export {
   addCanvasToRootAndDrawLines,
   endGazeBtnListenerIfNeeded,
   getDispersionThresholdFromPrec,
-  getMinDistToEdgeFromSettings,
   getMinGazeTargetSizeFromAcc,
   getSmallDistToNeighborTarget,
   getQuitBtn,

@@ -6,6 +6,7 @@ import { arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_
 import {
   getQuitBtn, getSmallDistToNeighborTarget
 } from 'Src/main_program/util.js'
+import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { maxLineWidth } from 'Settings'
 
 import increaseIcon from 'Assets/icons/plus.png'
@@ -27,9 +28,13 @@ function getChangeLineWidthMode (app) {
   })
 
   let [arrangedIncreaseBtn, arrangedDecreaseBtn, arrangedQuitBtn] =
-    arrangeTwoBtnsUpperLeftOneBtnLowerRight(
-      [increaseBtn, decreaseBtn, quitBtn], app
-    )
+    arrangeTwoBtnsUpperLeftOneBtnLowerRight({
+      btns: [increaseBtn, decreaseBtn, quitBtn],
+      dispersionThreshold: app.dispersionThreshold,
+      minDistToEdge: getAbsPosFromPosRelativeToViewport(
+        app.settings.minDistToEdgeRel
+      )
+    })
 
   const displayLeft = arrangedDecreaseBtn.ellipse.center.x +
     arrangedDecreaseBtn.ellipse.radii.x + getSmallDistToNeighborTarget(app).x

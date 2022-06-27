@@ -7,32 +7,46 @@ function activateBtnsOnDwell ({
   btns,
   buckets,
   id,
-  shadeBtn,
+  shadeBtn = () => {},
   timedGazePoint
 }) {
   for (let i = 0; i < btns.length; i++) {
     if (inEllipse(timedGazePoint.pos, btns[i].ellipse)) {
-      const bucket = buckets[i]
-      if (bucket.length === 0 || bucket[bucket.length - 1].id + 1 === id) {
-        bucket.push(createBucketItem({
+      const bucketList = buckets[i].list
+      const activationTime = btns[i].activationTime
+      const levelOneActionTriggered = buckets[i].levelOneActionTriggered
+      if (bucketList.length === 0 ||
+        bucketList[bucketList.length - 1].id + 1 === id
+      ) {
+        bucketList.push(createBucketListItem({
           id, time: timedGazePoint.time
         }))
         const dwellAtBtnDuration =
-          bucket[bucket.length - 1].time - bucket[0].time
+          bucketList[bucketList.length - 1].time - bucketList[0].time
         if (
-          dwellAtBtnDuration >= btns[i].activationTime
+          dwellAtBtnDuration >= activationTime &&
+          levelOneActionTriggered === false
         ) {
           btns[i].action()
-          buckets[i] = []
+          if (btns[i].levelTwoAction) {
+            buckets[i].levelOneActionTriggered = true
+          } else {
+            buckets[i] = createEmptyBucket()
+          }
           shadeBtn(btns[i].domId, 0)
+        } else if (dwellAtBtnDuration >= activationTime * 2) {
+          buckets[i].levelOneActionTriggered = false
+          buckets[i] = createEmptyBucket()
+          if (btns[i].levelTwoAction) btns[i].levelTwoAction()
         } else {
-          const activationProgress =
-            dwellAtBtnDuration / btns[i].activationTime
+          const activationProgress = levelOneActionTriggered
+            ? (dwellAtBtnDuration - activationTime) / activationTime
+            : dwellAtBtnDuration / activationTime
           shadeBtn(btns[i].domId, activationProgress)
         }
       }
     } else {
-      buckets[i] = []
+      buckets[i] = createEmptyBucket()
       shadeBtn(btns[i].domId, 0)
     }
   }
@@ -43,7 +57,7 @@ function activateDwellBtnGazeListener ({
   getDwellBtnBackgroundColor,
   webgazer
 }) {
-  const buckets = dwellBtns.map(() => [])
+  const buckets = dwellBtns.map(() => createEmptyBucket())
   let id = 0
   addGazeListener(webgazer, 'dwell_at_btn', (gazePoint, elapsedTime) => {
     const timedGazePoint = createTimedGazePoint({
@@ -64,7 +78,14 @@ function activateDwellBtnGazeListener ({
   })
 }
 
-function createBucketItem ({ id, time }) {
+function createEmptyBucket () {
+  return {
+    list: [],
+    levelOneActionTriggered: false
+  }
+}
+
+function createBucketListItem ({ id, time }) {
   isBucketItem(arguments[0])
   return { id, time }
 }
@@ -77,5 +98,6 @@ function isBucketItem (bucketItem) {
 export {
   activateDwellBtnGazeListener,
   activateBtnsOnDwell,
-  createBucketItem
+  createBucketListItem,
+  createEmptyBucket
 }

@@ -7,11 +7,9 @@ import { getCalibrationInstructionPage, getCalibrationScorePage } from 'Src/cali
 import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
-import { getDispersionThresholdFromPrec, getMinGazeTargetSizeFromAcc } from 'Src/main_program/util.js'
 
 import {
-  borderAcc, perfectAcc, borderPrec, calibrationType, numCalibrationTargets,
-  dwellBtnDetectionAlgorithm
+  calibrationType, numCalibrationTargets
 } from 'Settings'
 
 function getCalibrationMode () {
@@ -23,7 +21,14 @@ class CalibrationMode {
 
   start (app) {
     getCalibrationResults({
+      borderAcc: app.settings.borderAccRel,
+      borderPrec: app.settings.borderPrecRel,
+      getDispersionThreshold: app.settings.getDispersionThreshold,
+      getMinTargetSize: app.settings.getMinTargetSize[
+        app.settings.dwellBtnDetectionAlgorithm
+      ],
       lang: app.settings.lang,
+      perfectAcc: app.settings.perfectAccRel,
       rootDomEl: app.rootDomEl,
       targetSizeIsFixed: app.settings.targetSizeIsFixed,
       webgazer: app.webgazer
@@ -31,7 +36,7 @@ class CalibrationMode {
       const { minGazeTargetSize, dispersionThreshold } = res
       app.minGazeTargetSize = minGazeTargetSize
       app.dispersionThreshold = dispersionThreshold
-      if (dwellBtnDetectionAlgorithm === 'screenpoint') {
+      if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
         app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
       }
       activateMode(app, getMainMenuClosedMode(app))
@@ -45,7 +50,12 @@ class CalibrationMode {
 }
 
 function getCalibrationResults ({
+  borderAcc,
+  borderPrec,
+  getDispersionThreshold,
+  getMinTargetSize,
   lang,
+  perfectAcc,
   targetSizeIsFixed,
   rootDomEl,
   webgazer
@@ -75,19 +85,29 @@ function getCalibrationResults ({
         relPrec: worstRelPrec
       })
 
-      // If worst Acc or Prec is lower than border Acc or Prec, targets are
-      // too big. So in that case use border Acc or Prec.
-      const worstAccOrBorderAccRel = getMinXAndY(worstRelAcc, borderAcc)
-      const worstPrecOrBorderPrecRel = getMinXAndY(worstRelPrec, borderPrec)
-      const acc = getAbsPosFromPosRelativeToViewport(worstAccOrBorderAccRel)
-      const prec = getAbsPosFromPosRelativeToViewport(worstPrecOrBorderPrecRel)
-
-      const dispersionThreshold = getDispersionThresholdFromPrec(prec)
-      const minGazeTargetSize = targetSizeIsFixed
-        ? getMinGazeTargetSizeFromAcc(
-          getAbsPosFromPosRelativeToViewport(borderAcc)
+      let absoluteRelevantAcc = getAbsPosFromPosRelativeToViewport(
+        borderAcc
+      )
+      let absoluteRelevantPrec = getAbsPosFromPosRelativeToViewport(
+        borderPrec
+      )
+      if (!targetSizeIsFixed) {
+        // If worst Acc or Prec is lower than border Acc or Prec, targets are
+        // too big. So in that case use border Acc or Prec.
+        absoluteRelevantAcc = getMinXAndY(
+          getAbsPosFromPosRelativeToViewport(worstRelAcc),
+          absoluteRelevantAcc
         )
-        : getMinGazeTargetSizeFromAcc(acc)
+        absoluteRelevantPrec = getMinXAndY(
+          getAbsPosFromPosRelativeToViewport(worstRelPrec),
+          absoluteRelevantPrec
+        )
+      }
+
+      const dispersionThreshold = getDispersionThreshold(absoluteRelevantPrec)
+      const minGazeTargetSize = getMinTargetSize(
+        absoluteRelevantAcc, absoluteRelevantPrec
+      )
 
       const calibrationScorePage = getCalibrationScorePage({
         calibrationScore,

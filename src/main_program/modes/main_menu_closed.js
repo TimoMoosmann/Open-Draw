@@ -3,14 +3,17 @@ import { arrangeOneBtnToLowerRight } from 'Src/main_program/dwell_btn_patterns.j
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuMode } from 'Src/main_program/modes/main_menu.js'
+import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
 import { standardDwellBtnActivationTime } from 'Settings'
 
 import openMenuIcon from 'Assets/icons/menu.png'
 
 function getMainMenuClosedMode (app) {
+  let count = 0
   const openMainMenuDwellBtn = createDwellBtn({
-    action: () => {
+    action: console.log('Counts: ' + ++count),
+    levelTwoAction: () => {
       activateMode(app, getMainMenuMode(app))
     },
     domId: 'openMainMenuBtn',
@@ -21,7 +24,10 @@ function getMainMenuClosedMode (app) {
   })
 
   const arrangedOpenMainMenuDwellBtn = arrangeOneBtnToLowerRight({
-    dwellBtn: openMainMenuDwellBtn
+    dwellBtn: openMainMenuDwellBtn,
+    minDistToEdge: getAbsPosFromPosRelativeToViewport(
+      app.settings.minDistToEdgeRel
+    )
   })
 
   return getDwellBtnMode([arrangedOpenMainMenuDwellBtn])

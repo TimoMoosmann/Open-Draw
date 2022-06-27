@@ -1,4 +1,4 @@
-import { createPos } from 'Src/data_types/pos.js'
+import { addPositions, createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 
 export const mainSettings = {
@@ -12,16 +12,31 @@ export const mainSettings = {
   /*
    * Dwell Detection Settings
    */
-  // 'screenpoint' for a fixation based algorithm (could save some space),
+  // 'screenpoint' for a fixation based algorithm (saves some space),
   // 'bucket' for a target based algorithm (more stable)
   dwellBtnDetectionAlgorithm: 'bucket',
+  getMinTargetSize: {
+    bucket: (acc, prec) => scalePosByVal(
+      addPositions(acc, scalePosByVal(prec, 1.5)), 2
+    ),
+    screenpoint: acc => scalePosByVal(acc, 3)
+  },
+  getDispersionThreshold: prec => scalePosByVal(prec, 3),
   targetSizeIsFixed: true,
+  // Minimum Relative Accuracy to use the program properly
+  borderAccRel: createPos({ x: 0.07, y: 0.14 }),
+  // Relative Accuracy to reach a calibrationScore of 100%
+  perfectAccRel: createPos({ x: 0.03, y: 0.06 }),
+  // Minimum recommended Relative Precision
+  borderPrecRel: createPos({ x: 0.06, y: 0.1 }),
   /*
    * DwellBtn Settings
    */
+  useSimpleBtnPatterns: true,
   getDwellBtnBackgroundColor: alpha => {
     return `rgba(112, 128, 144, ${alpha})`
-  }
+  },
+  minDistToEdgeRel: createPos({ x: 0.05, y: 0.05 })
 }
 
 /*
@@ -39,12 +54,6 @@ export const gazeCalibrationRecordIntervalDuration = 200
 // Validation
 export const validationCaptureDuration = 1000
 export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
-// Minimum Relative Accuracy to use the program properly
-export const borderAcc = createPos({ x: 0.07, y: 0.14 })
-// Relative Accuracy to reach a calibrationScore of 100%
-export const perfectAcc = createPos({ x: 0.03, y: 0.06 })
-// Minimum recommended Relative Precision
-export const borderPrec = createPos({ x: 0.06, y: 0.1 })
 /*
  * DwellBtn Settings
  */
@@ -52,7 +61,6 @@ export const standardDwellBtnActivationTime = 1000
 export const getDwellBtnBackgroundColor = alpha => {
   return `rgba(112, 128, 144, ${alpha})`
 }
-export const minDistToEdgeInPct = createPos({ x: 10, y: 10 })
 
 /*
  * Draw Line Mode Settings

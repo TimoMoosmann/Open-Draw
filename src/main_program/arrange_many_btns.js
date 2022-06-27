@@ -2,6 +2,7 @@ import { createNextBtn, createPrevBtn } from 'Src/main_program/data_types/dwell_
 import { arrangeBtnsTwoHighOneLow } from 'Src/main_program/dwell_btn_patterns.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
+import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
 function getArrangeManyMode (app, btns, startIdx = 0, endIdx = false) {
   if (startIdx && endIdx) {
@@ -46,7 +47,13 @@ function getArrangeManyMode (app, btns, startIdx = 0, endIdx = false) {
       size: btns[0].size
     }))
   }
-  return getDwellBtnMode(arrangeBtnsTwoHighOneLow(displayBtns))
+
+  return getDwellBtnMode(arrangeBtnsTwoHighOneLow(
+    displayBtns,
+    getAbsPosFromPosRelativeToViewport(
+      app.settings.minDistToEdgeRel
+    )
+  ))
 }
 
 export {

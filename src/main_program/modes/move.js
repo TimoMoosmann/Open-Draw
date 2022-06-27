@@ -3,8 +3,10 @@ import { vh, vw } from 'Src/util/browser.js'
 import { createDwellBtn, createDwellBtnFromDwellBtnAndCenter } from 'Src/main_program/data_types/dwell_btn.js'
 import { redraw } from 'Src/main_program/draw.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
-import { getMinDistToEdgeFromSettings, getQuitBtn } from 'Src/main_program/util.js'
+import { getQuitBtn } from 'Src/main_program/util.js'
 import { moveLeft, moveRight, moveUp, moveDown } from 'Src/main_program/zoom.js'
+import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
+
 import moveDownIcon from 'Assets/icons/arrow_down.png'
 import moveLeftIcon from 'Assets/icons/arrow_left.png'
 import moveRightIcon from 'Assets/icons/arrow_right.png'
@@ -52,14 +54,27 @@ function getMoveMode (app) {
   })
 
   return getDwellBtnMode(arrangeDwellBtnsMoveMode({
-    app, moveLeftBtn, moveUpBtn, moveRightBtn, moveDownBtn, quitBtn
+    app,
+    minDistToEdge: getAbsPosFromPosRelativeToViewport(
+      app.settings.minDistToEdgeRel
+    ),
+    moveLeftBtn,
+    moveUpBtn,
+    moveRightBtn,
+    moveDownBtn,
+    quitBtn
   }))
 }
 
 function arrangeDwellBtnsMoveMode ({
-  app, moveLeftBtn, moveUpBtn, moveRightBtn, moveDownBtn, quitBtn
+  app,
+  minDistToEdge,
+  moveLeftBtn,
+  moveUpBtn,
+  moveRightBtn,
+  moveDownBtn,
+  quitBtn
 }) {
-  const minDistToEdge = getMinDistToEdgeFromSettings()
   const moveLeftBtnPos = addPositions(
     minDistToEdge, moveLeftBtn.ellipse.radii
   )

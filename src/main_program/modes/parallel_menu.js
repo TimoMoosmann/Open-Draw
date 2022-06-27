@@ -3,6 +3,7 @@ import { arrangeEquallySizedDwellBtnsToParallelMenu } from 'Src/main_program/dwe
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
+import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
 function getParallelMenuMode ({
   app,
@@ -33,12 +34,15 @@ function getParallelMenuMode ({
   })
 
   const arrangedBtns = arrangeEquallySizedDwellBtnsToParallelMenu({
-    app,
+    dispersionThreshold: app.dispersionThreshold,
     distToNeighbor,
     endIdx,
     equallySizedDwellBtns,
     getNextBtn,
     getPrevBtn,
+    minDistToEdge: getAbsPosFromPosRelativeToViewport(
+      app.settings.minDistToEdgeRel
+    ),
     startIdx
   })
   return getDwellBtnMode(arrangedBtns, showLines)

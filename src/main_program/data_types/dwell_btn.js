@@ -10,6 +10,7 @@ import prevBtnIcon from 'Assets/icons/arrow_left.png'
 
 function createDwellBtn ({
   action = () => {},
+  levelTwoAction = false,
   center = createPos({ x: 0, y: 0 }),
   domId,
   icon = eyeIcon,
@@ -19,6 +20,7 @@ function createDwellBtn ({
 }) {
   return {
     action,
+    levelTwoAction,
     ellipse: createEllipse({
       center,
       radii: createPos({ x: size.x / 2, y: size.y / 2 })

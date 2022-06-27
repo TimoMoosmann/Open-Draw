@@ -8,20 +8,24 @@ import {
 } from 'Src/data_types/pos.js'
 import { checkUnsignedInteger } from 'Src/data_types/numbers.js'
 import { getViewport, vh, vw } from 'Src/util/browser.js'
-import { getMinDistToEdgeFromSettings, getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
+import { getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 
 function arrangeEquallySizedDwellBtnsToParallelMenu ({
-  app,
+  dispersionThreshold,
   distToNeighbor,
   endIdx = false,
   equallySizedDwellBtns,
-  minDistToEdge = getMinDistToEdgeFromSettings(),
   getNextBtn,
   getPrevBtn,
+  minDistToEdge,
   startIdx = 0,
   viewport = getViewport()
 }) {
-  if (!distToNeighbor) distToNeighbor = getSmallDistToNeighborTarget(app)
+  if (!distToNeighbor) {
+    distToNeighbor = getSmallDistToNeighborTarget(
+      dispersionThreshold
+    )
+  }
   checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns')
   checkNumericPos(distToNeighbor, 'distToNeighbor')
   checkPositiveNumericPos(minDistToEdge, 'minDistToEdge')
@@ -177,7 +181,7 @@ function getAvailableCoordsPerAxis ({
 
 function arrangeOneBtnToLowerRight ({
   dwellBtn,
-  minDistToEdge = getMinDistToEdgeFromSettings(),
+  minDistToEdge,
   viewport = getViewport()
 }) {
   checkDwellBtn(dwellBtn, 'dwellBtn')
@@ -190,17 +194,22 @@ function arrangeOneBtnToLowerRight ({
   )
 }
 
-function arrangeTwoBtnsUpperLeftOneBtnLowerRight (btns, app) {
+function arrangeTwoBtnsUpperLeftOneBtnLowerRight ({
+  btns,
+  dispersionThreshold,
+  minDistToEdge
+}) {
   const upperLeftLeftPos = addPositions(
-    getMinDistToEdgeFromSettings(), btns[0].ellipse.radii
+    minDistToEdge, btns[0].ellipse.radii
   )
   const upperLeftPos = createPos({
-    x: upperLeftLeftPos.x + (getSmallDistToNeighborTarget(app)).x +
+    x: upperLeftLeftPos.x +
+      getSmallDistToNeighborTarget(dispersionThreshold).x +
       btns[0].ellipse.radii.x + btns[1].ellipse.radii.x,
     y: upperLeftLeftPos.y
   })
   const lowerRightPos = subPositions(
-    getViewport(), getMinDistToEdgeFromSettings(), btns[2].ellipse.radii
+    getViewport(), minDistToEdge, btns[2].ellipse.radii
   )
   return [
     createDwellBtnFromDwellBtnAndCenter(
@@ -215,18 +224,18 @@ function arrangeTwoBtnsUpperLeftOneBtnLowerRight (btns, app) {
   ]
 }
 
-function arrangeBtnsTwoHighOneLow (btns) {
+function arrangeBtnsTwoHighOneLow (btns, minDistToEdge) {
   const upperLeftPos = addPositions(
-    getMinDistToEdgeFromSettings(), btns[0].ellipse.radii
+    minDistToEdge, btns[0].ellipse.radii
   )
   const lowerMiddlePos = createPos({
     x: vw() / 2,
-    y: vh() - getMinDistToEdgeFromSettings().y - btns[1].ellipse.radii.y
+    y: vh() - minDistToEdge.y - btns[1].ellipse.radii.y
   })
   let upperRightPos = false
   if (btns[2]) {
     upperRightPos = createPos({
-      x: vw() - getMinDistToEdgeFromSettings().x - btns[2].ellipse.radii.x,
+      x: vw() - minDistToEdge.x - btns[2].ellipse.radii.x,
       y: upperLeftPos.y
     })
   }
