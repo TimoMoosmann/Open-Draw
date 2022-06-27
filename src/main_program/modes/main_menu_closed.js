@@ -10,12 +10,8 @@ import { standardDwellBtnActivationTime } from 'Settings'
 import openMenuIcon from 'Assets/icons/menu.png'
 
 function getMainMenuClosedMode (app) {
-  let count = 0
   const openMainMenuDwellBtn = createDwellBtn({
-    action: console.log('Counts: ' + ++count),
-    levelTwoAction: () => {
-      activateMode(app, getMainMenuMode(app))
-    },
+    action: () => activateMode(app, getMainMenuMode(app)),
     domId: 'openMainMenuBtn',
     icon: openMenuIcon,
     size: app.minGazeTargetSize,

@@ -81,15 +81,14 @@ async function main () {
       : app.backgroundGrid.style.visibility = 'hidden'
   }
 
+  app.gazeDot = getGazeDot({
+    app,
+    color: standardGazeDotColor,
+    refreshesPerSecond: gazeDotRefreshesPerSecond,
+    rootEl: app.rootDomEl
+  })
   if (app.settings.eyeModeOn) {
     app.webgazer = await makeWebgazerReady()
-    app.gazeDot = getGazeDot({
-      color: standardGazeDotColor,
-      refreshesPerSecond: gazeDotRefreshesPerSecond,
-      rootEl: app.rootDomEl,
-      webgazer: app.webgazer
-    })
-    webgazer.addMouseEventListeners()
     activateMode(app, getCalibrationMode())
     document.addEventListener('keydown', event => {
       if (event.key === 'r' && app.activeMode.name !== 'calibration') {

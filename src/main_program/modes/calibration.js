@@ -4,7 +4,7 @@ import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { getCalibrationScoreEvaluation } from 'Src/calibration/success_score.js'
 import { getWorstRelAccAndPrec } from 'Src/calibration/validation_data_evaluation.js'
 import { getCalibrationInstructionPage, getCalibrationScorePage } from 'Src/calibration/view.js'
-import { getGazeAtDwellBtnListener } from 'Src/main_program/evaluate_fixations.js'
+import { getGazeAtDwellBtnListener } from 'Src/main_program/dwell_detection/dwell_at_btn_listener.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 

@@ -6,7 +6,7 @@ export const mainSettings = {
    * Main Settings
    */
   // Turn eyeMode off to just look around without using eye tracking.
-  eyeModeOn: true,
+  eyeModeOn: false,
   lang: 'de',
 
   /*

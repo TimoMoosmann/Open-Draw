@@ -1,18 +1,18 @@
 import { getGazePoint } from 'Src/setup_webgazer/view.js'
-import { addGazeListener, removeGazeListener } from 'Src/webgazer_extensions/helper.js'
+import { addScreenPointListener, removeScreenPointListener } from 'Src/util/main.js'
 
 class GazeDot {
   #interval
   gazeListenerName = 'gaze_dot'
 
   constructor ({
+    app,
     color,
     refreshesPerSecond,
-    rootEl,
-    webgazer
+    rootEl
   }) {
+    this.app = app
     this.refreshInterval = 1000 / refreshesPerSecond
-    this.webgazer = webgazer
     this.screenDot = new ScreenDot(rootEl, color)
     this.screenDot.setColor(color)
   }
@@ -24,19 +24,21 @@ class GazeDot {
   show () {
     this.screenDot.show()
     let lastDrawnTime = -1
-    addGazeListener(this.webgazer, this.gazeListenerName, (gazePoint, time) => {
-      if (
-        lastDrawnTime === -1 || time - lastDrawnTime >= this.refreshInterval
-      ) {
-        if (gazePoint) this.screenDot.changePosition(gazePoint)
-        lastDrawnTime = time
+    addScreenPointListener(
+      this.app, this.gazeListenerName, (gazePoint, time) => {
+        if (
+          lastDrawnTime === -1 || time - lastDrawnTime >= this.refreshInterval
+        ) {
+          if (gazePoint) this.screenDot.changePosition(gazePoint)
+          lastDrawnTime = time
+        }
       }
-    })
+    )
   }
 
   hide () {
     this.screenDot.hide()
-    removeGazeListener(this.webgazer, this.gazeListenerName)
+    removeScreenPointListener(this.app, this.gazeListenerName)
   }
 }
 

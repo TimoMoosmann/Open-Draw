@@ -2,21 +2,21 @@ import {
   createPos, getMaxXAndY, getMinXAndY, isPosLowerThanOrEqual, subPositions
 } from 'Src/data_types/pos.js'
 import { getCenterPoint } from 'Src/main_program/dwell_detection/util.js'
-import { addGazeListener } from 'Src/webgazer_extensions/helper.js'
+import { addScreenPointListener } from 'Src/util/main.js'
 
 import { Item, List } from 'OtherModules/linked-list.js'
 
 function runWebgazerFixationDetection ({
+  app,
   dispersionThreshold,
   durationThreshold = 300,
   maxFixationDuration,
-  onFixation,
-  webgazer
+  onFixation
 }) {
   const timedGazePositions = new List()
   let lastDetectionWasAFixation = false
 
-  addGazeListener(webgazer, 'dwell_at_screenpoint', (gazePos, timestamp) => {
+  addScreenPointListener(app, 'dwell_at_screenpoint', (gazePos, timestamp) => {
     if (!gazePos) return false
 
     timedGazePositions.append(createTimedPosItem({ timestamp, pos: gazePos }))

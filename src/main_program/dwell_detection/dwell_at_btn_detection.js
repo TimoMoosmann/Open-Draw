@@ -1,7 +1,11 @@
+/*
+ * Dwell at Btn listener listens to a fixation detector, while
+ * dwell at Btn detection only collects screenpoints that hit a button.
+ */
 import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { shadeBtnLinear } from 'Src/main_program/view.js'
-import { addGazeListener } from 'Src/webgazer_extensions/helper.js'
+import { addScreenPointListener } from 'Src/util/main.js'
 
 function activateBtnsOnDwell ({
   btns,
@@ -35,7 +39,6 @@ function activateBtnsOnDwell ({
           }
           shadeBtn(btns[i].domId, 0)
         } else if (dwellAtBtnDuration >= activationTime * 2) {
-          buckets[i].levelOneActionTriggered = false
           buckets[i] = createEmptyBucket()
           if (btns[i].levelTwoAction) btns[i].levelTwoAction()
         } else {
@@ -53,13 +56,13 @@ function activateBtnsOnDwell ({
 }
 
 function activateDwellBtnGazeListener ({
+  app,
   dwellBtns,
-  getDwellBtnBackgroundColor,
-  webgazer
+  getDwellBtnBackgroundColor
 }) {
   const buckets = dwellBtns.map(() => createEmptyBucket())
   let id = 0
-  addGazeListener(webgazer, 'dwell_at_btn', (gazePoint, elapsedTime) => {
+  addScreenPointListener(app, 'dwell_at_btn', (gazePoint, elapsedTime) => {
     const timedGazePoint = createTimedGazePoint({
       pos: gazePoint,
       time: elapsedTime

@@ -6,7 +6,7 @@ import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.j
 import {
   getDrawingCanvasInContainer, getDwellBtnContainer, getDwellBtnDomEl
 } from 'Src/main_program/view.js'
-import { clearGazeListeners } from 'Src/webgazer_extensions/helper.js'
+import { clearScreenPointListeners } from 'Src/util/main.js'
 
 import quitIcon from 'Assets/icons/close.png'
 
@@ -44,7 +44,7 @@ function clearDwellBtns () {
 }
 
 function removeDwellBtnsAndGazeListener (app) {
-  endGazeBtnListenerIfNeeded(app)
+  endDwellBtnListener(app)
   clearDwellBtns()
 }
 
@@ -56,33 +56,29 @@ function addCanvasToRootAndDrawLines (app) {
   return drawingCanvas
 }
 
-function endGazeBtnListenerIfNeeded (app) {
-  if (app.settings.eyeModeOn) {
-    clearGazeListeners(app.webgazer)
-    app.gazeDot.hide()
-    if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
-      app.gazeAtDwellBtnListener.unregister()
-    }
+function endDwellBtnListener (app) {
+  clearScreenPointListeners(app)
+  app.gazeDot.hide()
+  if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
+    app.gazeAtDwellBtnListener.unregister()
   }
 }
 
-function registerDwellBtnsForGazeListenerIfNeeded (dwellBtns, app) {
-  if (app.settings.eyeModeOn) {
-    app.gazeDot.show()
-    if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
-      app.gazeAtDwellBtnListener.register(dwellBtns)
-    } else if (app.settings.dwellBtnDetectionAlgorithm === 'bucket') {
-      activateDwellBtnGazeListener({
-        dwellBtns,
-        getDwellBtnBackgroundColor: app.settings.getDwellBtnBackgroundColor,
-        webgazer: app.webgazer
-      })
-    } else {
-      throw new TypeError(
-        "dwellBtnDetectionAlgorithm needs to be either 'screenpoint', " +
-        "or 'bucket'."
-      )
-    }
+function registerDwellBtnsForGazeListener (dwellBtns, app) {
+  app.gazeDot.show()
+  if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
+    app.gazeAtDwellBtnListener.register(dwellBtns)
+  } else if (app.settings.dwellBtnDetectionAlgorithm === 'bucket') {
+    activateDwellBtnGazeListener({
+      app,
+      dwellBtns,
+      getDwellBtnBackgroundColor: app.settings.getDwellBtnBackgroundColor
+    })
+  } else {
+    throw new TypeError(
+      "dwellBtnDetectionAlgorithm needs to be either 'screenpoint', " +
+      "or 'bucket'."
+    )
   }
 }
 
@@ -92,7 +88,7 @@ function showAndActivateDwellBtns (dwellBtns, app) {
     getDwellBtnBackgroundColor: app.settings.getDwellBtnBackgroundColor,
     rootEl: app.rootDomEl
   })
-  registerDwellBtnsForGazeListenerIfNeeded(dwellBtns, app)
+  registerDwellBtnsForGazeListener(dwellBtns, app)
 }
 
 function getQuitBtn (
@@ -112,7 +108,7 @@ function getQuitBtn (
 
 export {
   addCanvasToRootAndDrawLines,
-  endGazeBtnListenerIfNeeded,
+  endDwellBtnListener,
   getDispersionThresholdFromPrec,
   getMinGazeTargetSizeFromAcc,
   getSmallDistToNeighborTarget,

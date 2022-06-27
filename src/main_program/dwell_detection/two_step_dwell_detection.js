@@ -5,15 +5,15 @@ import {
 import { checkUnsignedInteger } from 'Src/data_types/numbers.js'
 import { getCenterPoint } from 'Src/main_program/dwell_detection/util.js'
 import { checkTimedGazePoint, createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types.js'
-import { addGazeListener } from 'Src/webgazer_extensions/helper.js'
+import { addScreenPointListener } from 'Src/util/main.js'
 
 function runTwoStepDwellDetection ({
+  app,
   dispersionThreshold,
   firstStepDurationThreshold,
   secondStepDurationThreshold,
   onFirstStep,
-  onSecondStep,
-  webgazer
+  onSecondStep
 }) {
   const dwellDetector = getTwoStepDwellDetector({
     dispersionThreshold,
@@ -21,7 +21,7 @@ function runTwoStepDwellDetection ({
     secondStepDurationThreshold
   })
 
-  addGazeListener(webgazer, 'dwell_at_btn', (gazePoint, time) => {
+  addScreenPointListener(app, 'dwell_at_btn', (gazePoint, time) => {
     const { dwellPoint, step } = dwellDetector.step(
       createTimedGazePoint({ pos: gazePoint, time })
     )

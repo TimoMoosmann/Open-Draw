@@ -5,7 +5,7 @@ import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { runTwoStepDwellDetection } from 'Src/main_program/dwell_detection/two_step_dwell_detection.js'
-import { clearGazeListeners } from 'Src/webgazer_extensions/helper.js'
+import { clearScreenPointListeners } from 'Src/util/main.js'
 
 import {
   drawStateDwellDuration, lang, lookStateDwellDuration,
@@ -22,13 +22,6 @@ class DrawLineMode {
 
   start (app) {
     app.showBackgroundGrid(true)
-    if (!app.settings.eyeModeOn) {
-      (lang === 'de')
-        ? window.alert('Nur verfügber wenn eyeMode auf true geschaltet ist.')
-        : window.alert('Only available when eyeMode is on.')
-      activateMode(app, getMainMenuClosedMode(app))
-      return
-    }
 
     const drawState = {
       safetyEllipse: false,
@@ -39,6 +32,7 @@ class DrawLineMode {
     this.#draw(app, drawState)
 
     runTwoStepDwellDetection({
+      app,
       dispersionThreshold: app.dispersionThreshold,
       firstStepDurationThreshold: lookStateDwellDuration,
       secondStepDurationThreshold:
@@ -48,8 +42,7 @@ class DrawLineMode {
       }),
       onSecondStep: dwellPoint => this.#onDwellDuringDrawState({
         app, drawState, dwellPoint
-      }),
-      webgazer: app.webgazer
+      })
     })
   }
 
@@ -142,9 +135,7 @@ class DrawLineMode {
 
   stop (app) {
     app.showBackgroundGrid(false)
-    if (app.webgazer) {
-      clearGazeListeners(app.webgazer)
-    }
+    clearScreenPointListeners(app)
     app.drawingCanvas.clear()
   }
 }

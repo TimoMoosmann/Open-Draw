@@ -1,8 +1,12 @@
+/*
+ * Dwell at Btn listener listens to a fixation detector, while
+ * dwell at Btn detection only collects screenpoints that hit a button.
+ */
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { checkDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { runWebgazerFixationDetection } from 'Src/main_program/dwell_detection/dwell_at_screenpoint_detection.js'
 import { shadeBtnLinear } from 'Src/main_program/view.js'
-import { clearGazeListeners } from 'Src/webgazer_extensions/helper.js'
+import { clearScreenPointListeners } from 'Src/util/main.js'
 
 class GazeAtDwellBtnListner {
   dispersionThreshold
@@ -11,10 +15,10 @@ class GazeAtDwellBtnListner {
   registeredBtns = []
 
   constructor (app) {
+    this.app = app
     this.dwellBtnContainer = app.rootDomEl
     this.dispersionThreshold = app.dispersionThreshold
     this.getDwellBtnBackgroundColor = app.settings.getDwellBtnBackgroundColor
-    this.webgazer = app.webgazer
   }
 
   start () {
@@ -29,9 +33,9 @@ class GazeAtDwellBtnListner {
     maxFixationDuration += 200
 
     runWebgazerFixationDetection({
+      app: this.app,
       dispersionThreshold: this.dispersionThreshold,
       maxFixationDuration,
-      webgazer: this.webgazer,
       onFixation: fixation => evaluateEyeFixationsAtDwellBtns({
         currentBtnProgress,
         dwellBtns: this.registeredBtns,
@@ -49,7 +53,7 @@ class GazeAtDwellBtnListner {
   }
 
   stop () {
-    clearGazeListeners(this.webgazer)
+    clearScreenPointListeners(this.app)
   }
 
   reset () {
