@@ -1,6 +1,6 @@
 /* global expect, test */
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
-import { createDwellBtnProgress, evaluateEyeFixationsAtDwellBtns } from 'Src/main_program/evaluate_fixations.js'
+import { createDwellBtnProgress, evaluateEyeFixationsAtDwellBtns } from 'Src/main_program/dwell_detection/dwell_at_btn_listener.js'
 import { createPos } from 'Src/data_types/pos.js'
 import { createFixation } from 'Src/webgazer_extensions/fixation_detection/data_types/fixation.js'
 

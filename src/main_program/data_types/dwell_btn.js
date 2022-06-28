@@ -10,26 +10,43 @@ import prevBtnIcon from 'Assets/icons/arrow_left.png'
 
 function createDwellBtn ({
   action = () => {},
-  levelTwoAction = false,
+  secondAction = false,
   center = createPos({ x: 0, y: 0 }),
   domId,
   icon = eyeIcon,
+  secondIcon = eyeIcon,
   size,
   activationTime = standardDwellBtnActivationTime,
-  title = false
+  secondActivationTime = false,
+  title = false,
+  secondTitle = false
 }) {
+  if (secondTitle && !title) {
+    throw new TypeError('DwellBtn can only have secondTitle if title exists.')
+  }
+  if (!secondActivationTime && secondAction) {
+    secondActivationTime = 3 * activationTime
+  }
+  if (secondActivationTime && secondActivationTime < 2 * activationTime) {
+    throw new TypeError(
+      'Second activation time needs to be at least twice the activation time'
+    )
+  }
   return {
     action,
-    levelTwoAction,
+    secondAction,
     ellipse: createEllipse({
       center,
       radii: createPos({ x: size.x / 2, y: size.y / 2 })
     }),
     domId,
     icon,
+    secondIcon,
     activationTime,
+    secondActivationTime,
     size,
-    title
+    title,
+    secondTitle
   }
 }
 

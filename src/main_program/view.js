@@ -54,13 +54,24 @@ function getDwellBtnDomEl (dwellBtn, getDwellBtnBackgroundColor) {
   if (dwellBtn.colorDot) {
     btnEl.appendChild(getColorDotEl(dwellBtn.colorDot))
   }
-
-  if (dwellBtn.icon) {
-    btnEl.style.backgroundImage = `url(${dwellBtn.icon})`
-  }
-
+  showIcon(btnEl, dwellBtn.icon)
   btnEl.addEventListener('click', dwellBtn.action)
   return btnContainer
+}
+
+function changeDwellBtnIconAndText (dwellBtn, second) {
+  const btnEl = document.getElementById(dwellBtn.domId)
+  showIcon(btnEl, second ? dwellBtn.secondIcon : dwellBtn.icon)
+  const title = second ? dwellBtn.secondTitle : dwellBtn.title
+  if (title) {
+    btnEl.parentNode.querySelector('.dwellBtnTitle').innerHTML = title
+  }
+}
+
+function showIcon (btnEl, icon) {
+  if (btnEl && icon) {
+    btnEl.style.backgroundImage = `url(${icon})`
+  }
 }
 
 function shadeBtnLinear (
@@ -106,6 +117,7 @@ function getBackgroundGrid () {
 }
 
 export {
+  changeDwellBtnIconAndText,
   getBackgroundGrid,
   getDrawingCanvasInContainer,
   getDwellBtnDomEl,

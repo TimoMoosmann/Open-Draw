@@ -2,7 +2,7 @@
 import { createPos } from 'Src/data_types/pos.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types.js'
-import { activateBtnsOnDwell, createBucketListItem, createEmptyBucket } from 'Src/main_program/dwell_detection/dwell_at_btn_detection.js'
+import { activateBtnsOnDwell, createBucketListItem } from 'Src/main_program/dwell_detection/dwell_at_btn_detection.js'
 
 function activateBtnsOnDwellTestSettings (btns, buckets, timedGazePoint, id) {
   return activateBtnsOnDwell({
@@ -15,11 +15,11 @@ function activateBtnsOnDwellTestSettings (btns, buckets, timedGazePoint, id) {
 }
 
 function createStandardDwellBtn ({
-  action, levelTwoAction = false, center, domId
+  action, secondAction = false, center, domId
 }) {
   return createDwellBtn({
     action,
-    levelTwoAction,
+    secondAction,
     center,
     domId,
     size: createPos({ x: 200, y: 200 }),
@@ -42,7 +42,7 @@ test('Simplified typical gaze routine', (done) => {
     domId: 'btnRight'
   })
   const btns = [dwellBtnLeft, dwellBtnRight]
-  const buckets = [createEmptyBucket(), createEmptyBucket()]
+  const buckets = [[], []]
 
   // Gaze at left button
   const timedGazePoint1 = createTimedGazePoint({
@@ -51,11 +51,8 @@ test('Simplified typical gaze routine', (done) => {
   })
   activateBtnsOnDwellTestSettings(btns, buckets, timedGazePoint1, id)
   expect(buckets).toEqual([
-    {
-      list: [createBucketListItem({ id: 0, time: 1000 })],
-      levelOneActionTriggered: false
-    },
-    createEmptyBucket()
+    [createBucketListItem({ id: 0, time: 1000 })],
+    []
   ])
 
   // Gaze at right button
@@ -65,10 +62,10 @@ test('Simplified typical gaze routine', (done) => {
     time: 1200
   })
   activateBtnsOnDwellTestSettings(btns, buckets, timedGazePoint2, id)
-  expect(buckets).toEqual([createEmptyBucket(), {
-    list: [{ id: 1, time: 1200 }],
-    levelOneActionTriggered: false
-  }])
+  expect(buckets).toEqual([
+    [],
+    [{ id: 1, time: 1200 }]
+  ])
 
   // Gaze at right button again, and long time since last gaze
   expect(timesRightBtnTriggered).toBe(0)
@@ -79,7 +76,7 @@ test('Simplified typical gaze routine', (done) => {
   })
   activateBtnsOnDwellTestSettings(btns, buckets, timedGazePoint3, id)
   // After activation bucket list should be empty again.
-  expect(buckets).toEqual([createEmptyBucket(), createEmptyBucket()])
+  expect(buckets).toEqual([[], []])
   expect(timesRightBtnTriggered).toBe(1)
 
   // Another Gaze at right button
@@ -89,10 +86,10 @@ test('Simplified typical gaze routine', (done) => {
     time: 2000
   })
   activateBtnsOnDwellTestSettings(btns, buckets, timedGazePoint4, id)
-  expect(buckets).toEqual([createEmptyBucket(), {
-    list: [{ id: 3, time: 2000 }],
-    levelOneActionTriggered: false
-  }])
+  expect(buckets).toEqual([
+    [],
+    [{ id: 3, time: 2000 }]
+  ])
 
   // Gaze at no button
   id++
@@ -101,7 +98,7 @@ test('Simplified typical gaze routine', (done) => {
     time: 2200
   })
   activateBtnsOnDwellTestSettings(btns, buckets, timedGazePoint5, id)
-  expect(buckets).toEqual([createEmptyBucket(), createEmptyBucket()])
+  expect(buckets).toEqual([[], []])
 
   expect(timesLeftBtnTriggered).toBe(0)
   expect(timesRightBtnTriggered).toBe(1)
@@ -111,16 +108,16 @@ test('Simplified typical gaze routine', (done) => {
 
 test('Very long gaze at button triggers level two action', () => {
   let timesLevelOneActionTriggered = 0
-  let timesLevelTwoActionTriggered = 0
+  let timesSecondActionTriggered = 0
   let timesShadeBtnTriggered = 0
-  const dwellBtnWithLevelTwoAction = createStandardDwellBtn({
+  const dwellBtnWithSecondAction = createStandardDwellBtn({
     action: () => timesLevelOneActionTriggered++,
-    levelTwoAction: () => timesLevelTwoActionTriggered++,
+    secondAction: () => timesSecondActionTriggered++,
     center: createPos({ x: 200, y: 200 }),
     domId: 'btn'
   })
-  const btns = [dwellBtnWithLevelTwoAction]
-  const buckets = [createEmptyBucket()]
+  const btns = [dwellBtnWithSecondAction]
+  const buckets = [[]]
 
   let id = 10
   const gazeAtTwoActionBtn = createTimedGazePoint({
@@ -137,12 +134,11 @@ test('Very long gaze at button triggers level two action', () => {
     },
     timedGazePoint: gazeAtTwoActionBtn
   })
-  expect(buckets).toEqual([{
-    list: [createBucketListItem({ id: 10, time: 1500 })],
-    levelOneActionTriggered: false
-  }])
+  expect(buckets).toEqual([
+    [createBucketListItem({ id: 10, time: 1500 })]
+  ])
   expect(timesLevelOneActionTriggered).toBe(0)
-  expect(timesLevelTwoActionTriggered).toBe(0)
+  expect(timesSecondActionTriggered).toBe(0)
   expect(timesShadeBtnTriggered).toBe(1)
 
   id++
@@ -157,24 +153,21 @@ test('Very long gaze at button triggers level two action', () => {
     id,
     shadeBtn: (id, progress) => {
       timesShadeBtnTriggered++
-      expect([id, progress]).toEqual(['btn', 0])
+      expect([id, progress]).toEqual(['btn', 1])
     }
   })
-  expect(buckets).toEqual([{
-    list: [
-      createBucketListItem({ id: 10, time: 1500 }),
-      createBucketListItem({ id: 11, time: 2000 })
-    ],
-    levelOneActionTriggered: true
-  }])
-  expect(timesLevelOneActionTriggered).toBe(1)
-  expect(timesLevelTwoActionTriggered).toBe(0)
+  expect(buckets).toEqual([[
+    createBucketListItem({ id: 10, time: 1500 }),
+    createBucketListItem({ id: 11, time: 2000 })
+  ]])
+  expect(timesLevelOneActionTriggered).toBe(0)
+  expect(timesSecondActionTriggered).toBe(0)
   expect(timesShadeBtnTriggered).toBe(2)
 
   id++
   const gazeAtTwoActionBtnIII = createTimedGazePoint({
     pos: createPos({ x: 200, y: 200 }),
-    time: 2250
+    time: 2500
   })
   activateBtnsOnDwell({
     btns,
@@ -190,7 +183,7 @@ test('Very long gaze at button triggers level two action', () => {
   id++
   const gazeAtTwoActionBtnIV = createTimedGazePoint({
     pos: createPos({ x: 200, y: 200 }),
-    time: 2500
+    time: 3000
   })
   activateBtnsOnDwell({
     btns,
@@ -202,15 +195,15 @@ test('Very long gaze at button triggers level two action', () => {
       expect([id, progress]).toEqual(['btn', 1])
     }
   })
-  expect(buckets).toEqual([createEmptyBucket()])
-  expect(timesLevelOneActionTriggered).toBe(1)
-  expect(timesLevelTwoActionTriggered).toBe(1)
-  expect(timesShadeBtnTriggered).toBe(3)
+  expect(buckets).toEqual([[]])
+  expect(timesLevelOneActionTriggered).toBe(0)
+  expect(timesSecondActionTriggered).toBe(1)
+  expect(timesShadeBtnTriggered).toBe(4)
 
   id++
   const gazeAtTwoActionBtnV = createTimedGazePoint({
     pos: createPos({ x: 200, y: 200 }),
-    time: 3000
+    time: 3500
   })
   activateBtnsOnDwell({
     btns,
@@ -224,7 +217,7 @@ test('Very long gaze at button triggers level two action', () => {
   id++
   const gazeAtTwoActionBtnVI = createTimedGazePoint({
     pos: createPos({ x: 200, y: 200 }),
-    time: 3500
+    time: 4000
   })
   activateBtnsOnDwell({
     btns,
@@ -235,10 +228,11 @@ test('Very long gaze at button triggers level two action', () => {
       timesShadeBtnTriggered++
     }
   })
+  expect(timesLevelOneActionTriggered).toBe(0)
   id++
   const targetMissingGaze = createTimedGazePoint({
     pos: createPos({ x: 800, y: 200 }),
-    time: 3600
+    time: 4100
   })
   activateBtnsOnDwell({
     btns,
@@ -249,5 +243,8 @@ test('Very long gaze at button triggers level two action', () => {
       timesShadeBtnTriggered++
     }
   })
-  expect(buckets).toEqual([createEmptyBucket()])
+  expect(buckets).toEqual([[]])
+  expect(timesLevelOneActionTriggered).toBe(1)
+  expect(timesSecondActionTriggered).toBe(1)
+  expect(timesShadeBtnTriggered).toBe(7)
 })

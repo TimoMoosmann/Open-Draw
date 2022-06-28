@@ -14,6 +14,8 @@ import moveDownIcon from 'Assets/icons/arrow_down.png'
 import moveLeftIcon from 'Assets/icons/arrow_left.png'
 import moveRightIcon from 'Assets/icons/arrow_right.png'
 import moveUpIcon from 'Assets/icons/arrow_up.png'
+import switchIcon from 'Assets/icons/switch.png'
+import quitIcon from 'Assets/icons/close.png'
 
 function getMoveMode (app) {
   if (app.settings.useSimpleBtnPatterns) {
@@ -150,10 +152,13 @@ function getChangeOrQuitBtn (nextState, app, btnSize) {
   }
   return createDwellBtn({
     action: () => activateMode(app, getNextMode(app, btnSize)),
-    levelTwoAction: () => activateMode(app, getMainMenuClosedMode(app)),
+    secondAction: () => activateMode(app, getMainMenuClosedMode(app)),
     domId: 'quitOrChangeBtn',
+    icon: switchIcon,
+    secondIcon: quitIcon,
     size: btnSize,
-    title: 'Wechseln / Beenden'
+    title: 'Wechseln / Beenden',
+    secondTitle: 'Beenden'
   })
 }
 
