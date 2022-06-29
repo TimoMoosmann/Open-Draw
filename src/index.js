@@ -1,32 +1,10 @@
 /* global webgazer */
-import { addPositions, createPos, dividePositions, scalePosByVal } from 'Src/data_types/pos.js'
-import { getViewport } from 'Src/util/browser.js'
-import { createLine } from 'Src/main_program/data_types/line.js'
-import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
-import { createZoom } from 'Src/main_program/data_types/zoom.js'
-import { getDrawingCanvas } from 'Src/main_program/drawing_canvas.js'
-import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
-import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
-import { activateMode } from 'Src/main_program/modes/main.js'
-import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'
-import { getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
-import { getGazeDot } from 'Src/setup_webgazer/gaze_dot.js'
-import { setupWebgazer } from 'Src/setup_webgazer/main.js'
-import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
-import { showWebgazerVideoWhenFaceIsNotDetected } from 'Src/webgazer_extensions/setup/main.js'
-
-import { mainSettings } from '../settings/main.js'
-
-import {
-  borderAcc,
-  borderPrec,
-  defaultLineWidth,
-  gazeDotRefreshesPerSecond,
-  minDistToEdgeInPct,
-  standardGazeDotColor
-} from 'Settings'
+import { createAndStartApp } from 'Src/startup_helper.js'
+import { mainSettings } from 'NewSettings/main.js'
 
 async function main () {
+  await createAndStartApp(mainSettings)
+  /*
   const app = {
     settings: mainSettings,
     rootDomEl: document.body,
@@ -73,12 +51,12 @@ async function main () {
   app.rootDomEl.appendChild(drawingCanvasContainer)
   app.drawingCanvas = getDrawingCanvas(drawingCanvasDomEl)
 
-  app.backgroundGrid = getBackgroundGrid()
-  app.rootDomEl.appendChild(app.backgroundGrid)
+  const backgroundGrid = getBackgroundGrid()
+  app.rootDomEl.appendChild(backgroundGrid)
   app.showBackgroundGrid = show => {
     show
-      ? app.backgroundGrid.style.visibility = 'visible'
-      : app.backgroundGrid.style.visibility = 'hidden'
+      ? backgroundGrid.style.visibility = 'visible'
+      : backgroundGrid.style.visibility = 'hidden'
   }
 
   app.gazeDot = getGazeDot({
@@ -88,7 +66,7 @@ async function main () {
     rootEl: app.rootDomEl
   })
   if (app.settings.eyeModeOn) {
-    app.webgazer = await makeWebgazerReady()
+    await setupWebgazerNormal(app)
     activateMode(app, getCalibrationMode())
     document.addEventListener('keydown', event => {
       if (event.key === 'r' && app.activeMode.name !== 'calibration') {
@@ -111,33 +89,7 @@ async function main () {
 
     activateMode(app, getMainMenuClosedMode(app))
   }
-}
-
-async function makeWebgazerReady () {
-  const webgazerLocal = webgazer
-  await setupWebgazer({
-    webgazer: webgazerLocal,
-    mouseModeOn: false,
-    root: document.body
-  })
-  showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal)
-  return webgazerLocal
-}
-
-function calcNumBtnsFitOnScreen (app) {
-  const distToNeighbor = dividePositions(
-    getSmallDistToNeighborTarget(app), getViewport()
-  )
-  const distToEdge = scalePosByVal(minDistToEdgeInPct, 1 / 100)
-  const btnSize = dividePositions(app.minGazeTargetSize, getViewport())
-  return dividePositions(
-    addPositions(
-      createPos({ x: 1, y: 1 }),
-      scalePosByVal(distToEdge, -2),
-      distToNeighbor
-    ),
-    addPositions(btnSize, distToNeighbor)
-  )
+  */
 }
 
 main()

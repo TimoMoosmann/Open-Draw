@@ -1,6 +1,17 @@
 import { addPositions, createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 
+export const colors = [
+  '#0036FA', // Blue
+  '#FA000C', // Red
+  '#FFFC38', // Yellow
+  '#0CFA00', // Green
+  '#A800BA', // Purple,
+  '#FF6905', // Orange
+  '#000000', // Black
+  '#909090' // Grey
+]
+
 export const mainSettings = {
   /*
    * Main Settings
@@ -8,7 +19,7 @@ export const mainSettings = {
   // Turn eyeMode off to just look around without using eye tracking.
   eyeModeOn: false,
   lang: 'de',
-
+  debugOn: false,
   /*
    * Dwell Detection Settings
    */
@@ -29,6 +40,7 @@ export const mainSettings = {
   perfectAccRel: createPos({ x: 0.03, y: 0.06 }),
   // Minimum recommended Relative Precision
   borderPrecRel: createPos({ x: 0.06, y: 0.1 }),
+
   /*
    * DwellBtn Settings
    */
@@ -36,7 +48,20 @@ export const mainSettings = {
   getDwellBtnBackgroundColor: alpha => {
     return `rgba(112, 128, 144, ${alpha})`
   },
-  minDistToEdgeRel: createPos({ x: 0.05, y: 0.05 })
+  minDistToEdgeRel: createPos({ x: 0.05, y: 0.05 }),
+
+  /*
+   * Line Settings
+   */
+  defaultColor: colors[0],
+  defaultLineWidth: 2,
+
+
+  /*
+   * Webgazer Settings
+   */
+  standardGazeDotColor: 'blue',
+  gazeDotRefreshesPerSecond: 20
 }
 
 /*
@@ -87,22 +112,5 @@ export const drawStateGazeDotColors = {
 /*
  * Line Settings
  */
-export const colors = [
-  '#0036FA', // Blue
-  '#FA000C', // Red
-  '#FFFC38', // Yellow
-  '#0CFA00', // Green
-  '#A800BA', // Purple,
-  '#FF6905', // Orange
-  '#000000', // Black
-  '#909090' // Grey
-]
-export const defaultColor = colors[0]
-export const defaultLineWidth = 2
 export const maxLineWidth = 10
 
-/*
- * Webgazer Settings
- */
-export const standardGazeDotColor = 'blue'
-export const gazeDotRefreshesPerSecond = 20

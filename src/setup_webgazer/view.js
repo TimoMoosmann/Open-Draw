@@ -8,7 +8,7 @@ import '../../assets/css/setup.css'
 
 function getSetupInstructionsPage ({
   bigTitle = true,
-  language = 'german',
+  lang,
   title = 'Welcome to Open Draw',
   videoSize = createPos({ x: 320, y: 240 })
 } = {}) {
@@ -26,7 +26,7 @@ function getSetupInstructionsPage ({
       </div>
       <div id="setupInstructions" class="centeredContent">
         <ol>
-          ${getSetupInstructions(language).map(instruction =>
+          ${getSetupInstructions(lang).map(instruction =>
             `<li>${instruction}</li>`
           )}
         </ol>
@@ -35,16 +35,16 @@ function getSetupInstructionsPage ({
   `)
 }
 
-function getSetupInstructions (language = 'german') {
-  switch (language) {
-    case 'english':
+function getSetupInstructions (lang) {
+  switch (lang) {
+    case 'en':
       return [
         'Please <b>give camera permissions</b> to our application.',
         '<b>Wait</b> until you see the camera view (can take up to 60s).',
         '<b>Center your head in the camera view</b> until it turns green.',
         'When you are ready to start, <b>click on the screen</b>.'
       ]
-    case 'german':
+    case 'de':
       return [
         'Bitte <b>erlauben sie die Kameranutzung</b> für diese Anwendung',
         '<b>Warten sie</b> bis das Kamerabild erscheint' +
@@ -54,7 +54,7 @@ function getSetupInstructions (language = 'german') {
         'Wenn sie bereit sind, <b>klicken sie irgendwo auf den Bilschirm</b>'
       ]
     default:
-      throw new Error(`Language: ${language} is not available.`)
+      throw new Error(`Lang: ${lang} is not available.`)
   }
 }
 

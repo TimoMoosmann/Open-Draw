@@ -1,20 +1,23 @@
 import { getSetupInstructionsPage } from 'Src/setup_webgazer/view.js'
 import { createPos } from 'Src/data_types/pos.js'
-import { attachWebgazerVideo, initWebgazer } from 'Src/webgazer_extensions/setup/main.js'
+import {
+  attachWebgazerVideo, initWebgazer, showWebgazerVideoWhenFaceIsNotDetected
+} from 'Src/webgazer_extensions/setup/main.js'
 
 const setupWebgazer = ({
   webgazer,
   bigTitle = true,
-  language = 'german',
+  lang = 'de',
   mouseModeOn = false,
-  root = document.body,
+  root,
+  showVideoWhenFaceIsNotDetected = true,
   title = 'Open Draw'
 } = {}) => {
   return new Promise(resolve => {
     const videoSize = createPos({ x: 320, y: 240 })
     const page = getSetupInstructionsPage({
       bigTitle,
-      language,
+      lang,
       title,
       videoSize
     })
@@ -30,6 +33,10 @@ const setupWebgazer = ({
                 document.getElementById('webgazerVideoContainer')
               )
               page.remove()
+
+              if (showVideoWhenFaceIsNotDetected) {
+                showWebgazerVideoWhenFaceIsNotDetected(webgazer)
+              }
               resolve()
             }
           : () => {}
