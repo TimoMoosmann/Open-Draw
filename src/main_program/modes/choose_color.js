@@ -11,7 +11,7 @@ function getChooseColorMode (app) {
   for (let i = 1; i < colors.length; i++) {
     colorDwellBtns.push(createDwellBtnWithColorDot({
       action: () => {
-        app.state.color = colors[i]
+        app.state.newLineProperties.color = colors[i]
         activateMode(app, getMainMenuClosedMode(app))
       },
       colorDot: colors[i],

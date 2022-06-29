@@ -1,6 +1,7 @@
 import { scalePosByVal } from 'Src/data_types/pos.js'
 import { createEllipse, inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { createLine } from 'Src/main_program/data_types/line.js'
+import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
@@ -8,7 +9,7 @@ import { runTwoStepDwellDetection } from 'Src/main_program/dwell_detection/two_s
 import { clearScreenPointListeners } from 'Src/util/main.js'
 
 import {
-  drawStateDwellDuration, lang, lookStateDwellDuration,
+  drawStateDwellDuration, lookStateDwellDuration,
   markPointHalfSize, markPointStrokeProperties,
   safetyEllipseLineDash, safetyEllipseStrokeProperties
 } from 'Settings'
@@ -73,7 +74,11 @@ class DrawLineMode {
             drawState.startPoint, 1 / app.state.zoom.level.factor
           ),
           endPoint: scalePosByVal(drawState.endPoint, 1 / app.state.zoom.level.factor),
-          strokeProperties: app.state.newLineProperties
+          strokeProperties: createStrokeProperties({
+            color: app.state.newLineProperties.color,
+            lineWidth:
+              app.state.newLineProperties.lineWidth
+          })
         }))
         app.state.linesBuffer = JSON.parse(JSON.stringify(app.state.lines))
         app.state.linesBufferIdx = app.state.linesBuffer.length - 1
@@ -120,11 +125,11 @@ class DrawLineMode {
     if (drawState.endPoint) {
       // preview Line
       drawMarkPoint(drawState.endPoint)
-      const newLinePreviewProperties = app.state.newLineProperties
+      const newLinePreviewProperties = createStrokeProperties(
+        app.state.newLineProperties
+      )
       newLinePreviewProperties.lineWidth =
-        scalePosByVal(
-          newLinePreviewProperties.lineWidth, app.state.zoom.level.factor
-        )
+          newLinePreviewProperties.lineWidth * app.state.zoom.level.factor
       drawLine(createLine({
         startPoint: drawState.startPoint,
         endPoint: drawState.endPoint,

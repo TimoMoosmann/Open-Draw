@@ -4,8 +4,15 @@ import { html } from 'common-tags'
 
 import 'Assets/css/main_program.css'
 
-function getLineWidthDisplay (lineWidth, left, top, lang) {
-  return createElementFromHTML(html`
+function getLineWidthDisplay ({
+  lineWidth,
+  left,
+  top,
+  anchorIsCenterX,
+  anchorIsCenterY,
+  lang
+}) {
+  const displayEl = createElementFromHTML(html`
     <div
       id="lineWidthDisplayContainer"
       style="left: ${left}px;top: ${top}px"
@@ -16,6 +23,13 @@ function getLineWidthDisplay (lineWidth, left, top, lang) {
       </h2>
     </div>
   `)
+  if (anchorIsCenterX) {
+    displayEl.style.transform = 'translateX(-50%)'
+  }
+  if (anchorIsCenterY) {
+    displayEl.style.transform += 'translateY(-50%)'
+  }
+  return displayEl
 }
 
 export {

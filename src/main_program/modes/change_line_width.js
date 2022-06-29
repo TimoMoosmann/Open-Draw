@@ -2,10 +2,11 @@ import { createDwellBtn, createDwellBtnFromDwellBtn } from 'Src/main_program/dat
 import { redraw } from 'Src/main_program/draw.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { getLineWidthDisplay } from 'Src/main_program/modes/view.js'
-import { arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
+import { arrangeBtnsTwoHighOneLow, arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
 import {
   getQuitBtn, getSmallDistToNeighborTarget
 } from 'Src/main_program/util.js'
+import { vw } from 'Src/util/browser.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { maxLineWidth } from 'Settings'
 
@@ -27,22 +28,49 @@ function getChangeLineWidthMode (app) {
     size: btnSize
   })
 
-  let [arrangedIncreaseBtn, arrangedDecreaseBtn, arrangedQuitBtn] =
-    arrangeTwoBtnsUpperLeftOneBtnLowerRight({
-      btns: [increaseBtn, decreaseBtn, quitBtn],
-      dispersionThreshold: app.dispersionThreshold,
-      minDistToEdge: getAbsPosFromPosRelativeToViewport(
-        app.settings.minDistToEdgeRel
-      )
-    })
-
-  const displayLeft = arrangedDecreaseBtn.ellipse.center.x +
-    arrangedDecreaseBtn.ellipse.radii.x + getSmallDistToNeighborTarget(app).x
-  const displayTop = arrangedIncreaseBtn.ellipse.center.y
-  const lineWidthDisplay = getLineWidthDisplay(
-    app.state.newLineProperties.lineWidth, displayLeft, displayTop,
-    app.settings.lang
+  const minDistToEdge = getAbsPosFromPosRelativeToViewport(
+    app.settings.minDistToEdgeRel
   )
+  let [arrangedIncreaseBtn, arrangedDecreaseBtn, arrangedQuitBtn] =
+    [false, false, false]
+  if (app.settings.useSimpleBtnPatterns) {
+    [arrangedIncreaseBtn, arrangedQuitBtn, arrangedDecreaseBtn] =
+      arrangeBtnsTwoHighOneLow(
+        [increaseBtn, quitBtn, decreaseBtn], minDistToEdge
+      )
+  } else {
+    [arrangedIncreaseBtn, arrangedDecreaseBtn, arrangedQuitBtn] =
+      arrangeTwoBtnsUpperLeftOneBtnLowerRight({
+        btns: [increaseBtn, decreaseBtn, quitBtn],
+        dispersionThreshold: app.dispersionThreshold,
+        minDistToEdge
+      })
+  }
+
+  let displayLeft = false
+  let displayTop = false
+  let anchorIsCenterX = false
+  let anchorIsCenterY = false
+  if (app.settings.useSimpleBtnPatterns) {
+    displayLeft = vw() / 2
+    displayTop = minDistToEdge.y
+    anchorIsCenterX = true
+    anchorIsCenterY = false
+  } else {
+    displayLeft = arrangedDecreaseBtn.ellipse.center.x +
+      arrangedDecreaseBtn.ellipse.radii.x + getSmallDistToNeighborTarget(app).x
+    displayTop = arrangedIncreaseBtn.ellipse.center.y
+    anchorIsCenterX = false
+    anchorIsCenterY = true
+  }
+  const lineWidthDisplay = getLineWidthDisplay({
+    lineWidth: app.state.newLineProperties.lineWidth,
+    left: displayLeft,
+    top: displayTop,
+    anchorIsCenterX,
+    anchorIsCenterY,
+    lang: app.settings.lang
+  })
 
   arrangedIncreaseBtn.action = () => {
     if (app.state.newLineProperties.lineWidth < maxLineWidth) {
