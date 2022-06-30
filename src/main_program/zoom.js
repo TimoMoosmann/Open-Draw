@@ -1,4 +1,4 @@
-import { addPositions, createPos, scalePosByPos, scalePosByVal, subPositions } from 'Src/data_types/pos.js'
+import { addPositions, createPos, dividePositions, scalePosByPos, scalePosByVal, subPositions } from 'Src/data_types/pos.js'
 import { getViewport } from 'Src/util/browser.js'
 
 // To solve problems with floating arithmetic. Snapping to edges of the
@@ -121,10 +121,14 @@ function zoomPos (pos, zoom) {
   )
 }
 
-function unzoomPos (pos, zoom) {
-  return addPositions(
-    scalePosByVal(pos, 1 / zoom.level.factor),
-    scalePosByPos(zoom.canvasOffsetFactor, getViewport())
+function unzoomPos (zoomedPos, zoom) {
+  //  scalePosByVal(pos, 1 / zoom.level.factor),
+  return scalePosByVal(
+    addPositions(
+      zoomedPos,
+      scalePosByPos(zoom.canvasOffsetFactor, getViewport())
+    ),
+    1 / zoom.level.factor
   )
 }
 

@@ -6,6 +6,7 @@ import { drawLine, redraw } from 'Src/main_program/draw.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { runTwoStepDwellDetection } from 'Src/main_program/dwell_detection/two_step_dwell_detection.js'
+import { unzoomPos } from 'Src/main_program/zoom.js'
 import { clearScreenPointListeners } from 'Src/util/main.js'
 
 import {
@@ -70,10 +71,8 @@ class DrawLineMode {
     if (dwellPoint) {
       if (drawState.endPoint) {
         app.state.lines.push(createLine({
-          startPoint: scalePosByVal(
-            drawState.startPoint, 1 / app.state.zoom.level.factor
-          ),
-          endPoint: scalePosByVal(drawState.endPoint, 1 / app.state.zoom.level.factor),
+          startPoint: unzoomPos(drawState.startPoint, app.state.zoom),
+          endPoint: unzoomPos(drawState.endPoint, app.state.zoom),
           strokeProperties: createStrokeProperties({
             color: app.state.newLineProperties.color,
             lineWidth:
