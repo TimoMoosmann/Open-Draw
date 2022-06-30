@@ -3,6 +3,7 @@
  * dwell at Btn detection only collects screenpoints that hit a button.
  */
 import { createTimedGazePoint } from 'Src/main_program/dwell_detection/data_types.js'
+import { getTimeSpan } from 'Src/main_program/dwell_detection/util.js'
 import { inEllipse } from 'Src/main_program/data_types/ellipse.js'
 import { changeDwellBtnIconAndText, shadeBtnLinear } from 'Src/main_program/view.js'
 import { addScreenPointListener } from 'Src/util/main.js'
@@ -71,10 +72,6 @@ function activateBtnsOnDwell ({
   }
 }
 
-function getTimeSpan (orderedTimeArray) {
-  return orderedTimeArray[orderedTimeArray.length - 1] - orderedTimeArray[0]
-}
-
 function activateDwellBtnGazeListener ({
   app,
   dwellBtns,
@@ -82,24 +79,30 @@ function activateDwellBtnGazeListener ({
 }) {
   const buckets = dwellBtns.map(() => [])
   let id = 0
-  addScreenPointListener(app, 'dwell_at_btn', (gazePoint, elapsedTime) => {
-    const timedGazePoint = createTimedGazePoint({
-      pos: gazePoint,
-      time: elapsedTime
-    })
+  addScreenPointListener(
+    app.webgazer,
+    app.mouseListeners,
+    'dwell_at_btn',
+    (gazePoint, elapsedTime) => {
+      if (!gazePoint) return
+      const timedGazePoint = createTimedGazePoint({
+        pos: gazePoint,
+        time: elapsedTime
+      })
 
-    activateBtnsOnDwell({
-      btns: dwellBtns,
-      buckets,
-      changeIconAndText: changeDwellBtnIconAndText,
-      id,
-      shadeBtn: (id, progress) => {
-        shadeBtnLinear(id, progress, getDwellBtnBackgroundColor)
-      },
-      timedGazePoint
-    })
-    id++
-  })
+      activateBtnsOnDwell({
+        btns: dwellBtns,
+        buckets,
+        changeIconAndText: changeDwellBtnIconAndText,
+        id,
+        shadeBtn: (id, progress) => {
+          shadeBtnLinear(id, progress, getDwellBtnBackgroundColor)
+        },
+        timedGazePoint
+      })
+      id++
+    }
+  )
 }
 
 function createBucketListItem ({ id, time }) {

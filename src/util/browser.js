@@ -67,31 +67,29 @@ function encodeFormAsURI (form) {
   return encodedDataPairs.join('&').replace(/%20/g, '+')
 }
 
-function addMouseListener (app, listenerName, onMousePos) {
-  if (!app.mouseListeners) app.mouseListeners = {}
+function addMouseListener (mouseListeners, listenerName, onMousePos) {
   let screenPos = false
   let time = false
   document.body.addEventListener('mousemove', e => {
     screenPos = createPos({ x: e.clientX, y: e.clientY })
   })
-  app.mouseListeners[listenerName] = setInterval(() => {
+  mouseListeners[listenerName] = setInterval(() => {
     time = Date.now()
     if (screenPos && time) onMousePos(screenPos, time)
   }, 50)
 }
 
-function removeMouseListener (app, listenerName) {
-  if (app.mouseListeners[listenerName]) {
-    clearInterval(app.mouseListeners[listenerName])
-    delete app.mouseListeners[listenerName]
+function removeMouseListener (mouseListeners, listenerName) {
+  if (mouseListeners[listenerName]) {
+    clearInterval(mouseListeners[listenerName])
+    delete mouseListeners[listenerName]
   }
 }
 
-function clearMouseListeners (app) {
-  for (const listenerId of Object.values(app.mouseListeners)) {
-    clearInterval(listenerId)
+function clearMouseListeners (mouseListeners) {
+  for (const listenerName of Object.keys(mouseListeners)) {
+    removeMouseListener(mouseListeners, listenerName)
   }
-  app.mouseListeners = {}
 }
 
 export {

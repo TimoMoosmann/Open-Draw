@@ -8,6 +8,11 @@ function getCenterPoint (posArr) {
   })
 }
 
+function getTimeSpan (orderedTimeArray) {
+  return orderedTimeArray[orderedTimeArray.length - 1] - orderedTimeArray[0]
+}
+
 export {
-  getCenterPoint
+  getCenterPoint,
+  getTimeSpan
 }

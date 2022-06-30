@@ -70,7 +70,7 @@ test(
 
 test(
   'A false fixation (is triggerd at the end of a fixation), ' +
-  'should not trigger an action, but reset currentBtnProgress to null' +
+  'should not trigger an action, but reset currentBtnProgress to 0' +
   'and redraw current button with 0 progress',
   done => {
     let displayCurrentBtnProgressTriggered = false

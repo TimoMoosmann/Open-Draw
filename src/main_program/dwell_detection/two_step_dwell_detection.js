@@ -21,15 +21,19 @@ function runTwoStepDwellDetection ({
     secondStepDurationThreshold
   })
 
-  addScreenPointListener(app, 'dwell_at_btn', (gazePoint, time) => {
-    const { dwellPoint, step } = dwellDetector.step(
-      createTimedGazePoint({ pos: gazePoint, time })
-    )
-    if (step) {
-      if (step === 1) onFirstStep(dwellPoint)
-      else if (step === 2) onSecondStep(dwellPoint)
+  addScreenPointListener(
+    app.webgazer, app.mouseListeners, 'dwell_at_btn',
+    (gazePoint, time) => {
+      if (!gazePoint) return
+      const { dwellPoint, step } = dwellDetector.step(
+        createTimedGazePoint({ pos: gazePoint, time })
+      )
+      if (step) {
+        if (step === 1) onFirstStep(dwellPoint)
+        else if (step === 2) onSecondStep(dwellPoint)
+      }
     }
-  })
+  )
 }
 
 function getTwoStepDwellDetector ({

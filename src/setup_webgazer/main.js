@@ -37,7 +37,7 @@ const setupWebgazer = ({
               if (showVideoWhenFaceIsNotDetected) {
                 showWebgazerVideoWhenFaceIsNotDetected(webgazer)
               }
-              resolve()
+              resolve(webgazer)
             }
           : () => {}
       },

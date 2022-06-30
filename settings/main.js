@@ -56,7 +56,6 @@ export const mainSettings = {
   defaultColor: colors[0],
   defaultLineWidth: 2,
 
-
   /*
    * Webgazer Settings
    */
@@ -113,4 +112,3 @@ export const drawStateGazeDotColors = {
  * Line Settings
  */
 export const maxLineWidth = 10
-

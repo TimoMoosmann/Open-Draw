@@ -19,6 +19,10 @@ function getCalibrationMode () {
 class CalibrationMode {
   name = 'calibration'
 
+  constructor (onCalibrated = () => {}) {
+    this.onCalibrated = onCalibrated
+  }
+
   start (app) {
     getCalibrationResults({
       borderAcc: app.settings.borderAccRel,
@@ -39,6 +43,7 @@ class CalibrationMode {
       if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
         app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
       }
+      this.onCalibrated()
       activateMode(app, getMainMenuClosedMode(app))
     })
   }

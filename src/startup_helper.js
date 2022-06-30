@@ -5,6 +5,7 @@ import { createLine } from 'Src/main_program/data_types/line.js'
 import { createStrokeProperties } from 'Src/main_program/data_types/stroke_properties.js'
 import { createZoom } from 'Src/main_program/data_types/zoom.js'
 import { getDrawingCanvas } from 'Src/main_program/drawing_canvas.js'
+import { getGazeAtDwellBtnListener } from 'Src/main_program/dwell_detection/dwell_at_btn_listener.js'
 import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
@@ -14,7 +15,7 @@ import { getGazeDot } from 'Src/setup_webgazer/gaze_dot.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
-async function createAndStartApp (settings, showTestLines = false) {
+async function createAndStartApp (settings, showTestLines = true) {
   const getTestLines = () => [
     createLine({
       startPoint: createPos({ x: 100, y: 200 }),
@@ -82,10 +83,13 @@ async function createAndStartApp (settings, showTestLines = false) {
     activateMode(app, getCalibrationMode())
     document.addEventListener('keydown', event => {
       if (event.key === 'r' && app.activeMode.name !== 'calibration') {
-        activateMode(app, getCalibrationMode())
+        activateMode(app, getCalibrationMode(
+          setupDwellDetectionListener(app)
+        ))
       }
     })
   } else {
+    app.mouseListeners = {}
     const acc = getAbsPosFromPosRelativeToViewport(app.settings.borderAccRel)
     const prec = getAbsPosFromPosRelativeToViewport(app.settings.borderPrecRel)
 
@@ -93,6 +97,7 @@ async function createAndStartApp (settings, showTestLines = false) {
       app.settings.dwellBtnDetectionAlgorithm
     ](acc, prec)
     app.dispersionThreshold = app.settings.getDispersionThreshold(prec)
+    setupDwellDetectionListener(app)
 
     if (app.settings.debugOn) {
       // print how many btns fit in x and y direction every time the app
@@ -114,6 +119,13 @@ async function setupWebgazerNormal (app) {
     root: app.rootDomEl,
     showVideoWhenFaceIsNotDetected: true
   })
+}
+
+function setupDwellDetectionListener (app) {
+  if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
+    app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
+    console.log(app.gazeAtDwellBtnListener)
+  }
 }
 
 function calcNumBtnsFitOnScreen (app) {

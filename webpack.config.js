@@ -2,7 +2,10 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    main: './src/index.js',
+    simple: './src/index_files/simple.js',
+    simple_debug: './src/index_files/simple_debug.js',
+    sophisticated: './src/index_files/sophisticated.js',
+    sophisticated_debug: './src/index_files/sophisticated_debug.js',
     study: './src/calibration_study/index.js',
     tests: './test_views/index.js'
   },

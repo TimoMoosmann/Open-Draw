@@ -57,7 +57,7 @@ function addCanvasToRootAndDrawLines (app) {
 }
 
 function endDwellBtnListener (app) {
-  clearScreenPointListeners(app)
+  clearScreenPointListeners(app.webgazer, app.mouseListeners)
   app.gazeDot.hide()
   if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
     app.gazeAtDwellBtnListener.unregister()

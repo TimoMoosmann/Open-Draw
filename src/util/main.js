@@ -1,10 +1,11 @@
 import { dividePositions, scalePosByPos } from 'Src/data_types/pos.js'
 import { addMouseListener, clearMouseListeners, getViewport, removeMouseListener } from 'Src/util/browser.js'
+import { calcXor } from 'Src/util/math.js'
 import { addGazeListener, clearGazeListeners, removeGazeListener } from 'Src/webgazer_extensions/helper.js'
 
 function popRandomItem (arr) {
   return arr.splice(Math.floor(Math.random() * arr.length), 1)[0]
-};
+}
 
 function getPosRelativeToViewport ({
   pos, viewport = getViewport()
@@ -18,27 +19,44 @@ function getAbsPosFromPosRelativeToViewport (
   return scalePosByPos(relPos, viewport)
 }
 
-function addScreenPointListener (app, listenerName, listener) {
-  if (app.eyeModeOn) {
-    addGazeListener(app.webgazer, listenerName, listener)
+function addScreenPointListener (
+  webgazer,
+  mouseListeners = false,
+  listenerName,
+  listener
+) {
+  checkWebgazerOrMouseListenersGiven(webgazer, mouseListeners)
+  if (webgazer) {
+    addGazeListener(webgazer, listenerName, listener)
   } else {
-    addMouseListener(app, listenerName, listener)
+    addMouseListener(mouseListeners, listenerName, listener)
   }
 }
 
-function removeScreenPointListener (app, listenerName) {
-  if (app.eyeModeOn) {
-    removeGazeListener(app.webgazer, listenerName)
+function removeScreenPointListener (
+  webgazer, mouseListeners = false, listenerName
+) {
+  if (webgazer) {
+    removeGazeListener(webgazer, listenerName)
   } else {
-    removeMouseListener(app, listenerName)
+    removeMouseListener(mouseListeners, listenerName)
   }
 }
 
-function clearScreenPointListeners (app) {
-  if (app.eyeModeOn) {
-    clearGazeListeners(app.webgazer)
+function clearScreenPointListeners (webgazer, mouseListeners = false) {
+  checkWebgazerOrMouseListenersGiven(webgazer, mouseListeners)
+  if (webgazer) {
+    clearGazeListeners(webgazer)
   } else {
-    clearMouseListeners(app)
+    clearMouseListeners(mouseListeners)
+  }
+}
+
+function checkWebgazerOrMouseListenersGiven (webgazer, mouseListeners) {
+  if (!calcXor(webgazer, mouseListeners)) {
+    throw new TypeError(
+      'Function needs either mouseListeners or webgazer, but not both.'
+    )
   }
 }
 

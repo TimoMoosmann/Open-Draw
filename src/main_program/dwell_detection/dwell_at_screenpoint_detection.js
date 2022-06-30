@@ -1,7 +1,7 @@
 import {
   createPos, getMaxXAndY, getMinXAndY, isPosLowerThanOrEqual, subPositions
 } from 'Src/data_types/pos.js'
-import { getCenterPoint } from 'Src/main_program/dwell_detection/util.js'
+import { getCenterPoint, getTimeSpan } from 'Src/main_program/dwell_detection/util.js'
 import { addScreenPointListener } from 'Src/util/main.js'
 
 import { Item, List } from 'OtherModules/linked-list.js'
@@ -16,22 +16,25 @@ function runWebgazerFixationDetection ({
   const timedGazePositions = new List()
   let lastDetectionWasAFixation = false
 
-  addScreenPointListener(app, 'dwell_at_screenpoint', (gazePos, timestamp) => {
-    if (!gazePos) return false
+  addScreenPointListener(
+    app.webgazer, app.mouseListeners, 'dwell_at_screenpoint',
+    (gazePos, timestamp) => {
+      if (!gazePos) return false
 
-    timedGazePositions.append(createTimedPosItem({ timestamp, pos: gazePos }))
+      timedGazePositions.append(createTimedPosItem({ timestamp, pos: gazePos }))
 
-    const fixation = idtOneIteration({
-      dispersionThreshold,
-      durationThreshold,
-      maxFixationDuration,
-      timedGazePositions
-    })
-    if (fixation || lastDetectionWasAFixation) {
-      onFixation(fixation)
+      const fixation = idtOneIteration({
+        dispersionThreshold,
+        durationThreshold,
+        maxFixationDuration,
+        timedGazePositions
+      })
+      if (fixation || lastDetectionWasAFixation) {
+        onFixation(fixation)
+      }
+      if (fixation) lastDetectionWasAFixation = true
     }
-    if (fixation) lastDetectionWasAFixation = true
-  })
+  )
 }
 
 function idtOneIteration ({
@@ -40,10 +43,13 @@ function idtOneIteration ({
   maxFixationDuration,
   timedGazePositions
 }) {
-  if (maxFixationDuration) {
-    fitTimedPositionsInMaxFixationDuration({
-      maxFixationDuration, timedGazePositions
-    })
+  if (
+    getTimeSpan(timedGazePositions.toArray().map(el => el.timestamp)) >
+    maxFixationDuration
+  ) {
+    for (const timedGazePos of timedGazePositions) {
+      timedGazePos.detach()
+    }
   }
   if (timedGazePositions.size >= 2) {
     fitTimedPositionsInDispersionThreshold({
@@ -68,24 +74,6 @@ function idtOneIteration ({
     }
   }
   return false
-}
-
-function fitTimedPositionsInMaxFixationDuration ({
-  maxFixationDuration, timedGazePositions
-}) {
-  let currentTimedPos = (timedGazePositions.size > 1)
-    ? timedGazePositions.tail.prev
-    : false
-  while (currentTimedPos) {
-    if (
-      (timedGazePositions.tail.timestamp - currentTimedPos.timestamp) >
-      maxFixationDuration
-    ) {
-      removeFromElToHead(currentTimedPos)
-      break
-    }
-    currentTimedPos = currentTimedPos.prev
-  }
 }
 
 function fitTimedPositionsInDispersionThreshold ({

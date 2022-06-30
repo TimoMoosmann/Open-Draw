@@ -40,7 +40,15 @@ function calcSampleStandardDeviation (sample) {
   ))
 }
 
+function calcXor (a, b) {
+  return !(a && b) && (a || b)
+}
+
 export {
-  mean, meanOffset, round, calcPopulationStandardDeviation,
+  calcXor,
+  mean,
+  meanOffset,
+  round,
+  calcPopulationStandardDeviation,
   calcSampleStandardDeviation
 }

@@ -140,7 +140,7 @@ class DrawLineMode {
 
   stop (app) {
     app.showBackgroundGrid(false)
-    clearScreenPointListeners(app)
+    clearScreenPointListeners(app.webgazer, app.mouseListeners)
     app.drawingCanvas.clear()
   }
 }

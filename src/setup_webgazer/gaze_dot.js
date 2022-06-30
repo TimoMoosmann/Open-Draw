@@ -25,7 +25,9 @@ class GazeDot {
     this.screenDot.show()
     let lastDrawnTime = -1
     addScreenPointListener(
-      this.app, this.gazeListenerName, (gazePoint, time) => {
+      this.app.webgazer, this.app.mouseListeners, this.gazeListenerName,
+      (gazePoint, time) => {
+        if (!gazePoint) return
         if (
           lastDrawnTime === -1 || time - lastDrawnTime >= this.refreshInterval
         ) {

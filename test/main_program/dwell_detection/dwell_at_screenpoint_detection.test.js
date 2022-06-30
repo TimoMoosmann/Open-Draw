@@ -30,7 +30,7 @@ describe('A sequence of potential gaze Estimations from Webgazer', () => {
 
   test(stripIndent`
     Since the duration threshold of 200ms is not reached yet, the list should
-    still be the same, and not fixation should be detected.
+    still be the same, and no fixation should be detected.
   `, () => {
     const gazePoint1 = createTimedPosItem({ timestamp: 100, pos: gazePos1 })
     const gazePoint2 = createTimedPosItem({ timestamp: 200, pos: gazePos2 })
@@ -85,7 +85,7 @@ describe('A sequence of potential gaze Estimations from Webgazer', () => {
   })
 
   test(stripIndent`
-    Now only the  point 5 lies in the dispersion Threshold,
+    Now only point 5 lies in the dispersion Threshold,
     so the other points should be deleted, and no fixation should be noted.
   `, () => {
     const gazePoint2 = createTimedPosItem({ timestamp: 200, pos: gazePos2 })
@@ -122,12 +122,7 @@ describe('A sequence of potential gaze Estimations from Webgazer', () => {
   })
 
   test(stripIndent`
-    Given: maxFixationLimit: 1000ms, poins seperated by 1001ms, that fit
-    in Dispersion Threshold.
-
-    Expected Result: No Fiaxation Detected, because after trimming to fit in
-    the 1000ms window, the remaining points not cover the durationThreshold.
-    Important: The window should be trimmed though.
+    When maxFixationDuration is passed the gazePositionsArray should be cleared.
   `, () => {
     const gazePoint5 = createTimedPosItem({ timestamp: 500, pos: gazePos5 })
     const gazePoint6 = createTimedPosItem({ timestamp: 1500, pos: gazePos5 })
@@ -139,8 +134,6 @@ describe('A sequence of potential gaze Estimations from Webgazer', () => {
       timedGazePositions,
       maxFixationDuration: dwellDurationThreshold
     })).toBeFalsy()
-    expect(timedGazePositions.toArray().map(it => it.pos)).toEqual(
-      [gazePos5, gazePos5]
-    )
+    expect(timedGazePositions.toArray()).toEqual([])
   })
 })

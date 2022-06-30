@@ -31,6 +31,7 @@ class GazeAtDwellBtnListner {
     }
     // Buffer for webgazer
     maxFixationDuration += 200
+    console.log(maxFixationDuration)
 
     runWebgazerFixationDetection({
       app: this.app,
@@ -53,7 +54,7 @@ class GazeAtDwellBtnListner {
   }
 
   stop () {
-    clearScreenPointListeners(this.app)
+    clearScreenPointListeners(this.app.webgazer, this.app.mouseListeners)
   }
 
   reset () {
