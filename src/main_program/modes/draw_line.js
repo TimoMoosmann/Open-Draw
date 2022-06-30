@@ -86,7 +86,10 @@ class DrawLineMode {
       } else {
         drawState.safetyEllipse = createEllipse({
           center: drawState.startPoint,
-          radii: scalePosByVal(app.minGazeTargetSize, 1 / 2)
+          radii: scalePosByVal(
+            app.settings.getSafetyEllipseSize(app.accuracy),
+            1 / 2
+          )
         })
       }
     } else {

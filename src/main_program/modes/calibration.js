@@ -37,7 +37,8 @@ class CalibrationMode {
       targetSizeIsFixed: app.settings.targetSizeIsFixed,
       webgazer: app.webgazer
     }).then(res => {
-      const { minGazeTargetSize, dispersionThreshold } = res
+      const { accuracy, minGazeTargetSize, dispersionThreshold } = res
+      app.accuracy = accuracy
       app.minGazeTargetSize = minGazeTargetSize
       app.dispersionThreshold = dispersionThreshold
       if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
@@ -119,7 +120,11 @@ function getCalibrationResults ({
         lang,
         onContinue: () => {
           calibrationScorePage.remove()
-          resolve({ dispersionThreshold, minGazeTargetSize })
+          resolve({
+            accuracy: absoluteRelevantAcc,
+            dispersionThreshold,
+            minGazeTargetSize
+          })
         },
         onRecalibrate: () => {
           calibrationScorePage.remove()

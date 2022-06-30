@@ -32,6 +32,7 @@ export const mainSettings = {
     ),
     screenpoint: acc => scalePosByVal(acc, 3)
   },
+  getSafetyEllipseSize: acc => scalePosByVal(acc, 3),
   getDispersionThreshold: prec => scalePosByVal(prec, 3),
   targetSizeIsFixed: true,
   // Minimum Relative Accuracy to use the program properly

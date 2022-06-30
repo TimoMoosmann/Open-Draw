@@ -93,6 +93,7 @@ async function createAndStartApp (settings, showTestLines = true) {
     const acc = getAbsPosFromPosRelativeToViewport(app.settings.borderAccRel)
     const prec = getAbsPosFromPosRelativeToViewport(app.settings.borderPrecRel)
 
+    app.accuracy = acc
     app.minGazeTargetSize = app.settings.getMinTargetSize[
       app.settings.dwellBtnDetectionAlgorithm
     ](acc, prec)

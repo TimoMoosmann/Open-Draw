@@ -1,4 +1,4 @@
-import { addPositions, createPos, dividePositions, scalePosByPos, scalePosByVal, subPositions } from 'Src/data_types/pos.js'
+import { addPositions, createPos, scalePosByPos, scalePosByVal, subPositions } from 'Src/data_types/pos.js'
 import { getViewport } from 'Src/util/browser.js'
 
 // To solve problems with floating arithmetic. Snapping to edges of the
