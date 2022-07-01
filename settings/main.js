@@ -28,7 +28,7 @@ export const mainSettings = {
   dwellBtnDetectionAlgorithm: 'bucket',
   getMinTargetSize: {
     bucket: (acc, prec) => scalePosByVal(
-      addPositions(acc, scalePosByVal(prec, 1.5)), 2
+      addPositions(acc, scalePosByVal(prec, 1.8)), 2
     ),
     screenpoint: acc => scalePosByVal(acc, 3)
   },
@@ -40,7 +40,7 @@ export const mainSettings = {
   // Relative Accuracy to reach a calibrationScore of 100%
   perfectAccRel: createPos({ x: 0.03, y: 0.06 }),
   // Minimum recommended Relative Precision
-  borderPrecRel: createPos({ x: 0.06, y: 0.1 }),
+  borderPrecRel: createPos({ x: 0.05, y: 0.09 }),
 
   /*
    * DwellBtn Settings
