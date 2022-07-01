@@ -3,9 +3,7 @@ import { redraw } from 'Src/main_program/draw.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { getLineWidthDisplay } from 'Src/main_program/modes/view.js'
 import { arrangeBtnsTwoHighOneLow, arrangeTwoBtnsUpperLeftOneBtnLowerRight } from 'Src/main_program/dwell_btn_patterns.js'
-import {
-  getQuitBtn, getSmallDistToNeighborTarget
-} from 'Src/main_program/util.js'
+import { getQuitBtn } from 'Src/main_program/util.js'
 import { vw } from 'Src/util/browser.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 import { maxLineWidth } from 'Settings'
@@ -42,8 +40,9 @@ function getChangeLineWidthMode (app) {
     [arrangedIncreaseBtn, arrangedDecreaseBtn, arrangedQuitBtn] =
       arrangeTwoBtnsUpperLeftOneBtnLowerRight({
         btns: [increaseBtn, decreaseBtn, quitBtn],
-        dispersionThreshold: app.dispersionThreshold,
-        minDistToEdge
+        minDistToEdge,
+        xDistBetweenTopTargets:
+          app.settings.getSmallDistBetweenTargets(btnSize).x
       })
   }
 
@@ -58,7 +57,8 @@ function getChangeLineWidthMode (app) {
     anchorIsCenterY = false
   } else {
     displayLeft = arrangedDecreaseBtn.ellipse.center.x +
-      arrangedDecreaseBtn.ellipse.radii.x + getSmallDistToNeighborTarget(app).x
+      arrangedDecreaseBtn.ellipse.radii.x +
+      app.settings.getSmallDistBetweenTargets(btnSize).x
     displayTop = arrangedIncreaseBtn.ellipse.center.y
     anchorIsCenterX = false
     anchorIsCenterY = true

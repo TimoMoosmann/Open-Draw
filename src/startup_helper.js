@@ -10,7 +10,6 @@ import { getCalibrationMode } from 'Src/main_program/modes/calibration.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getBackgroundGrid, getDrawingCanvasInContainer } from 'Src/main_program/view.js'
-import { getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 import { getGazeDot } from 'Src/setup_webgazer/gaze_dot.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
@@ -131,7 +130,8 @@ function setupDwellDetectionListener (app) {
 
 function calcNumBtnsFitOnScreen (app) {
   const distToNeighbor = dividePositions(
-    getSmallDistToNeighborTarget(app), getViewport()
+    app.settings.getSmallDistBetweeTargets(app.minGazetargetSize),
+    getViewport()
   )
   const distToEdge = getAbsPosFromPosRelativeToViewport(
     app.settings.minDistToEdgeRel

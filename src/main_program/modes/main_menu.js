@@ -6,7 +6,7 @@ import { getArrangeManyMode } from 'Src/main_program/arrange_many_btns.js'
 import { getDrawLineMode } from 'Src/main_program/modes/draw_line.js'
 import { getEditMode } from 'Src/main_program/modes/edit.js'
 import { getMoveMode } from 'Src/main_program/modes/move.js'
-// import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
+import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
 import { getZoomMode } from 'Src/main_program/modes/zoom.js'
 
 import chooseColorModeIcon from 'Assets/icons/color-wheel.png'
@@ -16,8 +16,7 @@ import moveModeIcon from 'Assets/icons/move.png'
 import zoomModeIcon from 'Assets/icons/magnifying-glass.png'
 
 function getMainMenuMode (app) {
-  // const btnSize = app.minGazeTargetSize
-
+  const btnSize = app.minGazeTargetSize
   const getStartModeDwellBtn = ({
     domId, icon, mode, title
   }) => createDwellBtn({
@@ -26,7 +25,7 @@ function getMainMenuMode (app) {
     },
     domId,
     icon,
-    size: app.minGazeTargetSize,
+    size: btnSize,
     title
   })
 
@@ -67,19 +66,22 @@ function getMainMenuMode (app) {
     title: (lang === 'de') ? 'Linienbreite' : 'Line Width'
   })
 
-  return getArrangeManyMode(
-    app,
-    // btnSize,
-    // equallySizedDwellBtns: [
-    [
-      startDrawLineModeDwellBtn,
-      startZoomModeDwellBtn,
-      startMoveModeDwellBtn,
-      startEditModeDwellBtn,
-      startChooseColorModeDwellBtn,
-      startChangeLineWidthModeDwellBtn
-    ]
-  )
+  const equallySizedDwellBtns = [
+    startDrawLineModeDwellBtn,
+    startZoomModeDwellBtn,
+    startMoveModeDwellBtn,
+    startEditModeDwellBtn,
+    startChooseColorModeDwellBtn,
+    startChangeLineWidthModeDwellBtn
+  ]
+
+  if (app.settings.useSimpleBtnPatterns) {
+    return getArrangeManyMode(app, equallySizedDwellBtns)
+  } else {
+    return getParallelMenuMode({
+      app, btnSize, equallySizedDwellBtns
+    })
+  }
 }
 
 export {

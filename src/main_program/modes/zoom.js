@@ -37,16 +37,18 @@ function getZoomMode (app) {
   const minDistToEdge = getAbsPosFromPosRelativeToViewport(
     app.settings.minDistToEdgeRel
   )
-  let arrangedZoomBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight({
-    btns: [zoomInBtn, zoomOutBtn, quitBtn],
-    dispersionThreshold: app.dispersionThreshold,
-    minDistToEdge
-  })
+  let arrangedZoomBtns = false
   if (app.settings.useSimpleBtnPatterns) {
     arrangedZoomBtns = arrangeBtnsTwoHighOneLow(
       [zoomInBtn, quitBtn, zoomOutBtn],
       minDistToEdge
     )
+  } else {
+    arrangedZoomBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight({
+      btns: [zoomInBtn, zoomOutBtn, quitBtn],
+      minDistToEdge,
+      xDistBetweenTopTargets: app.settings.getSmallDistBetweenTargets(btnSize).x
+    })
   }
   return getDwellBtnMode(arrangedZoomBtns)
 }

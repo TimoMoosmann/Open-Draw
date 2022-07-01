@@ -44,8 +44,8 @@ function getEditMode (app) {
   } else {
     arrangedBtns = arrangeTwoBtnsUpperLeftOneBtnLowerRight({
       btns: [undoBtn, redoBtn, quitBtn],
-      dispersionThreshold: app.dispersionThreshold,
-      minDistToEdge
+      minDistToEdge,
+      xDistBetweenTopTargets: app.settings.getSmallDistBetweenTargets(btnSize).x
     })
   }
   return getDwellBtnMode(arrangedBtns)

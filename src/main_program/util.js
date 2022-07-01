@@ -1,5 +1,5 @@
 import { activateDwellBtnGazeListener } from 'Src/main_program/dwell_detection/dwell_at_btn_detection.js'
-import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
+import { scalePosByVal } from 'Src/data_types/pos.js'
 import { createDwellBtn } from 'Src/main_program/data_types/dwell_btn.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
@@ -9,10 +9,6 @@ import {
 import { clearScreenPointListeners } from 'Src/util/main.js'
 
 import quitIcon from 'Assets/icons/close.png'
-
-function getSmallDistToNeighborTarget (app) {
-  return scalePosByVal(createPos(app.dispersionThreshold), 0)
-}
 
 function getMinGazeTargetSizeFromAcc (acc) {
   return scalePosByVal(acc, 3.7)
@@ -111,7 +107,6 @@ export {
   endDwellBtnListener,
   getDispersionThresholdFromPrec,
   getMinGazeTargetSizeFromAcc,
-  getSmallDistToNeighborTarget,
   getQuitBtn,
   removeDwellBtnsAndGazeListener,
   showAndActivateDwellBtns

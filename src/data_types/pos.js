@@ -82,6 +82,14 @@ function isPosEqual (pos1, pos2) {
   return pos1.x === pos2.x && pos1.y === pos2.y
 }
 
+function isPosGreaterThan (pos1, pos2) {
+  return pos1.x > pos2.x && pos1.y > pos2.y
+}
+
+function isPosLowerThan (pos1, pos2) {
+  return pos1.x < pos2.x && pos1.y < pos2.y
+}
+
 function isPosLowerThanOrEqual (pos1, pos2) {
   return pos1.x <= pos2.x && pos1.y <= pos2.y
 }
@@ -100,8 +108,14 @@ function getMinXAndY (pos1, pos2) {
   })
 }
 
+function applyToEachAxis (pos, fun) {
+  pos.x = fun(pos.x)
+  pos.y = fun(pos.y)
+}
+
 export {
   addPositions,
+  applyToEachAxis,
   checkNumericPos,
   checkPos,
   checkPositiveNumericPos,
@@ -111,6 +125,8 @@ export {
   getMinXAndY,
   isPos,
   isPosEqual,
+  isPosGreaterThan,
+  isPosLowerThan,
   isPosLowerThanOrEqual,
   scalePosByPos,
   scalePosByVal,

@@ -23,6 +23,12 @@ export const mainSettings = {
   /*
    * Dwell Detection Settings
    */
+  // Minimum Relative Accuracy to use the program properly
+  borderAccRel: createPos({ x: 0.07, y: 0.14 }),
+  // Relative Accuracy to reach a calibrationScore of 100%
+  perfectAccRel: createPos({ x: 0.03, y: 0.06 }),
+  // Minimum recommended Relative Precision
+  borderPrecRel: createPos({ x: 0.05, y: 0.09 }),
   // 'screenpoint' for a fixation based algorithm (saves some space),
   // 'bucket' for a target based algorithm (more stable)
   dwellBtnDetectionAlgorithm: 'bucket',
@@ -35,12 +41,6 @@ export const mainSettings = {
   getSafetyEllipseSize: acc => scalePosByVal(acc, 3),
   getDispersionThreshold: prec => scalePosByVal(prec, 3),
   targetSizeIsFixed: true,
-  // Minimum Relative Accuracy to use the program properly
-  borderAccRel: createPos({ x: 0.07, y: 0.14 }),
-  // Relative Accuracy to reach a calibrationScore of 100%
-  perfectAccRel: createPos({ x: 0.03, y: 0.06 }),
-  // Minimum recommended Relative Precision
-  borderPrecRel: createPos({ x: 0.05, y: 0.09 }),
 
   /*
    * DwellBtn Settings
@@ -61,7 +61,9 @@ export const mainSettings = {
    * Webgazer Settings
    */
   standardGazeDotColor: 'blue',
-  gazeDotRefreshesPerSecond: 20
+  gazeDotRefreshesPerSecond: 20,
+
+  getSmallDistBetweenTargets: targetSize => scalePosByVal(targetSize, 0.1)
 }
 
 /*

@@ -16,7 +16,6 @@ function getChooseColorMode (app) {
       },
       colorDot: colors[i],
       domId: 'colorBtn' + i,
-      icon: false,
       size: btnSize
     }))
   }

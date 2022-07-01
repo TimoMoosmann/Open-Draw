@@ -2,7 +2,6 @@ import { createNextBtn, createPrevBtn } from 'Src/main_program/data_types/dwell_
 import { arrangeEquallySizedDwellBtnsToParallelMenu } from 'Src/main_program/dwell_btn_patterns.js'
 import { getDwellBtnMode } from 'Src/main_program/modes/dwell_btn_mode.js'
 import { activateMode } from 'Src/main_program/modes/main.js'
-import { getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
 function getParallelMenuMode ({
@@ -14,7 +13,9 @@ function getParallelMenuMode ({
   showLines = true,
   startIdx = 0
 }) {
-  if (!distToNeighbor) distToNeighbor = getSmallDistToNeighborTarget(app)
+  if (!distToNeighbor) {
+    distToNeighbor = app.settings.getSmallDistBetweenTargets(btnSize)
+  }
   const getParallelMenuModeFixed = (startIdx, endIdx) => getParallelMenuMode({
     app,
     btnSize,

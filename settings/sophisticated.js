@@ -1,3 +1,4 @@
+import { createPos } from 'Src/data_types/pos.js'
 import { mainSettings } from 'NewSettings/main.js'
 
 export const sophisticatedSettings = {
@@ -6,5 +7,9 @@ export const sophisticatedSettings = {
   // overite and define anything
   dwellBtnDetectionAlgorithm: 'screenpoint',
   targetSizeIsFixed: false,
-  useSimpleBtnPatterns: false
+  useSimpleBtnPatterns: false,
+  // Minimum Relative Accuracy to use the program properly
+  borderAccRel: createPos({ x: 0.07, y: 0.14 }),
+  // Minimum recommended Relative Precision
+  borderPrecRel: createPos({ x: 0.05, y: 0.09 })
 }

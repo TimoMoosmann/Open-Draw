@@ -8,7 +8,6 @@ import {
 } from 'Src/data_types/pos.js'
 import { checkUnsignedInteger } from 'Src/data_types/numbers.js'
 import { getViewport, vh, vw } from 'Src/util/browser.js'
-import { getSmallDistToNeighborTarget } from 'Src/main_program/util.js'
 
 function arrangeEquallySizedDwellBtnsToParallelMenu ({
   dispersionThreshold,
@@ -21,11 +20,6 @@ function arrangeEquallySizedDwellBtnsToParallelMenu ({
   startIdx = 0,
   viewport = getViewport()
 }) {
-  if (!distToNeighbor) {
-    distToNeighbor = getSmallDistToNeighborTarget(
-      dispersionThreshold
-    )
-  }
   checkEquallySizedDwellBtns(equallySizedDwellBtns, 'equallySizedDwellBtns')
   checkNumericPos(distToNeighbor, 'distToNeighbor')
   checkPositiveNumericPos(minDistToEdge, 'minDistToEdge')
@@ -196,15 +190,15 @@ function arrangeOneBtnToLowerRight ({
 
 function arrangeTwoBtnsUpperLeftOneBtnLowerRight ({
   btns,
-  dispersionThreshold,
-  minDistToEdge
+  minDistToEdge,
+  xDistBetweenTopTargets
 }) {
   const upperLeftLeftPos = addPositions(
     minDistToEdge, btns[0].ellipse.radii
   )
   const upperLeftPos = createPos({
     x: upperLeftLeftPos.x +
-      getSmallDistToNeighborTarget(dispersionThreshold).x +
+      xDistBetweenTopTargets +
       btns[0].ellipse.radii.x + btns[1].ellipse.radii.x,
     y: upperLeftLeftPos.y
   })
