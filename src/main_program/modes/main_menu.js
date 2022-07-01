@@ -9,6 +9,7 @@ import { getMoveMode } from 'Src/main_program/modes/move.js'
 import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
 import { getZoomMode } from 'Src/main_program/modes/zoom.js'
 
+import changeLineWidthModeIcon from 'Assets/icons/line_width.png'
 import chooseColorModeIcon from 'Assets/icons/color-wheel.png'
 import editModeIcon from 'Assets/icons/edit.png'
 import drawLineModeIcon from 'Assets/icons/line.png'
@@ -63,6 +64,7 @@ function getMainMenuMode (app) {
   const startChangeLineWidthModeDwellBtn = getStartModeDwellBtn({
     mode: getChangeLineWidthMode(app),
     domId: 'startChangeLineWidthModeDwellBtn',
+    icon: changeLineWidthModeIcon,
     title: (lang === 'de') ? 'Linienbreite' : 'Line Width'
   })
 
