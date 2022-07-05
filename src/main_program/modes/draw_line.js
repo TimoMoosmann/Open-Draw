@@ -13,7 +13,7 @@ import {
   drawStateDwellDuration, lookStateDwellDuration,
   markPointHalfSize, markPointStrokeProperties,
   safetyEllipseLineDash, safetyEllipseStrokeProperties
-} from 'Settings'
+} from 'Settings/main.js'
 
 function getDrawLineMode () {
   return new DrawLineMode()

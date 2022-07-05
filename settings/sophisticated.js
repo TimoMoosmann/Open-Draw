@@ -1,5 +1,5 @@
 import { createPos } from 'Src/data_types/pos.js'
-import { mainSettings } from 'NewSettings/main.js'
+import { mainSettings } from 'Settings/main.js'
 
 export const sophisticatedSettings = {
   // start with mainSettings

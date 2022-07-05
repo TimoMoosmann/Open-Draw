@@ -17,8 +17,7 @@ module.exports = {
     alias: {
       Assets: path.resolve(__dirname, 'assets'),
       OtherModules: path.resolve(__dirname, 'other_modules'),
-      Settings$: path.resolve(__dirname, 'settings.js'),
-      NewSettings: path.resolve(__dirname, 'settings'),
+      Settings: path.resolve(__dirname, 'settings'),
       Src: path.resolve(__dirname, 'src'),
       Test: path.resolve(__dirname, 'test'),
       TestViews: path.resolve(__dirname, 'test_views')

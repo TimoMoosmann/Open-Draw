@@ -3,7 +3,7 @@ import { createDwellBtnWithColorDot } from 'Src/main_program/data_types/dwell_bt
 import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.js'
 // import { getParallelMenuMode } from 'Src/main_program/modes/parallel_menu.js'
-import { colors } from 'Settings'
+import { colors } from 'Settings/main.js'
 
 function getChooseColorMode (app) {
   const btnSize = app.minGazeTargetSize

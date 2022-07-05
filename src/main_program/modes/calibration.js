@@ -10,7 +10,7 @@ import { getMainMenuClosedMode } from 'Src/main_program/modes/main_menu_closed.j
 
 import {
   calibrationType, numCalibrationTargets
-} from 'Settings'
+} from 'Settings/main.js'
 
 function getCalibrationMode () {
   return new CalibrationMode()

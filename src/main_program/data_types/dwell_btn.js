@@ -2,7 +2,7 @@
 import { createPos, scalePosByVal } from 'Src/data_types/pos.js'
 import { checkEllipse, createEllipse } from 'Src/main_program/data_types/ellipse.js'
 
-import { standardDwellBtnActivationTime } from 'Settings'
+import { standardDwellBtnActivationTime } from 'Settings/main.js'
 
 import eyeIcon from 'Assets/icons/eye.png'
 import nextBtnIcon from 'Assets/icons/arrow_right.png'

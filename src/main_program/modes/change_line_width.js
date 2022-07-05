@@ -6,7 +6,7 @@ import { arrangeBtnsTwoHighOneLow, arrangeTwoBtnsUpperLeftOneBtnLowerRight } fro
 import { getQuitBtn } from 'Src/main_program/util.js'
 import { vw } from 'Src/util/browser.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
-import { maxLineWidth } from 'Settings'
+import { maxLineWidth } from 'Settings/main.js'
 
 import increaseIcon from 'Assets/icons/plus.png'
 import decreaseIcon from 'Assets/icons/minus.png'

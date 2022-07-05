@@ -7,7 +7,7 @@ import {
   gazeCalibrationTimeTillRecord, gazeCalibrationRecordDuration,
   gazeCalibrationRecordIntervalDuration,
   validationCaptureDuration, validationTimeTillCapture
-} from 'Settings'
+} from 'Settings/main.js'
 
 async function runGazeCalibration ({
   numTargets,

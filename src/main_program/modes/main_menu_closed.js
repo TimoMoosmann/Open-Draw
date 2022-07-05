@@ -5,7 +5,7 @@ import { activateMode } from 'Src/main_program/modes/main.js'
 import { getMainMenuMode } from 'Src/main_program/modes/main_menu.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
-import { standardDwellBtnActivationTime } from 'Settings'
+import { standardDwellBtnActivationTime } from 'Settings/main.js'
 
 import openMenuIcon from 'Assets/icons/menu.png'
 

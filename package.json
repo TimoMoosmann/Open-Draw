@@ -8,8 +8,8 @@
     "test": "jest ./test/",
     "build": "webpack",
     "serve": "nodemon ./bin/www",
-    "checkstyle": "npx standard src/ test/ test_views/ settings/ settings.js",
-    "fixstyle": "npx standard --fix src/ test/ test_views/ settings.js"
+    "checkstyle": "npx standard src/ test/ test_views/ settings/",
+    "fixstyle": "npx standard --fix src/ test/ test_views/ settings/"
   },
   "author": "",
   "license": "ISC",

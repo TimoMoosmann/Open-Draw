@@ -12,6 +12,7 @@ export const colors = [
   '#909090' // Grey
 ]
 
+// options defined in the mainSettings object can be extended or overwritten.
 export const mainSettings = {
   /*
    * Main Settings

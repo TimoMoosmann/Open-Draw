@@ -1,5 +1,5 @@
 import { createAndStartApp } from 'Src/startup_helper.js'
-import { sophisticatedSettings } from 'NewSettings/sophisticated.js'
+import { sophisticatedSettings } from 'Settings/sophisticated.js'
 
 async function main () {
   sophisticatedSettings.eyeModeOn = false
