@@ -4,12 +4,15 @@ import { mainSettings } from 'NewSettings/main.js'
 export const sophisticatedSettings = {
   // start with mainSettings
   ...mainSettings,
-  // overite and define anything
+
+  // overwrite and define anything
   dwellBtnDetectionAlgorithm: 'screenpoint',
   targetSizeIsFixed: false,
   useSimpleBtnPatterns: false,
   // Minimum Relative Accuracy to use the program properly
-  borderAccRel: createPos({ x: 0.07, y: 0.14 }),
+  borderAccRel: createPos({ x: 0.07, y: 0.15 }),
   // Minimum recommended Relative Precision
-  borderPrecRel: createPos({ x: 0.05, y: 0.09 })
+  borderPrecRel: createPos({ x: 0.06, y: 0.1 }),
+
+  minDistToEdgeRel: createPos({ x: 0.08, y: 0.08 }),
 }

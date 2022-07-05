@@ -124,18 +124,15 @@ async function setupWebgazerNormal (app) {
 function setupDwellDetectionListener (app) {
   if (app.settings.dwellBtnDetectionAlgorithm === 'screenpoint') {
     app.gazeAtDwellBtnListener = getGazeAtDwellBtnListener(app)
-    console.log(app.gazeAtDwellBtnListener)
   }
 }
 
 function calcNumBtnsFitOnScreen (app) {
   const distToNeighbor = dividePositions(
-    app.settings.getSmallDistBetweeTargets(app.minGazetargetSize),
+    app.settings.getSmallDistBetweenTargets(app.minGazeTargetSize),
     getViewport()
   )
-  const distToEdge = getAbsPosFromPosRelativeToViewport(
-    app.settings.minDistToEdgeRel
-  )
+  const distToEdge = app.settings.minDistToEdgeRel
   const btnSize = dividePositions(app.minGazeTargetSize, getViewport())
   return dividePositions(
     addPositions(
