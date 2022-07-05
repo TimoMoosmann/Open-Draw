@@ -3,7 +3,7 @@ import { mainSettings } from 'Settings/main.js'
 
 async function main () {
   mainSettings.eyeModeOn = false
-  mainSettings.debugModeOn = true
+  mainSettings.debugOn = true
   await createAndStartApp(mainSettings)
 }
 

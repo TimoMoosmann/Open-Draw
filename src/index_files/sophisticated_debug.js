@@ -3,7 +3,7 @@ import { sophisticatedSettings } from 'Settings/sophisticated.js'
 
 async function main () {
   sophisticatedSettings.eyeModeOn = false
-  sophisticatedSettings.debugModeOn = true
+  sophisticatedSettings.debugOn = true
   await createAndStartApp(sophisticatedSettings)
 }
 

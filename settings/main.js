@@ -37,10 +37,10 @@ export const mainSettings = {
     bucket: (acc, prec) => scalePosByVal(
       addPositions(acc, scalePosByVal(prec, 1.8)), 2
     ),
-    screenpoint: acc => scalePosByVal(acc, 3)
+    screenpoint: acc => scalePosByVal(acc, 3.7)
   },
   getSafetyEllipseSize: acc => scalePosByVal(acc, 3),
-  getDispersionThreshold: prec => scalePosByVal(prec, 3),
+  getDispersionThreshold: prec => scalePosByVal(prec, 3,2),
   targetSizeIsFixed: true,
 
   /*
@@ -64,7 +64,7 @@ export const mainSettings = {
   standardGazeDotColor: 'blue',
   gazeDotRefreshesPerSecond: 20,
 
-  getSmallDistBetweenTargets: targetSize => scalePosByVal(targetSize, 0.1)
+  getSmallDistBetweenTargets: targetSize => scalePosByVal(targetSize, 0.09)
 }
 
 /*
