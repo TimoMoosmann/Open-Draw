@@ -13,6 +13,5 @@ export const sophisticatedSettings = {
   borderAccRel: createPos({ x: 0.07, y: 0.15 }),
   // Minimum recommended Relative Precision
   borderPrecRel: createPos({ x: 0.06, y: 0.1 }),
-
   minDistToEdgeRel: createPos({ x: 0.08, y: 0.08 }),
 }

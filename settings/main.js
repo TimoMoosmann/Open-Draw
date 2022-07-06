@@ -12,18 +12,14 @@ export const colors = [
   '#909090' // Grey
 ]
 
-// options defined in the mainSettings object can be extended or overwritten.
+// Options defined in the mainSettings object can be extended or overwritten.
 export const mainSettings = {
-  /*
-   * Main Settings
-   */
   // Turn eyeMode off to just look around without using eye tracking.
   eyeModeOn: false,
   lang: 'de',
   debugOn: false,
-  /*
-   * Dwell Detection Settings
-   */
+
+  // Dwell Detection Settings
   // Minimum Relative Accuracy to use the program properly
   borderAccRel: createPos({ x: 0.07, y: 0.14 }),
   // Relative Accuracy to reach a calibrationScore of 100%
@@ -39,37 +35,30 @@ export const mainSettings = {
     ),
     screenpoint: acc => scalePosByVal(acc, 3.7)
   },
-  getSafetyEllipseSize: acc => scalePosByVal(acc, 3),
   getDispersionThreshold: prec => scalePosByVal(prec, 3,2),
-  targetSizeIsFixed: true,
 
-  /*
-   * DwellBtn Settings
-   */
+  // Draw Line Mode Settings
+  getSafetyEllipseSize: acc => scalePosByVal(acc, 3),
+
+  // DwellBtn Settings
   useSimpleBtnPatterns: true,
   getDwellBtnBackgroundColor: alpha => {
     return `rgba(112, 128, 144, ${alpha})`
   },
   minDistToEdgeRel: createPos({ x: 0.05, y: 0.05 }),
+  getSmallDistBetweenTargets: targetSize => scalePosByVal(targetSize, 0.09),
+  targetSizeIsFixed: true,
 
-  /*
-   * Line Settings
-   */
+  // Line Settings
   defaultColor: colors[0],
   defaultLineWidth: 2,
 
-  /*
-   * Webgazer Settings
-   */
+  // Webgazer Settings
   standardGazeDotColor: 'blue',
-  gazeDotRefreshesPerSecond: 20,
-
-  getSmallDistBetweenTargets: targetSize => scalePosByVal(targetSize, 0.09)
+  gazeDotRefreshesPerSecond: 20
 }
 
-/*
- * Calibration Settings
- */
+// Calibration Settings
 // 'click' or 'gaze'
 export const calibrationType = 'gaze'
 // 5, 9, or 13
@@ -82,17 +71,14 @@ export const gazeCalibrationRecordIntervalDuration = 200
 // Validation
 export const validationCaptureDuration = 1000
 export const validationTimeTillCapture = gazeCalibrationTimeTillRecord
-/*
- * DwellBtn Settings
- */
+
+// DwellBtn Settings
 export const standardDwellBtnActivationTime = 1000
 export const getDwellBtnBackgroundColor = alpha => {
   return `rgba(112, 128, 144, ${alpha})`
 }
 
-/*
- * Draw Line Mode Settings
- */
+// Draw Line Mode Settings
 export const lookStateDwellDuration = 1000
 export const drawStateDwellDuration = 1000
 export const markPointHalfSize = createPos({ x: 20, y: 20 })
@@ -106,13 +92,6 @@ export const safetyEllipseStrokeProperties = createStrokeProperties({
   color: 'black',
   lineWidth: 2
 })
-// Only important when gazeDot is activated during drawLineMode
-export const drawStateGazeDotColors = {
-  drawing: 'orange',
-  looking: 'green'
-}
 
-/*
- * Line Settings
- */
+// Line Settings
 export const maxLineWidth = 10
