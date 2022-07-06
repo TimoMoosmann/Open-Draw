@@ -9,7 +9,8 @@
     "build": "webpack",
     "serve": "nodemon ./bin/www",
     "checkstyle": "npx standard src/ test/ test_views/ settings/",
-    "fixstyle": "npx standard --fix src/ test/ test_views/ settings/"
+    "fixstyle": "npx standard --fix src/ test/ test_views/ settings/",
+    "runproduction": "pm2 start ./bin/www"
   },
   "author": "",
   "license": "ISC",
