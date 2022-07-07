@@ -79,6 +79,7 @@ async function main () {
   await setupWebgazer({
     webgazer: webgazerLocal,
     bigTitle: false,
+    root: document.body,
     title: 'Jetzt, richten sie noch ihre Kamera ein.'
   })
   showWebgazerVideoWhenFaceIsNotDetected(webgazerLocal)
@@ -226,7 +227,7 @@ function appendResultsToProtocol ({
 }) {
   const resultsReq = new XMLHttpRequest()
   resultsReq.open('POST', `${serverAddress}/append-validation-data-to-protocol`)
-  resultsReq.setRequestHeader('Content-Type', 'application/jsoncharset=UTF-8')
+  resultsReq.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
   resultsReq.send(JSON.stringify({
     calibrationType,
     numCalibrationTargets,

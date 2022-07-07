@@ -39,15 +39,15 @@ function getParticipantDataPage () {
         <div id="inputs">
           <div class="inputHolder">
             <label for="name">Vorname:</label>
-            <input id="name"></input>
+            <input name="name" id="name"></input>
           </div>
           <div class="inputHolder">
             <label for="age">Alter:</label>
-            <input id="age"></input>
+            <input name="age" id="age"></input>
           </div>
           <div class="inputHolder">
             <label for="eyeColor">Augenfarbe:</label>
-            <input id="eyeColor"></input>
+            <input name="eyeColor" id="eyeColor"></input>
           </div>
         </div>
         <div>
