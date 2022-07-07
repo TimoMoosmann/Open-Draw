@@ -2,19 +2,19 @@
 
 ## How to use
 
-- Simply visit the [Open Draw Project](open-draw-project.org) website.
+- Simply visit the [Open Draw Project](www.open-draw-project.org) website.
 - Or [Install](#install) and [Run](#run-open-draw) Open Draw.
 
 ## Program Overview
 
 ### Simple Mode
 - Most stable version of the application.
-- Visit [/debug](open-draw-project.org/debug) to explore.
-- Visit [/](open-draw-project.org/) to use the app with your eyes.
+- Visit [/debug](www.open-draw-project.org/debug) to explore.
+- Visit [/](www.open-draw-project.org/) to use the app with your eyes.
 
 ### Sophisticated Mode
 - Uses buttons with variable size, and a more space-saving, but unstable gaze detection algorithm.
-- Try at [/sophisticated_debug](open-draw-project.org/sophisticated_debug) and use at [/sophisticated](open-draw-project.org/sophisticated).
+- Try at [/sophisticated_debug](www.open-draw-project.org/sophisticated_debug) and use at [/sophisticated](www.open-draw-project.org/sophisticated).
 
 ## Instructions
 
@@ -70,7 +70,7 @@ Some important ones are:
 
 This repository also includes a setup for an experiment to find out the about the accuracy of webgazer after a certain calibration procedure.
 
-- Visit [/calibration_study](open-draw-project.org/calibration-study) to try out the study procedure which can be applied to participants.
+- Visit [/calibration_study](www.open-draw-project.org/calibration-study) to try out the study procedure which can be applied to participants.
 - For each participant a study protocol will be generated at `study_protocols/`.
 - If there is no existing `db/study_data.db` file, Node will create one and appends the results for each participant.
 - That file can be evaluated by running:
