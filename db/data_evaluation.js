@@ -13,11 +13,7 @@ const codeBlock = commonTags.codeBlock;
 const pathToStudyDB = './study_data.db';
 
 let validationDatasPerParticipant;
-if (process.env.NODE_ENV === 'production') {
   validationDatasPerParticipant = 6;
-} else {
-  validationDatasPerParticipant = 2;
-}
 
 (async () => {
   const db = await dbHelper.open(pathToStudyDB);
@@ -43,6 +39,19 @@ if (process.env.NODE_ENV === 'production') {
   const numParticipants = (await dbHelper.getAll({
     db, stmt: numParticipantsStmt
   }))[0]['num_participants'];
+  const numEachCalibrationProcedureHasBeenConducted = numParticipants
+
+  const getDifferentViewportsStmt = stripIndent`
+      SELECT p.x, p.y
+      FROM validationDatas v
+      LEFT JOIN gazeAtTargetDatas g
+        ON v.validation_data_id = g.validation_data_id
+      INNER JOIN positions p ON p.position_id = g.viewport_id
+      GROUP BY p.x, p.y
+  `
+  const viewports = await dbHelper.getAll({
+    db, stmt: getDifferentViewportsStmt
+  })
 
   // Per Calibration Procedure
   const avgPerCalibrationProcedureStmt = property => stripIndent`
@@ -59,9 +68,16 @@ if (process.env.NODE_ENV === 'production') {
     ORDER BY (x_avg + y_avg) ASC
   `;
   const avgAccPerCalibrationProcedure = await dbHelper.getAll({
+    db, stmt: avgPerCalibrationProcedureStmt('accuracy')
+  });
+  const avgAccPerCalibrationProcedureRelative = await dbHelper.getAll({
     db, stmt: avgPerCalibrationProcedureStmt('accuracy_relative')
   });
+
   const avgPrecPerCalibrationProcedure = await dbHelper.getAll({
+    db, stmt: avgPerCalibrationProcedureStmt('precision')
+  });
+  const avgPrecPerCalibrationProcedureRelative = await dbHelper.getAll({
     db, stmt: avgPerCalibrationProcedureStmt('precision_relative')
   });
 
@@ -123,7 +139,6 @@ if (process.env.NODE_ENV === 'production') {
         property: 'precision_relative'
       })
     });
-
 
   const avgWorstPerCalibrationProcedureStmt = property => stripIndent`
     SELECT * FROM (
@@ -187,6 +202,20 @@ if (process.env.NODE_ENV === 'production') {
     await dbHelper.getAll({
       db, stmt: avgWorstPerCalibrationProcedureTopResultsStmt({
         numTopResultsPerCategory: eightyPctOfParticipantsAmount,
+        property: 'accuracy'
+      })
+    });
+  const avgWorstAccPerCalibrationProcedureRelative =
+    await dbHelper.getAll({
+      db, stmt: avgWorstPerCalibrationProcedureTopResultsStmt({
+        numTopResultsPerCategory: numParticipants,
+        property: 'accuracy_relative'
+      })
+    });
+  const avgWorstAccPerCalibrationProcedureTopEightyPctRelative =
+    await dbHelper.getAll({
+      db, stmt: avgWorstPerCalibrationProcedureTopResultsStmt({
+        numTopResultsPerCategory: eightyPctOfParticipantsAmount,
         property: 'accuracy_relative'
       })
     });
@@ -197,10 +226,10 @@ if (process.env.NODE_ENV === 'production') {
         property: 'precision_relative'
       })
     });
-  const avgWorstPrecPerCalibrationProcedureTopEightyPct =
+  const  avgWorstPrecPerCalibrationProcedureRelative=
     await dbHelper.getAll({
       db, stmt: avgWorstPerCalibrationProcedureTopResultsStmt({
-        numTopResultsPerCategory: eightyPctOfParticipantsAmount,
+        numTopResultsPerCategory: numParticipants,
         property: 'precision_relative'
       })
     });
@@ -231,7 +260,7 @@ if (process.env.NODE_ENV === 'production') {
   );
   const hundredPctOfSameTargetsAmount =
     numParticipants * validationDatasPerParticipant;
-  const avgAccPerTarget = await dbHelper.getAll({
+  const avgAccPerTargetRel = await dbHelper.getAll({
     db, stmt: avgPerTargetStmt({
       numTopResultsPerTarget: hundredPctOfSameTargetsAmount,
       property: 'accuracy_relative'
@@ -240,16 +269,16 @@ if (process.env.NODE_ENV === 'production') {
   const avgAccPerTargetTopTwentyPct = await dbHelper.getAll({
     db, stmt: avgPerTargetStmt({
       numTopResultsPerTarget: twentyPctOfSameTargetsAmount,
-      property: 'accuracy_relative'
+      property: 'accuracy'
     })
   });
   const avgAccPerTargetTopEightyPct = await dbHelper.getAll({
     db, stmt: avgPerTargetStmt({
       numTopResultsPerTarget: eightyPctOfSameTargetsAmount,
-      property: 'accuracy_relative'
+      property: 'accuracy'
     })
   });
-  const avgPrecPerTarget = await dbHelper.getAll({
+  const avgPrecPerTargetRel = await dbHelper.getAll({
     db, stmt: avgPerTargetStmt({
       numTopResultsPerTarget: hundredPctOfSameTargetsAmount,
       property: 'precision_relative'
@@ -258,13 +287,13 @@ if (process.env.NODE_ENV === 'production') {
   const avgPrecPerTargetTopTwentyPct = await dbHelper.getAll({
     db, stmt: avgPerTargetStmt({
       numTopResultsPerTarget: twentyPctOfSameTargetsAmount,
-      property: 'precision_relative'
+      property: 'precision'
     })
   });
   const avgPrecPerTargetTopEightyPct = await dbHelper.getAll({
     db, stmt: avgPerTargetStmt({
       numTopResultsPerTarget: eightyPctOfSameTargetsAmount,
-      property: 'precision_relative'
+      property: 'precision'
     })
   });
 
@@ -285,83 +314,79 @@ if (process.env.NODE_ENV === 'production') {
     db, stmt: avgPerEyeColorStmt('accuracy_relative')
   });
 
+  const getPrettyStr = (name, val) => {
+    return name + ':\n' + JSON.stringify(val, null, 4) + '\n'
+  }
+
+  // Per Calibration Procedure
+  const averageAccPrettyString = getPrettyStr(
+    'Average Accurcy', avgAccPerCalibrationProcedure
+  )
+  const averageAccRelPrettyString = getPrettyStr(
+    'Average Relative Accurcy', avgAccPerCalibrationProcedureRelative
+  )
+  const averagePrecPrettyString = getPrettyStr(
+    'Average Precision', avgPrecPerCalibrationProcedure
+  )
+  const averagePrecRelPrettyString = getPrettyStr(
+    'Average Relative Precision', avgPrecPerCalibrationProcedureRelative
+  )
+
+  // Per Target Position
+  const averageAccPerTargetPosRelPrettyString = getPrettyStr(
+    'Average Accurcy', avgAccPerTargetRel
+  )
+  const averagePrecPerTargetPosRelPrettyString = getPrettyStr(
+    'Average Precision', avgPrecPerTargetRel
+  )
+
+  // Avg per Calibration Procedure wors targets
+  const avgWorstAccRelPrettyString = getPrettyStr(
+    'Average of worst Accurcy per Target, Relative',
+    avgWorstAccPerCalibrationProcedureRelative
+  )
+  const avgWorstPrecRelPrettyString = getPrettyStr(
+    'Average of worst Precison per Target, Relative',
+    avgWorstPrecPerCalibrationProcedureRelative
+  )
+  
+  // Per Eye Color
+  const averageAccPerEyeColorPrettyString = getPrettyStr(
+    'Average Accuracy', avgAccuracyPerEyeColor
+  )
+
   const outString = codeBlock`
     Minumum number of gaze Estimations on any target: ${minNumGazeEstimations}
     Number of participants with a valid amount of gaze data: ${numParticipants}
 
-    Data specific for each calibration procedure
+    Viewports:
+    ${JSON.stringify(viewports, null, 4)}
+
+     Per Calibration Procedure
     ----------------------------------------------
-    Average Accurcy (each calibration procedure ${numParticipants} times):
-    ${JSON.stringify(avgAccPerCalibrationProcedure, null, 4)}
-    Average Precision (each calibration procedure ${numParticipants} times):
-    ${JSON.stringify(avgPrecPerCalibrationProcedure, null, 4)}
-    ${oneLineTrim`Average Accuracy of top 20 Percent of each calibration 
-      procedure (${twentyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(avgAccPerCalibrationProcedureTopTwentyPct, null, 4)}
-    ${oneLineTrim`Average Accuracy of top 80 Percent of each calibration 
-      procedure (${eightyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(avgAccPerCalibrationProcedureTopEightyPct, null, 4)}
-    ${oneLineTrim`Average Precision of top 20 Percent of each calibration 
-      procedure (${twentyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(
-      avgPrecPerCalibrationProcedureTopTwentyPct, null, 4
-    )}
-    ${oneLineTrim`Average Precision of top 80 Percent of each calibration 
-      procedure (${eightyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(
-      avgPrecPerCalibrationProcedureTopEightyPct, null, 4
-    )}
+    ${averageAccPrettyString}
+    ${averageAccRelPrettyString}
+    ${averagePrecPrettyString}
+    ${averagePrecRelPrettyString}
 
-    Average Worst Accurcy (each calibration procedure ${numParticipants} times):
-    ${JSON.stringify(avgWorstAccPerCalibrationProcedure, null, 4)}
-    Average Worst Precision (each calibration procedure ${numParticipants}
-    times):
-    ${JSON.stringify(avgWorstPrecPerCalibrationProcedure, null, 4)}
-    ${oneLineTrim`Average Worst Accuracy of top 20 Percent of each calibration 
-      procedure (${twentyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(avgWorstAccPerCalibrationProcedureTopTwentyPct, null, 4)}
-    ${oneLineTrim`Average Worst Accuracy of top 80 Percent of each calibration 
-      procedure (${eightyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(avgWorstAccPerCalibrationProcedureTopEightyPct, null, 4)}
-    ${oneLineTrim`Average Worst Precision of top 20 Percent of each calibration 
-      procedure (${twentyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(
-      avgWorstPrecPerCalibrationProcedureTopTwentyPct, null, 4
-    )}
-    ${oneLineTrim`Average Worst Precision of top 80 Percent of each calibration 
-      procedure (${eightyPctOfParticipantsAmount} calibrations each)`}
-    ${JSON.stringify(
-      avgWorstPrecPerCalibrationProcedureTopEightyPct, null, 4
-    )}
+    Avg per Calibration Procedure Worst Targets relative
+    ----------------------------------------------------
+    ${avgWorstAccRelPrettyString}
+    ${avgWorstPrecRelPrettyString}
 
-    Data specific for each target position
+
+    Per Target Position
     --------------------------------------
-    Average Accurcy (${hundredPctOfSameTargetsAmount} targets each):
-    ${JSON.stringify(avgAccPerTarget, null, 4)}
-    Average Precision (${hundredPctOfSameTargetsAmount} targets each):
-    ${JSON.stringify(avgPrecPerTarget, null, 4)}
-    ${oneLineTrim`Average Accuracy of top 20 Percent for each target position (
-      ${twentyPctOfSameTargetsAmount} targets each)`}
-    ${JSON.stringify(avgAccPerTargetTopTwentyPct, null, 4)}
-    ${oneLineTrim`Average Accuracy of top 80 Percent for each target position (
-      ${eightyPctOfSameTargetsAmount} targets each)`}
-    ${JSON.stringify(avgAccPerTargetTopEightyPct, null, 4)}
-    ${oneLineTrim`Average Precision of top 20 Percent for each target position (
-      ${twentyPctOfSameTargetsAmount} targets each)`}
-    ${JSON.stringify(
-      avgPrecPerTargetTopTwentyPct, null, 4
-    )}
-    ${oneLineTrim`Average Precision of top 80 Percent for each target position (
-      ${eightyPctOfSameTargetsAmount} targets each)`}
-    ${JSON.stringify(
-      avgPrecPerTargetTopEightyPct, null, 4
-    )}
+    ${averageAccPerTargetPosRelPrettyString}
+    ${averagePrecPerTargetPosRelPrettyString}
+
 
     Data specific to participants individual properties
     ---------------------------------------------------
     Average Accuracy per Eye Color:
-    ${JSON.stringify(avgAccuracyPerEyeColor, null, 4)}
-  `;
+    ${averageAccPerEyeColorPrettyString}
+  `
+
   console.log(outString);
 })();
 

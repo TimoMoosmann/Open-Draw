@@ -60,7 +60,7 @@ export const mainSettings = {
 
 // Calibration Settings
 // 'click' or 'gaze'
-export const calibrationType = 'gaze'
+export const calibrationType = 'click'
 // 5, 9, or 13
 export const numCalibrationTargets = 9
 export const gazeTargetRadius = 35

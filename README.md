@@ -9,12 +9,12 @@
 
 ### Simple Mode
 - Most stable version of the application.
-- Visit [/debug](https://open-draw-project.org/debug) to explore.
+- Visit [/hover](https://open-draw-project.org/hover) to explore.
 - Visit [/](https://open-draw-project.org/) to use the app with your eyes.
 
 ### Sophisticated Mode
 - Uses buttons with variable size, and a more space-saving, but unstable gaze detection algorithm.
-- Try at [/sophisticated_debug](https://open-draw-project.org/sophisticated_debug) and use at [/sophisticated](https://open-draw-project.org/sophisticated).
+- Try at [/sophisticated_hover](https://open-draw-project.org/sophisticated_hover) and use at [/sophisticated](https://open-draw-project.org/sophisticated).
 
 ## Instructions
 
@@ -42,6 +42,8 @@
 ## Install
 
 Node.js is required.
+
+Before you install the program, make sure SQLite3 is on your computer, otherwise there might be some complications.
 
 ```console
 npm install
