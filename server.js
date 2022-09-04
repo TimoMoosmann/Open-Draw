@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const logger = require('morgan');                                                 
 const fs = require('fs/promises');
+const path = require('path');
+
 const {body, validationResult} = require('express-validator');
 
 const dbHelper = require('./db/helper.js');
@@ -16,8 +18,6 @@ const pathToStudyDB = './db/study_data.db';
 app.use(logger('dev'));                                                         
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-
-app.use(express.static('./public/'));
 
 app.post('/create-study-protocol',
   body('name', 'invalid name').trim().isLength({min:1}).isAlpha(['de-DE'])
@@ -248,6 +248,37 @@ getDBInsertPos = ({db, gazeAtTargetDataID}) => async pos => dbHelper.insert({
   tableName: 'positions',
   values: [pos.x, pos.y, gazeAtTargetDataID]
 });
+
+function checkPassword (password, passwordPageName, res, next) {
+  if (password === 'webcamdraw') {
+    return next()
+  } else {
+    return res.sendFile(path.join(__dirname, '/password_prompts/' +
+      passwordPageName + '.html'))
+  }
+}
+
+app.get('/', (req, res, next) => {
+  checkPassword(req.query.password, 'simple', res, next)
+})
+
+app.get('/hover', (req, res, next) => {
+  checkPassword(req.query.password, 'hover', res, next)
+})
+
+app.get('/sophisticated', (req, res, next) => {
+  checkPassword(req.query.password, 'sophisticated', res, next)
+})
+
+app.get('/sophisticated_hover', (req, res, next) => {
+  checkPassword(req.query.password, 'sophisticated_hover', res, next)
+})
+
+app.get('/calibration-study', (req, res, next) => {
+  checkPassword(req.query.password, 'calibration-study', res, next)
+})
+
+app.use(express.static('./public/'));
 
 module.exports = app;
 
