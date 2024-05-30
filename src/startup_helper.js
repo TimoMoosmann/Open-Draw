@@ -14,7 +14,7 @@ import { getGazeDot } from 'Src/setup_webgazer/gaze_dot.js'
 import { setupWebgazer } from 'Src/setup_webgazer/main.js'
 import { getAbsPosFromPosRelativeToViewport } from 'Src/util/main.js'
 
-async function createAndStartApp (settings, showTestLines = true) {
+async function createAndStartApp (settings, showTestLines = false) {
   const getTestLines = () => [
     createLine({
       startPoint: createPos({ x: 100, y: 200 }),
