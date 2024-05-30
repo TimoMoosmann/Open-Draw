@@ -249,35 +249,6 @@ getDBInsertPos = ({db, gazeAtTargetDataID}) => async pos => dbHelper.insert({
   values: [pos.x, pos.y, gazeAtTargetDataID]
 });
 
-function checkPassword (password, passwordPageName, res, next) {
-  if (password === 'webcamdraw') {
-    return next()
-  } else {
-    return res.sendFile(path.join(__dirname, '/password_prompts/' +
-      passwordPageName + '.html'))
-  }
-}
-
-app.get('/', (req, res, next) => {
-  checkPassword(req.query.password, 'simple', res, next)
-})
-
-app.get('/hover', (req, res, next) => {
-  checkPassword(req.query.password, 'hover', res, next)
-})
-
-app.get('/sophisticated', (req, res, next) => {
-  checkPassword(req.query.password, 'sophisticated', res, next)
-})
-
-app.get('/sophisticated_hover', (req, res, next) => {
-  checkPassword(req.query.password, 'sophisticated_hover', res, next)
-})
-
-app.get('/calibration-study', (req, res, next) => {
-  checkPassword(req.query.password, 'calibration-study', res, next)
-})
-
 app.use(express.static('./public/'));
 
 module.exports = app;
