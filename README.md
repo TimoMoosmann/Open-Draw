@@ -1,6 +1,6 @@
 # Open Draw
 
-Draw a simple draft with your eyes. The only thing you need is normal webcam.
+Draw a simple draft with your eyes. The only thing you need is a normal webcam.
 
 ## How to use
 
