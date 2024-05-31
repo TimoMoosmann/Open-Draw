@@ -1,5 +1,7 @@
 # Open Draw
 
+Draw a simple draft with your eyes. The only thing you need is normal webcam.
+
 ## How to use
 
 - Simply visit [Open Draw](https://open-draw.onrender.com) (Can load slowly).
