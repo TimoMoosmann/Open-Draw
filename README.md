@@ -2,19 +2,20 @@
 
 ## How to use
 
-- Simply visit the [Open Draw Project](https://open-draw-project.org/) website.
-- Or [Install](#install) and [Run](#run-open-draw) Open Draw.
+- Simply visit [Open Draw](https://open-draw.onrender.com) (Can load slowly).
+  - Note: Firefox and Brave browsers might not work. Use Chrome, or Chromium instead.
+- Or [Install](#install) and [Run](#run) Open Draw.
 
 ## Program Overview
 
 ### Simple Mode
 - Most stable version of the application.
-- Visit [/hover](https://open-draw-project.org/hover) to explore.
-- Visit [/](https://open-draw-project.org/) to use the app with your eyes.
+- Visit [/hover](https://open-draw.onrender.com/hover) to explore.
+- Visit [/](https://open-draw.onrender.com/) to use the app with your eyes.
 
 ### Sophisticated Mode
-- Uses buttons with variable size, and a more space-saving, but unstable gaze detection algorithm.
-- Try at [/sophisticated_hover](https://open-draw-project.org/sophisticated_hover) and use at [/sophisticated](https://open-draw-project.org/sophisticated).
+- Uses buttons with variable size, and uses space more efficiently. But the gaze detection algorithm is unstable.
+- Try at [/sophisticated_hover](https://open-draw.onrender.com/sophisticated_hover) and use at [/sophisticated](https://open-draw.onrender.com/sophisticated).
 
 ## Instructions
 
@@ -46,12 +47,12 @@ Node.js is required.
 Before you install the program, make sure SQLite3 is on your computer, otherwise there might be some complications.
 
 ```console
-npm install
+npm install && npm run build
 ```
 
 ## Run
 ```console
-npm run build && npm run serve
+npm run serve
 ```
 
 ## Settings
